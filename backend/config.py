@@ -1,7 +1,11 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
-
+# Load .env explicitly
+env_path = Path(__file__).resolve().parent.parent / ".env"
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path)
 class Config:
     def __init__(self):
         # Base directory is repo root (one level up from this package)
@@ -12,6 +16,8 @@ class Config:
         self.log_level = os.environ.get("LOG_LEVEL", "INFO")
         self.database_url = os.environ.get("DATABASE_URL", "")
         self.gemini_api_key = os.environ.get("GEMINI_API_KEY", "")
+        self.gemini_llm_api_key = os.environ.get("GEMINI_LLM_API_KEY", self.gemini_api_key)
+        self.gemini_ocr_api_key = os.environ.get("GEMINI_OCR_API_KEY", self.gemini_api_key)
         self.gemini_model = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
         self.gemini_ocr_model = os.environ.get("GEMINI_OCR_MODEL", self.gemini_model)
         self.gemini_temperature = float(os.environ.get("GEMINI_TEMPERATURE", "0.0"))

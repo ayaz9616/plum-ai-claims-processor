@@ -78,7 +78,7 @@ class PolicyEvaluator:
         if not cat_policy:
             checks.append(RuleResult(name="category_coverage", ok=False, details={"category": category}))
         else:
-            checks.append(RuleResult(name="category_coverage", ok=True, details={"category": category, "policy": cat_policy}))
+            checks.append(RuleResult(name="category_coverage", ok=bool(cat_policy.get("covered", False)), details={"category": category, "policy": cat_policy}))
 
         # 4. document requirements (normalized by the fixture adapter)
         doc_reqs = self.policy.get("document_requirements", {})
@@ -104,15 +104,22 @@ class PolicyEvaluator:
             ok = claimed_amount <= limit
         checks.append(RuleResult(name="per_claim_limit", ok=ok, details={"limit": per_claim_limit, "claimed_amount": str(claimed_amount)}))
 
-        # 6. category/sub-limits
+        # 6. category/sub-limits. A category limit is cumulative, unlike the
+        # explicit per-claim limit above; do not reject from a single claim when
+        # category utilisation was not supplied.
         ok = True
         details = {}
         if cat_policy:
             sub_limit = cat_policy.get("sub_limit")
             if sub_limit is not None:
                 sub = Decimal(str(sub_limit))
-                ok = claimed_amount <= sub
-                details = {"sub_limit": str(sub_limit), "claimed_amount": str(claimed_amount)}
+                category_ytd = claim.get("category_ytd_claims_amount")
+                if category_ytd is not None:
+                    category_ytd_amount = Decimal(str(category_ytd))
+                    ok = category_ytd_amount + claimed_amount <= sub
+                    details = {"sub_limit": str(sub_limit), "category_ytd": str(category_ytd_amount), "claimed_amount": str(claimed_amount)}
+                else:
+                    details = {"sub_limit": str(sub_limit), "status": "UTILISATION_NOT_PROVIDED"}
         checks.append(RuleResult(name="category_sub_limit", ok=ok, details=details))
 
         # 7. annual limit (simple YTD check if ytd_claims_amount provided)
@@ -123,6 +130,10 @@ class PolicyEvaluator:
             annual = Decimal(str(annual_limit))
             ok = (ytd + claimed_amount) <= annual
         checks.append(RuleResult(name="annual_limit", ok=ok, details={"annual_limit": annual_limit, "ytd": str(ytd), "claimed_amount": str(claimed_amount)}))
+
+        minimum = self.policy.get("submission_rules", {}).get("minimum_claim_amount")
+        minimum_ok = minimum is None or claimed_amount >= Decimal(str(minimum))
+        checks.append(RuleResult(name="minimum_claim_amount", ok=minimum_ok, details={"minimum": minimum, "claimed_amount": str(claimed_amount)}))
 
         # 8b. fraud signals (simple same-day/monthly checks if history provided)
         fraud_thresholds = self.policy.get("fraud_thresholds", {})

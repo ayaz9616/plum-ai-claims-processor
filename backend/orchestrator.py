@@ -8,6 +8,7 @@ from .errors import RepositoryError
 from .policy_evaluator import PolicyEvaluator
 from typing import Dict, Any
 from .workflow import ClaimWorkflow
+from .providers import ProviderSet
 from .storage import ClaimAuditRepository
 
 
@@ -20,14 +21,14 @@ def _apply_financials(claim: Dict[str, Any], policy_raw: Dict[str, Any], categor
 
 
 class ClaimOrchestrator:
-    def __init__(self, policy_repo: PolicyRepository, trace_manager: TraceManager):
+    def __init__(self, policy_repo: PolicyRepository, trace_manager: TraceManager, providers: ProviderSet | None = None):
         self.policy_repo = policy_repo
         self.trace = trace_manager
         self.policy_evaluator = PolicyEvaluator(policy_repo)
         audit_repository = ClaimAuditRepository(config.database_url) if config.database_url else None
         if audit_repository is not None:
             audit_repository.initialize()
-        self.workflow = ClaimWorkflow(policy_repo, trace_manager, self.policy_evaluator, audit_repository=audit_repository)
+        self.workflow = ClaimWorkflow(policy_repo, trace_manager, self.policy_evaluator, providers=providers, audit_repository=audit_repository)
 
     def process_claim(self, submission: ClaimSubmission) -> ClaimProcessingResult:
         try:

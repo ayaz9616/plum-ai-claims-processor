@@ -26,7 +26,13 @@ def _infer_document_type(document: Dict[str, Any]) -> str:
     return "UNKNOWN"
 
 
-def normalize_document(document: Any) -> Dict[str, Any]:
+def is_fixture_document(document: Any) -> bool:
+    """Fixture fields are an evaluation-only boundary, never inferred from uploads."""
+    doc = _as_dict(document)
+    return any(doc.get(key) is not None for key in ("actual_type", "content", "patient_name_on_doc", "quality"))
+
+
+def normalize_fixture_document(document: Any) -> Dict[str, Any]:
     doc = _as_dict(document)
     content = _as_dict(doc.get("content") or doc.get("extracted"))
     document_type = str(doc.get("actual_type") or doc.get("document_type") or _infer_document_type(doc)).upper()
@@ -49,8 +55,23 @@ def normalize_document(document: Any) -> Dict[str, Any]:
     }
 
 
+def normalize_uploaded_document(document: Any) -> Dict[str, Any]:
+    """Keep an uploaded reference opaque until the backend extracts it."""
+    doc = _as_dict(document)
+    return {
+        "file_id": str(doc.get("file_id") or doc.get("id") or "unknown"),
+        "document_type": "UNKNOWN",
+        "quality": "UNKNOWN",
+        "extracted": {},
+        "source": {"file_name": doc.get("file_name"), "mime_type": doc.get("mime_type"), "size_bytes": doc.get("size_bytes"), "fixture": False},
+    }
+
+
 def normalize_claim_input(claim: Any) -> Dict[str, Any]:
     raw = _as_dict(claim)
     documents = raw.get("documents") or []
-    raw["documents"] = [normalize_document(document) for document in documents]
+    raw["documents"] = [
+        normalize_fixture_document(document) if is_fixture_document(document) else normalize_uploaded_document(document)
+        for document in documents
+    ]
     return raw

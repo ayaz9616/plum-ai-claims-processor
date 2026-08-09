@@ -1,9 +1,11 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from typing import List, Optional, Any, Dict
 from decimal import Decimal
 
 
 class DocumentArtifact(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
     file_id: str
     file_name: Optional[str] = None
     mime_type: Optional[str] = None
@@ -12,8 +14,19 @@ class DocumentArtifact(BaseModel):
     actual_type: Optional[str] = None
     content: Optional[dict] = None
 
-    class Config:
-        extra = "allow"
+
+class StructuredDocumentData(BaseModel):
+    """Validated, provider-neutral document understanding contract."""
+    document_type: str = "UNKNOWN"
+    patient_name: Optional[str] = None
+    treatment_date: Optional[str] = None
+    hospital_name: Optional[str] = None
+    diagnosis: Optional[str] = None
+    treatment: Optional[str] = None
+    line_items: List[Dict[str, Any]] = Field(default_factory=list)
+    total: Optional[Decimal] = None
+    quality: str = "UNKNOWN"
+    confidence: Decimal = Decimal("0.5")
 
 
 class ClaimSubmission(BaseModel):
@@ -22,6 +35,7 @@ class ClaimSubmission(BaseModel):
     claim_category: str
     treatment_date: str
     claimed_amount: Decimal
+    simulate_component_failure: Optional[bool] = False
     documents: List[DocumentArtifact] = Field(default_factory=list)
 
 
@@ -66,11 +80,28 @@ class DocumentExtraction(BaseModel):
     confidence: Decimal = Decimal("0.5")
 
 
+class MemberResolutionResult(BaseModel):
+    member_id: str
+    member_name: str
+    member_found: bool
+    policy_id: str
+    policy_valid: bool
+    eligible: bool
+    dependents: List[Dict[str, Any]] = Field(default_factory=list)
+    errors: List[str] = Field(default_factory=list)
+
+
+class MemberDocumentConsistencyResult(BaseModel):
+    consistent: bool
+    mismatches: List[Dict[str, Any]] = Field(default_factory=list)
+
+
+
 class ConsistencyResult(BaseModel):
     ok: bool
     message: str
     found_names: List[str] = Field(default_factory=list)
-    mismatches: List[str] = Field(default_factory=list)
+    mismatches: List[Dict[str, Any]] = Field(default_factory=list)
 
 
 class FinancialCalculationResult(BaseModel):
@@ -109,6 +140,8 @@ class TraceEvent(BaseModel):
     safe_output: Optional[Any]
     evidence: Optional[Any]
     error: Optional[str]
+    summary: Optional[str] = None
+    reason_code: Optional[str] = None
 
 
 class ClaimProcessingResult(BaseModel):
@@ -117,7 +150,13 @@ class ClaimProcessingResult(BaseModel):
     approved_amount: Optional[Decimal] = None
     confidence_score: Optional[Decimal] = None
     processing_status: str = "RECEIVED"
+    reason_code: Optional[str] = None
+    reason: Optional[str] = None
     degraded: bool = False
+    # Set True when the system recommends a human reviews the claim despite producing a decision.
+    # This is required by the assignment for degraded/incomplete processing.
+    manual_review_recommended: bool = False
+    component_failures: List[Dict[str, Any]] = Field(default_factory=list)
     trace: List[TraceEvent] = Field(default_factory=list)
 
 

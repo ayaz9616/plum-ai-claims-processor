@@ -1,14 +1,12 @@
 from __future__ import annotations
 
 import os
-import tempfile
 from abc import ABC, abstractmethod
-from contextlib import contextmanager
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any, Dict, Iterator, Optional
 
 from .config import config
+from .temp_documents import temporary_document_path
 
 
 @dataclass
@@ -50,26 +48,13 @@ class VisionProvider(ABC):
         raise NotImplementedError
 
 
-@contextmanager
-def _temporary_document_path(document_bytes: bytes, suffix: str = ".bin") -> Iterator[str]:
-    handle = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
-    try:
-        handle.write(document_bytes)
-        handle.flush()
-        handle.close()
-        yield handle.name
-    finally:
-        try:
-            Path(handle.name).unlink(missing_ok=True)
-        except Exception:
-            pass
-
-
 class GeminiLLMProvider(LLMProvider):
-    def __init__(self, api_key: str, model: str, temperature: float):
+    # NOTE: temperature/top_p/top_k are deprecated for Gemini 3.5/3.6 Flash and are
+    # intentionally NOT sent to the API. GEMINI_TEMPERATURE is kept in the environment
+    # for backward compatibility but is not forwarded.
+    def __init__(self, api_key: str, model: str):
         self.api_key = api_key
         self.model = model
-        self.temperature = temperature
 
     def generate(self, request: LLMRequest) -> LLMResponse:
         try:
@@ -87,14 +72,17 @@ class GeminiLLMProvider(LLMProvider):
 
 
 class GeminiVisionProvider(VisionProvider):
-    def __init__(self, api_key: str, model: str, temperature: float):
+    # NOTE: temperature/top_p/top_k are deprecated for Gemini 3.5/3.6 Flash and are
+    # intentionally NOT sent to the API. GEMINI_TEMPERATURE is kept in the environment
+    # for backward compatibility but is not forwarded.
+    def __init__(self, api_key: str, model: str):
         self.api_key = api_key
         self.model = model
-        self.temperature = temperature
 
     def analyze(self, request: VisionRequest) -> VisionResponse:
         try:
             from google import genai
+            from google.genai import types
         except Exception as exc:  # pragma: no cover - optional dependency
             raise RuntimeError("google-genai is not installed") from exc
 
@@ -107,14 +95,27 @@ class GeminiVisionProvider(VisionProvider):
         else:
             document_bytes = b""
 
-        if document_bytes:
-            with _temporary_document_path(document_bytes) as temp_path:
-                _ = temp_path
+        mime_type = request.mime_type or "application/pdf"
+        prompt = "Please transcribe this document and provide a basic understanding."
+        if request.metadata and "prompt" in request.metadata:
+            prompt = request.metadata["prompt"]
 
-        response = client.models.generate_content(
-            model=self.model,
-            contents=request.metadata or {},
-        )
+        try:
+            if document_bytes:
+                contents = [
+                    types.Part.from_bytes(data=document_bytes, mime_type=mime_type),
+                    prompt
+                ]
+            else:
+                contents = [prompt]
+
+            response = client.models.generate_content(
+                model=self.model,
+                contents=contents,
+            )
+        except Exception as e:
+            raise RuntimeError(f"Gemini API error: {e}")
+
         text = getattr(response, "text", "") or ""
         return VisionResponse(text=text, structured={}, metadata={"model": self.model, **(request.metadata or {})})
 
@@ -126,9 +127,12 @@ class ProviderSet:
 
 
 def build_provider_set() -> ProviderSet:
-    if not config.gemini_api_key:
-        return ProviderSet()
-    return ProviderSet(
-        llm=GeminiLLMProvider(config.gemini_api_key, config.gemini_model, config.gemini_temperature),
-        vision=GeminiVisionProvider(config.gemini_api_key, config.gemini_ocr_model, config.gemini_temperature),
-    )
+    llm = None
+    vision = None
+
+    if config.gemini_llm_api_key:
+        llm = GeminiLLMProvider(config.gemini_llm_api_key, config.gemini_model)
+    if config.gemini_ocr_api_key:
+        vision = GeminiVisionProvider(config.gemini_ocr_api_key, config.gemini_ocr_model)
+
+    return ProviderSet(llm=llm, vision=vision)

@@ -17,8 +17,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "35b3d37a-6b38-4ee0-b0d0-c7df974aebec",
-          "claim_id": "CLM-9016745d",
+          "trace_id": "76d8077f-8074-4359-aa46-2684f5a8d36b",
+          "claim_id": "CLM-9abf1177",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -32,11 +32,49 @@
           },
           "safe_output": null,
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim input was checked for the required claim details and document references.",
+          "reason_code": null
         },
         {
-          "trace_id": "d5111b32-981b-4749-a833-1da708a999e6",
-          "claim_id": "CLM-9016745d",
+          "trace_id": "a0d8944a-40a1-4928-be7e-89051fe78ab3",
+          "claim_id": "CLM-9abf1177",
+          "step": "MEMBER_RESOLUTION",
+          "component": "MemberResolver",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "member_id": "EMP001",
+            "member_name": "Rajesh Kumar",
+            "member_found": true,
+            "policy_id": "PLUM_GHI_2024",
+            "policy_valid": true,
+            "eligible": true,
+            "dependents": [
+              {
+                "dependent_id": "DEP001",
+                "name": "Sunita Kumar",
+                "relationship": "SPOUSE",
+                "primary_member_id": "EMP001"
+              },
+              {
+                "dependent_id": "DEP002",
+                "name": "Arjun Kumar",
+                "relationship": "CHILD",
+                "primary_member_id": "EMP001"
+              }
+            ],
+            "errors": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Member and policy eligibility were resolved against the authoritative policy roster.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "f1f339ac-7460-4aa3-882f-8ee55d1838df",
+          "claim_id": "CLM-9abf1177",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -63,14 +101,59 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Uploaded documents were classified from their extracted evidence.",
+          "reason_code": null
         },
         {
-          "trace_id": "39f6398f-0dc5-4823-b2f8-a921a27399b5",
-          "claim_id": "CLM-9016745d",
-          "step": "DOCUMENT_VERIFICATION",
+          "trace_id": "21c89dd4-e4a2-41c9-92d8-aded88e48853",
+          "claim_id": "CLM-9abf1177",
+          "step": "DOCUMENT_EXTRACTION",
+          "component": "DocumentExtractor",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": [
+            {
+              "file_id": "F001",
+              "document_type": "PRESCRIPTION",
+              "extracted": {},
+              "confidence": "0.95"
+            },
+            {
+              "file_id": "F002",
+              "document_type": "PRESCRIPTION",
+              "extracted": {},
+              "confidence": "0.95"
+            }
+          ],
+          "evidence": null,
+          "error": null,
+          "summary": "Structured claim fields were extracted from the uploaded documents.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "06734a2c-833f-4d74-be15-4882af29330b",
+          "claim_id": "CLM-9abf1177",
+          "step": "DOCUMENT_QUALITY",
           "component": "DocumentVerifier",
           "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "unreadable": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document readability was checked before adjudication.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "9176747f-b841-4c16-8eef-3e920c598982",
+          "claim_id": "CLM-9abf1177",
+          "step": "DOCUMENT_VERIFICATION",
+          "component": "DocumentVerifier",
+          "status": "FAILED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
@@ -92,14 +175,80 @@
             "wrong_type": []
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "missing required document(s): HOSPITAL_BILL. Claim adjudication was blocked.",
+          "reason_code": "DOCUMENT_VERIFICATION_FAILED"
         },
         {
-          "trace_id": "34c75232-10ba-4f94-b4c6-3fee8fc5bc5b",
-          "claim_id": "CLM-9016745d",
+          "trace_id": "f6924ba0-fd32-40b3-83c5-80cb308d4a6b",
+          "claim_id": "CLM-9abf1177",
+          "step": "POLICY_EVALUATION",
+          "component": "Workflow",
+          "status": "SKIPPED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": null,
+          "evidence": {
+            "blocked_by": "DOCUMENT_VERIFICATION"
+          },
+          "error": null,
+          "summary": "Policy Evaluation was skipped because document verification failed.",
+          "reason_code": "UPSTREAM_STAGE_FAILED"
+        },
+        {
+          "trace_id": "5523660a-5dfc-4aaf-b92d-be034c42cd1c",
+          "claim_id": "CLM-9abf1177",
+          "step": "FINANCIAL_CALCULATION",
+          "component": "Workflow",
+          "status": "SKIPPED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": null,
+          "evidence": {
+            "blocked_by": "DOCUMENT_VERIFICATION"
+          },
+          "error": null,
+          "summary": "Financial Calculation was skipped because document verification failed.",
+          "reason_code": "UPSTREAM_STAGE_FAILED"
+        },
+        {
+          "trace_id": "196ee5cc-daaf-4b32-9b78-6655b84bb9ac",
+          "claim_id": "CLM-9abf1177",
+          "step": "FRAUD_ANALYSIS",
+          "component": "Workflow",
+          "status": "SKIPPED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": null,
+          "evidence": {
+            "blocked_by": "DOCUMENT_VERIFICATION"
+          },
+          "error": null,
+          "summary": "Fraud Analysis was skipped because document verification failed.",
+          "reason_code": "UPSTREAM_STAGE_FAILED"
+        },
+        {
+          "trace_id": "2d343ffa-c5cf-4366-b8be-2216c372d831",
+          "claim_id": "CLM-9abf1177",
+          "step": "CONFIDENCE",
+          "component": "Workflow",
+          "status": "SKIPPED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": null,
+          "evidence": {
+            "blocked_by": "DOCUMENT_VERIFICATION"
+          },
+          "error": null,
+          "summary": "Confidence was skipped because document verification failed.",
+          "reason_code": "UPSTREAM_STAGE_FAILED"
+        },
+        {
+          "trace_id": "755b0c02-44fc-4994-9bd2-389a3834c492",
+          "claim_id": "CLM-9abf1177",
           "step": "DECISION",
           "component": "DecisionEngine",
-          "status": "OK",
+          "status": "BLOCKED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
@@ -107,7 +256,9 @@
             "reason": "missing required document(s): HOSPITAL_BILL"
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim processing was blocked: missing required document(s): HOSPITAL_BILL",
+          "reason_code": "DOCUMENT_VERIFICATION_FAILED"
         }
       ]
     },
@@ -128,8 +279,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "02a31da5-5b29-420a-ac96-06bc9d987131",
-          "claim_id": "CLM-6674f095",
+          "trace_id": "e4d633fd-be04-4d90-b00e-9fdbcee0fe00",
+          "claim_id": "CLM-ae03487f",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -143,11 +294,36 @@
           },
           "safe_output": null,
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim input was checked for the required claim details and document references.",
+          "reason_code": null
         },
         {
-          "trace_id": "7c139578-c5b7-48be-9075-b629cfd5b394",
-          "claim_id": "CLM-6674f095",
+          "trace_id": "550681b9-ce31-412d-a53d-32f7f012e667",
+          "claim_id": "CLM-ae03487f",
+          "step": "MEMBER_RESOLUTION",
+          "component": "MemberResolver",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "member_id": "EMP004",
+            "member_name": "Sneha Reddy",
+            "member_found": true,
+            "policy_id": "PLUM_GHI_2024",
+            "policy_valid": true,
+            "eligible": true,
+            "dependents": [],
+            "errors": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Member and policy eligibility were resolved against the authoritative policy roster.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "9a788175-226b-474f-b2fe-53c41ade3a9d",
+          "claim_id": "CLM-ae03487f",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -175,14 +351,61 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Uploaded documents were classified from their extracted evidence.",
+          "reason_code": null
         },
         {
-          "trace_id": "e7266993-ba43-4474-ad0d-21008452b9c5",
-          "claim_id": "CLM-6674f095",
+          "trace_id": "6e9e0cf2-039a-4b5f-b377-fa4b6a672cd5",
+          "claim_id": "CLM-ae03487f",
+          "step": "DOCUMENT_EXTRACTION",
+          "component": "DocumentExtractor",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": [
+            {
+              "file_id": "F003",
+              "document_type": "PRESCRIPTION",
+              "extracted": {},
+              "confidence": "0.95"
+            },
+            {
+              "file_id": "F004",
+              "document_type": "PHARMACY_BILL",
+              "extracted": {},
+              "confidence": "0.30"
+            }
+          ],
+          "evidence": null,
+          "error": null,
+          "summary": "Structured claim fields were extracted from the uploaded documents.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "7b63ff42-5f0b-4f6a-9325-d972f1b054d2",
+          "claim_id": "CLM-ae03487f",
+          "step": "DOCUMENT_QUALITY",
+          "component": "DocumentVerifier",
+          "status": "ERROR",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "unreadable": [
+              "F004"
+            ]
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document readability was checked before adjudication.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "df1ad5a2-98a2-44fd-8651-e149ca86465b",
+          "claim_id": "CLM-ae03487f",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
-          "status": "OK",
+          "status": "FAILED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
@@ -205,14 +428,80 @@
             "wrong_type": []
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "re-upload required for unreadable document(s): F004. Claim adjudication was blocked.",
+          "reason_code": "DOCUMENT_VERIFICATION_FAILED"
         },
         {
-          "trace_id": "9bcd19d9-d248-4d3e-bf18-8486bf90d096",
-          "claim_id": "CLM-6674f095",
+          "trace_id": "da3387e0-513a-4eb0-a876-3e4da148f30a",
+          "claim_id": "CLM-ae03487f",
+          "step": "POLICY_EVALUATION",
+          "component": "Workflow",
+          "status": "SKIPPED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": null,
+          "evidence": {
+            "blocked_by": "DOCUMENT_VERIFICATION"
+          },
+          "error": null,
+          "summary": "Policy Evaluation was skipped because document verification failed.",
+          "reason_code": "UPSTREAM_STAGE_FAILED"
+        },
+        {
+          "trace_id": "e6babaef-35d9-48d2-9f6d-c24696a3cb14",
+          "claim_id": "CLM-ae03487f",
+          "step": "FINANCIAL_CALCULATION",
+          "component": "Workflow",
+          "status": "SKIPPED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": null,
+          "evidence": {
+            "blocked_by": "DOCUMENT_VERIFICATION"
+          },
+          "error": null,
+          "summary": "Financial Calculation was skipped because document verification failed.",
+          "reason_code": "UPSTREAM_STAGE_FAILED"
+        },
+        {
+          "trace_id": "6d45122b-4744-4d15-9f56-bcd6e218eeb9",
+          "claim_id": "CLM-ae03487f",
+          "step": "FRAUD_ANALYSIS",
+          "component": "Workflow",
+          "status": "SKIPPED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": null,
+          "evidence": {
+            "blocked_by": "DOCUMENT_VERIFICATION"
+          },
+          "error": null,
+          "summary": "Fraud Analysis was skipped because document verification failed.",
+          "reason_code": "UPSTREAM_STAGE_FAILED"
+        },
+        {
+          "trace_id": "59b6b5da-12fe-4f1e-8a7a-cd0376266273",
+          "claim_id": "CLM-ae03487f",
+          "step": "CONFIDENCE",
+          "component": "Workflow",
+          "status": "SKIPPED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": null,
+          "evidence": {
+            "blocked_by": "DOCUMENT_VERIFICATION"
+          },
+          "error": null,
+          "summary": "Confidence was skipped because document verification failed.",
+          "reason_code": "UPSTREAM_STAGE_FAILED"
+        },
+        {
+          "trace_id": "646796a1-477b-4790-9d15-964260b8bffe",
+          "claim_id": "CLM-ae03487f",
           "step": "DECISION",
           "component": "DecisionEngine",
-          "status": "OK",
+          "status": "BLOCKED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
@@ -220,7 +509,9 @@
             "reason": "re-upload required for unreadable document(s): F004"
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim processing was blocked: re-upload required for unreadable document(s): F004",
+          "reason_code": "DOCUMENT_VERIFICATION_FAILED"
         }
       ]
     },
@@ -241,8 +532,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "9c9e9f8b-b269-4a78-8ee3-7f9c6d32ef91",
-          "claim_id": "CLM-28c97baa",
+          "trace_id": "78e258aa-a48c-4875-810e-f0d90e8ed1fb",
+          "claim_id": "CLM-f27230c1",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -256,11 +547,49 @@
           },
           "safe_output": null,
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim input was checked for the required claim details and document references.",
+          "reason_code": null
         },
         {
-          "trace_id": "a7d839d2-ab50-48d8-aa7e-5198a819063c",
-          "claim_id": "CLM-28c97baa",
+          "trace_id": "bd3e79c4-6849-4a41-a727-5cc50b1a1c6c",
+          "claim_id": "CLM-f27230c1",
+          "step": "MEMBER_RESOLUTION",
+          "component": "MemberResolver",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "member_id": "EMP001",
+            "member_name": "Rajesh Kumar",
+            "member_found": true,
+            "policy_id": "PLUM_GHI_2024",
+            "policy_valid": true,
+            "eligible": true,
+            "dependents": [
+              {
+                "dependent_id": "DEP001",
+                "name": "Sunita Kumar",
+                "relationship": "SPOUSE",
+                "primary_member_id": "EMP001"
+              },
+              {
+                "dependent_id": "DEP002",
+                "name": "Arjun Kumar",
+                "relationship": "CHILD",
+                "primary_member_id": "EMP001"
+              }
+            ],
+            "errors": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Member and policy eligibility were resolved against the authoritative policy roster.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "05b6b455-c0a5-4a12-8fa2-3e13cd52956d",
+          "claim_id": "CLM-f27230c1",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -287,38 +616,13 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Uploaded documents were classified from their extracted evidence.",
+          "reason_code": null
         },
         {
-          "trace_id": "7da74719-1f59-47a4-9c25-382d0c21aef4",
-          "claim_id": "CLM-28c97baa",
-          "step": "DOCUMENT_VERIFICATION",
-          "component": "DocumentVerifier",
-          "status": "OK",
-          "duration_ms": 0,
-          "safe_input": null,
-          "safe_output": {
-            "ok": true,
-            "status": "VERIFIED",
-            "message": "documents verified",
-            "required": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "provided": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "missing": [],
-            "unreadable": [],
-            "wrong_type": []
-          },
-          "evidence": null,
-          "error": null
-        },
-        {
-          "trace_id": "10db5934-ca5c-4060-ad5a-e4b0ed78d25b",
-          "claim_id": "CLM-28c97baa",
+          "trace_id": "22005ab2-0725-4ccd-9627-091270ce3162",
+          "claim_id": "CLM-f27230c1",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -343,45 +647,160 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Structured claim fields were extracted from the uploaded documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "49ec96d1-3ae9-43ca-a285-ed35e51c9725",
-          "claim_id": "CLM-28c97baa",
-          "step": "CROSS_DOCUMENT_CONSISTENCY",
-          "component": "ConsistencyAgent",
+          "trace_id": "35e88abe-7cc8-40b1-b4f9-d3263314ed01",
+          "claim_id": "CLM-f27230c1",
+          "step": "DOCUMENT_QUALITY",
+          "component": "DocumentVerifier",
           "status": "OK",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
-            "ok": false,
-            "message": "patient names mismatch: Arjun Mehta, Rajesh Kumar",
-            "found_names": [
-              "Arjun Mehta",
-              "Rajesh Kumar"
+            "unreadable": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document readability was checked before adjudication.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "f6dcb90a-760c-4055-a791-fe8d10ccbde5",
+          "claim_id": "CLM-f27230c1",
+          "step": "DOCUMENT_VERIFICATION",
+          "component": "DocumentVerifier",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "ok": true,
+            "status": "VERIFIED",
+            "message": "documents verified",
+            "required": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
             ],
+            "provided": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "missing": [],
+            "unreadable": [],
+            "wrong_type": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "All policy-required document types were present and readable.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "1411ad4b-2d65-44ba-b110-1326089d9a47",
+          "claim_id": "CLM-f27230c1",
+          "step": "MEMBER_DOCUMENT_CONSISTENCY",
+          "component": "MemberDocumentConsistencyAgent",
+          "status": "FAILED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "consistent": false,
             "mismatches": [
-              "Arjun Mehta",
-              "Rajesh Kumar"
+              {
+                "field": "patient_name",
+                "document": "Arjun Mehta",
+                "resolved_member": "Rajesh Kumar",
+                "document_patient": "Arjun Mehta",
+                "reason": "Identity mismatch between policy member and document patient"
+              }
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Resolved member Rajesh Kumar does not match document patient Arjun Mehta. Processing was blocked before policy evaluation.",
+          "reason_code": "DOCUMENT_VERIFICATION_FAILED"
         },
         {
-          "trace_id": "ab7ba9ff-00f1-4ebf-bcb7-4696f0719e3b",
-          "claim_id": "CLM-28c97baa",
+          "trace_id": "b614d91c-cc38-4a2e-9315-596f1c65f04d",
+          "claim_id": "CLM-f27230c1",
+          "step": "POLICY_EVALUATION",
+          "component": "Workflow",
+          "status": "SKIPPED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": null,
+          "evidence": {
+            "blocked_by": "MEMBER_DOCUMENT_CONSISTENCY"
+          },
+          "error": null,
+          "summary": "Policy Evaluation was skipped because member document consistency failed.",
+          "reason_code": "UPSTREAM_STAGE_FAILED"
+        },
+        {
+          "trace_id": "8a846d88-16e2-4ccd-99fe-24f8c150a5f1",
+          "claim_id": "CLM-f27230c1",
+          "step": "FINANCIAL_CALCULATION",
+          "component": "Workflow",
+          "status": "SKIPPED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": null,
+          "evidence": {
+            "blocked_by": "MEMBER_DOCUMENT_CONSISTENCY"
+          },
+          "error": null,
+          "summary": "Financial Calculation was skipped because member document consistency failed.",
+          "reason_code": "UPSTREAM_STAGE_FAILED"
+        },
+        {
+          "trace_id": "75e32895-8552-4179-a8c8-db9671fbb310",
+          "claim_id": "CLM-f27230c1",
+          "step": "FRAUD_ANALYSIS",
+          "component": "Workflow",
+          "status": "SKIPPED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": null,
+          "evidence": {
+            "blocked_by": "MEMBER_DOCUMENT_CONSISTENCY"
+          },
+          "error": null,
+          "summary": "Fraud Analysis was skipped because member document consistency failed.",
+          "reason_code": "UPSTREAM_STAGE_FAILED"
+        },
+        {
+          "trace_id": "7edd47b5-e714-4596-ab08-b6f9b086e4b6",
+          "claim_id": "CLM-f27230c1",
+          "step": "CONFIDENCE",
+          "component": "Workflow",
+          "status": "SKIPPED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": null,
+          "evidence": {
+            "blocked_by": "MEMBER_DOCUMENT_CONSISTENCY"
+          },
+          "error": null,
+          "summary": "Confidence was skipped because member document consistency failed.",
+          "reason_code": "UPSTREAM_STAGE_FAILED"
+        },
+        {
+          "trace_id": "dde3b6e8-09cf-4c6b-bb74-0c0b8b256b31",
+          "claim_id": "CLM-f27230c1",
           "step": "DECISION",
           "component": "DecisionEngine",
-          "status": "OK",
+          "status": "BLOCKED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
             "decision": null,
-            "reason": "patient names mismatch: Arjun Mehta, Rajesh Kumar"
+            "reason": "Identity mismatch between policy member and document patient"
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim processing was blocked: Identity mismatch between policy member and document patient",
+          "reason_code": "DOCUMENT_VERIFICATION_FAILED"
         }
       ]
     },
@@ -400,8 +819,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "8c41ce97-7e59-4aba-a91c-3fb5dba7641e",
-          "claim_id": "CLM-b00e6a97",
+          "trace_id": "5d13f901-a42d-4907-88c6-de58ea7c7803",
+          "claim_id": "CLM-eec684a4",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -415,11 +834,49 @@
           },
           "safe_output": null,
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim input was checked for the required claim details and document references.",
+          "reason_code": null
         },
         {
-          "trace_id": "aa68df8d-2665-4b3f-bba3-10666d7f7591",
-          "claim_id": "CLM-b00e6a97",
+          "trace_id": "8281c832-3dbf-4a42-9f14-bca97e7ca09c",
+          "claim_id": "CLM-eec684a4",
+          "step": "MEMBER_RESOLUTION",
+          "component": "MemberResolver",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "member_id": "EMP001",
+            "member_name": "Rajesh Kumar",
+            "member_found": true,
+            "policy_id": "PLUM_GHI_2024",
+            "policy_valid": true,
+            "eligible": true,
+            "dependents": [
+              {
+                "dependent_id": "DEP001",
+                "name": "Sunita Kumar",
+                "relationship": "SPOUSE",
+                "primary_member_id": "EMP001"
+              },
+              {
+                "dependent_id": "DEP002",
+                "name": "Arjun Kumar",
+                "relationship": "CHILD",
+                "primary_member_id": "EMP001"
+              }
+            ],
+            "errors": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Member and policy eligibility were resolved against the authoritative policy roster.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "f416b993-1879-4666-b42d-8d064c8c1c63",
+          "claim_id": "CLM-eec684a4",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -446,38 +903,13 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Uploaded documents were classified from their extracted evidence.",
+          "reason_code": null
         },
         {
-          "trace_id": "7532d1a9-a014-458b-92ec-530e295f9c04",
-          "claim_id": "CLM-b00e6a97",
-          "step": "DOCUMENT_VERIFICATION",
-          "component": "DocumentVerifier",
-          "status": "OK",
-          "duration_ms": 0,
-          "safe_input": null,
-          "safe_output": {
-            "ok": true,
-            "status": "VERIFIED",
-            "message": "documents verified",
-            "required": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "provided": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "missing": [],
-            "unreadable": [],
-            "wrong_type": []
-          },
-          "evidence": null,
-          "error": null
-        },
-        {
-          "trace_id": "ab585f40-bd27-4073-8c5c-9e4ee620e74a",
-          "claim_id": "CLM-b00e6a97",
+          "trace_id": "73479c7a-9422-48e8-a97d-1f7d9ba62593",
+          "claim_id": "CLM-eec684a4",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -527,14 +959,78 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Structured claim fields were extracted from the uploaded documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "1b78cde5-696a-474c-8a5a-dc2d2cf168a6",
-          "claim_id": "CLM-b00e6a97",
+          "trace_id": "8d71cf59-62bf-495b-8c4f-cbc2b81b984e",
+          "claim_id": "CLM-eec684a4",
+          "step": "DOCUMENT_QUALITY",
+          "component": "DocumentVerifier",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "unreadable": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document readability was checked before adjudication.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "3032e138-63c6-4649-a36d-2bcfccb6560b",
+          "claim_id": "CLM-eec684a4",
+          "step": "DOCUMENT_VERIFICATION",
+          "component": "DocumentVerifier",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "ok": true,
+            "status": "VERIFIED",
+            "message": "documents verified",
+            "required": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "provided": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "missing": [],
+            "unreadable": [],
+            "wrong_type": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "All policy-required document types were present and readable.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "5c989094-ed52-4d64-bf09-233964dc9ba9",
+          "claim_id": "CLM-eec684a4",
+          "step": "MEMBER_DOCUMENT_CONSISTENCY",
+          "component": "MemberDocumentConsistencyAgent",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "consistent": true,
+            "mismatches": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document patient identity matches the resolved policy member.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "4d87fe2a-aa50-40c0-a039-7b421e9755b1",
+          "claim_id": "CLM-eec684a4",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
-          "status": "OK",
+          "status": "PASSED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
@@ -546,11 +1042,13 @@
             "mismatches": []
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Patient names, treatment dates, and bill arithmetic are consistent across the submitted documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "e8971e81-7a7b-44a1-b99b-ef0baeb6996f",
-          "claim_id": "CLM-b00e6a97",
+          "trace_id": "25ec7887-a08b-44d4-a9f3-fb6f21d39f78",
+          "claim_id": "CLM-eec684a4",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -618,7 +1116,7 @@
                 "ok": true,
                 "details": {
                   "sub_limit": "2000",
-                  "claimed_amount": "1500"
+                  "status": "UTILISATION_NOT_PROVIDED"
                 }
               },
               {
@@ -627,6 +1125,14 @@
                 "details": {
                   "annual_limit": 50000,
                   "ytd": "5000",
+                  "claimed_amount": "1500"
+                }
+              },
+              {
+                "name": "minimum_claim_amount",
+                "ok": true,
+                "details": {
+                  "minimum": 500,
                   "claimed_amount": "1500"
                 }
               },
@@ -679,11 +1185,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Deterministic policy coverage, limits, exclusions, and pre-authorization rules were evaluated.",
+          "reason_code": null
         },
         {
-          "trace_id": "8ef0bf38-9e9c-40c9-b732-235caae83409",
-          "claim_id": "CLM-b00e6a97",
+          "trace_id": "a647465f-7847-4ec6-90d2-9e97399650a5",
+          "claim_id": "CLM-eec684a4",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -701,11 +1209,13 @@
             }
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Approved amount was calculated deterministically from policy terms.",
+          "reason_code": null
         },
         {
-          "trace_id": "ce19be31-7417-4646-9160-7e0ab2190213",
-          "claim_id": "CLM-b00e6a97",
+          "trace_id": "73f5c1b1-8ea5-4352-9abf-565f38cc2a1f",
+          "claim_id": "CLM-eec684a4",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
           "status": "OK",
@@ -717,11 +1227,13 @@
             "signals": []
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Available claim-history fraud indicators were evaluated.",
+          "reason_code": null
         },
         {
-          "trace_id": "0372cb02-35c5-4987-9672-e83c7de780dd",
-          "claim_id": "CLM-b00e6a97",
+          "trace_id": "6967e541-29f6-4601-ac1a-ebdaa2eaf567",
+          "claim_id": "CLM-eec684a4",
           "step": "CONFIDENCE",
           "component": "ConfidenceEngine",
           "status": "OK",
@@ -737,11 +1249,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Confidence was calculated from completed and degraded components.",
+          "reason_code": null
         },
         {
-          "trace_id": "b9a492d3-1b47-4bd6-bac0-8e14bc3bba20",
-          "claim_id": "CLM-b00e6a97",
+          "trace_id": "c647143f-baf6-47fd-ba12-3bc51e008f06",
+          "claim_id": "CLM-eec684a4",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -755,7 +1269,9 @@
             "confidence_score": "0.90"
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "The final claim processing outcome was recorded.",
+          "reason_code": null
         }
       ]
     },
@@ -777,8 +1293,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "47437b2f-7927-433c-9668-ecc68a43d29b",
-          "claim_id": "CLM-567b55b1",
+          "trace_id": "bee83146-c240-435a-bf00-aeea5f4a9255",
+          "claim_id": "CLM-ef2f60e7",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -792,11 +1308,36 @@
           },
           "safe_output": null,
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim input was checked for the required claim details and document references.",
+          "reason_code": null
         },
         {
-          "trace_id": "0bc0de71-23a9-4f65-ab43-7e3e7e4f73c0",
-          "claim_id": "CLM-567b55b1",
+          "trace_id": "5fda6fd8-618e-4675-bc23-b17c81b19cca",
+          "claim_id": "CLM-ef2f60e7",
+          "step": "MEMBER_RESOLUTION",
+          "component": "MemberResolver",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "member_id": "EMP005",
+            "member_name": "Vikram Joshi",
+            "member_found": true,
+            "policy_id": "PLUM_GHI_2024",
+            "policy_valid": true,
+            "eligible": true,
+            "dependents": [],
+            "errors": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Member and policy eligibility were resolved against the authoritative policy roster.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "cc189fae-4b63-46de-9a96-d65d31f08e25",
+          "claim_id": "CLM-ef2f60e7",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -823,38 +1364,13 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Uploaded documents were classified from their extracted evidence.",
+          "reason_code": null
         },
         {
-          "trace_id": "38161797-cdb1-4706-921d-039cac6f449a",
-          "claim_id": "CLM-567b55b1",
-          "step": "DOCUMENT_VERIFICATION",
-          "component": "DocumentVerifier",
-          "status": "OK",
-          "duration_ms": 0,
-          "safe_input": null,
-          "safe_output": {
-            "ok": true,
-            "status": "VERIFIED",
-            "message": "documents verified",
-            "required": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "provided": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "missing": [],
-            "unreadable": [],
-            "wrong_type": []
-          },
-          "evidence": null,
-          "error": null
-        },
-        {
-          "trace_id": "bce376c0-81bc-4255-8537-cdba3c700bf2",
-          "claim_id": "CLM-567b55b1",
+          "trace_id": "f3849c83-74fa-41fa-ad7f-b709fd900e7b",
+          "claim_id": "CLM-ef2f60e7",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -888,14 +1404,78 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Structured claim fields were extracted from the uploaded documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "e1946377-a79d-4dde-8a6e-d14837959746",
-          "claim_id": "CLM-567b55b1",
+          "trace_id": "201c6ca1-56fb-4e9c-8e66-b698c0ec1005",
+          "claim_id": "CLM-ef2f60e7",
+          "step": "DOCUMENT_QUALITY",
+          "component": "DocumentVerifier",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "unreadable": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document readability was checked before adjudication.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "acb84dfc-90c8-4901-803f-c64b609f2099",
+          "claim_id": "CLM-ef2f60e7",
+          "step": "DOCUMENT_VERIFICATION",
+          "component": "DocumentVerifier",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "ok": true,
+            "status": "VERIFIED",
+            "message": "documents verified",
+            "required": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "provided": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "missing": [],
+            "unreadable": [],
+            "wrong_type": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "All policy-required document types were present and readable.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "d16a5a7f-a54d-475b-b676-84cd5517c09e",
+          "claim_id": "CLM-ef2f60e7",
+          "step": "MEMBER_DOCUMENT_CONSISTENCY",
+          "component": "MemberDocumentConsistencyAgent",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "consistent": true,
+            "mismatches": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document patient identity matches the resolved policy member.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "b81b114e-37aa-45df-97e2-618edc995149",
+          "claim_id": "CLM-ef2f60e7",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
-          "status": "OK",
+          "status": "PASSED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
@@ -907,11 +1487,13 @@
             "mismatches": []
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Patient names, treatment dates, and bill arithmetic are consistent across the submitted documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "91730c77-9f4b-4aa4-89fa-25cc9f491133",
-          "claim_id": "CLM-567b55b1",
+          "trace_id": "0f747f4a-12a8-4a39-bac7-98112a52f8da",
+          "claim_id": "CLM-ef2f60e7",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -976,10 +1558,10 @@
               },
               {
                 "name": "category_sub_limit",
-                "ok": false,
+                "ok": true,
                 "details": {
                   "sub_limit": "2000",
-                  "claimed_amount": "3000"
+                  "status": "UTILISATION_NOT_PROVIDED"
                 }
               },
               {
@@ -988,6 +1570,14 @@
                 "details": {
                   "annual_limit": 50000,
                   "ytd": "0",
+                  "claimed_amount": "3000"
+                }
+              },
+              {
+                "name": "minimum_claim_amount",
+                "ok": true,
+                "details": {
+                  "minimum": 500,
                   "claimed_amount": "3000"
                 }
               },
@@ -1046,11 +1636,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Deterministic policy coverage, limits, exclusions, and pre-authorization rules were evaluated.",
+          "reason_code": null
         },
         {
-          "trace_id": "767e8c13-9995-4b10-bafa-0477812ee90d",
-          "claim_id": "CLM-567b55b1",
+          "trace_id": "8fa1ef55-26a0-49b6-8e27-024fe681a7e5",
+          "claim_id": "CLM-ef2f60e7",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -1061,7 +1653,9 @@
             "reason": "WAITING_PERIOD"
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "The final claim processing outcome was recorded.",
+          "reason_code": null
         }
       ]
     },
@@ -1082,8 +1676,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "6554b3e8-7856-4420-bd5f-ae87c94dfc04",
-          "claim_id": "CLM-5f9567a5",
+          "trace_id": "bf81544e-4ae3-4135-9bfe-995a349fbaa6",
+          "claim_id": "CLM-1793021e",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -1097,11 +1691,36 @@
           },
           "safe_output": null,
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim input was checked for the required claim details and document references.",
+          "reason_code": null
         },
         {
-          "trace_id": "61a558f9-0444-46c3-9162-795dc38daaa5",
-          "claim_id": "CLM-5f9567a5",
+          "trace_id": "32f0f79e-a8f3-44df-b6a7-3e3225bf766b",
+          "claim_id": "CLM-1793021e",
+          "step": "MEMBER_RESOLUTION",
+          "component": "MemberResolver",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "member_id": "EMP002",
+            "member_name": "Priya Singh",
+            "member_found": true,
+            "policy_id": "PLUM_GHI_2024",
+            "policy_valid": true,
+            "eligible": true,
+            "dependents": [],
+            "errors": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Member and policy eligibility were resolved against the authoritative policy roster.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "fb68d35f-6aad-45b8-941e-8023d520386d",
+          "claim_id": "CLM-1793021e",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -1119,36 +1738,13 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Uploaded documents were classified from their extracted evidence.",
+          "reason_code": null
         },
         {
-          "trace_id": "301ef9d3-f7c2-48ee-afac-bdfb082bd61c",
-          "claim_id": "CLM-5f9567a5",
-          "step": "DOCUMENT_VERIFICATION",
-          "component": "DocumentVerifier",
-          "status": "OK",
-          "duration_ms": 0,
-          "safe_input": null,
-          "safe_output": {
-            "ok": true,
-            "status": "VERIFIED",
-            "message": "documents verified",
-            "required": [
-              "HOSPITAL_BILL"
-            ],
-            "provided": [
-              "HOSPITAL_BILL"
-            ],
-            "missing": [],
-            "unreadable": [],
-            "wrong_type": []
-          },
-          "evidence": null,
-          "error": null
-        },
-        {
-          "trace_id": "2f218f8c-d27f-47d0-badd-7edb0f348b1e",
-          "claim_id": "CLM-5f9567a5",
+          "trace_id": "5c570cb4-bbcd-4b3b-b9c6-e5a5d7616bf7",
+          "claim_id": "CLM-1793021e",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -1177,14 +1773,76 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Structured claim fields were extracted from the uploaded documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "2cbfd6d4-d792-439b-be82-00c377012b02",
-          "claim_id": "CLM-5f9567a5",
+          "trace_id": "a5960774-d848-4432-8e3a-44fae873cfeb",
+          "claim_id": "CLM-1793021e",
+          "step": "DOCUMENT_QUALITY",
+          "component": "DocumentVerifier",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "unreadable": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document readability was checked before adjudication.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "6370341e-1d6a-46d1-9237-d14b10667c92",
+          "claim_id": "CLM-1793021e",
+          "step": "DOCUMENT_VERIFICATION",
+          "component": "DocumentVerifier",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "ok": true,
+            "status": "VERIFIED",
+            "message": "documents verified",
+            "required": [
+              "HOSPITAL_BILL"
+            ],
+            "provided": [
+              "HOSPITAL_BILL"
+            ],
+            "missing": [],
+            "unreadable": [],
+            "wrong_type": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "All policy-required document types were present and readable.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "ad7273a4-dee5-41b0-9a40-bc92ddff6caf",
+          "claim_id": "CLM-1793021e",
+          "step": "MEMBER_DOCUMENT_CONSISTENCY",
+          "component": "MemberDocumentConsistencyAgent",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "consistent": true,
+            "mismatches": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document patient identity matches the resolved policy member.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "afff24b7-8a75-4296-8b0e-3ee7fa6f6c54",
+          "claim_id": "CLM-1793021e",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
-          "status": "OK",
+          "status": "PASSED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
@@ -1196,11 +1854,13 @@
             "mismatches": []
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Patient names, treatment dates, and bill arithmetic are consistent across the submitted documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "3dbe9cd9-7be1-4ff0-b217-ea082294f250",
-          "claim_id": "CLM-5f9567a5",
+          "trace_id": "87c03d6f-708f-419a-a995-570ccf6e8148",
+          "claim_id": "CLM-1793021e",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -1278,10 +1938,10 @@
               },
               {
                 "name": "category_sub_limit",
-                "ok": false,
+                "ok": true,
                 "details": {
                   "sub_limit": "10000",
-                  "claimed_amount": "12000"
+                  "status": "UTILISATION_NOT_PROVIDED"
                 }
               },
               {
@@ -1290,6 +1950,14 @@
                 "details": {
                   "annual_limit": 50000,
                   "ytd": "0",
+                  "claimed_amount": "12000"
+                }
+              },
+              {
+                "name": "minimum_claim_amount",
+                "ok": true,
+                "details": {
+                  "minimum": 500,
                   "claimed_amount": "12000"
                 }
               },
@@ -1342,11 +2010,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Deterministic policy coverage, limits, exclusions, and pre-authorization rules were evaluated.",
+          "reason_code": null
         },
         {
-          "trace_id": "3fce6fa7-02b7-4d4a-895d-db764513ee80",
-          "claim_id": "CLM-5f9567a5",
+          "trace_id": "91e8f7f6-e0d0-4cc6-b393-7f5252fb1b67",
+          "claim_id": "CLM-1793021e",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -1365,15 +2035,33 @@
                 "orthodontic treatment (braces)",
                 "teeth whitening",
                 "veneers"
+              ],
+              "line_items": [
+                {
+                  "description": "Root Canal Treatment",
+                  "claimed_amount": "8000",
+                  "eligible": true,
+                  "approved_amount": "8000",
+                  "reason": "Covered by policy"
+                },
+                {
+                  "description": "Teeth Whitening",
+                  "claimed_amount": "4000",
+                  "eligible": false,
+                  "approved_amount": "0",
+                  "reason": "Policy exclusion"
+                }
               ]
             }
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Approved amount was calculated deterministically from policy terms.",
+          "reason_code": null
         },
         {
-          "trace_id": "cc98ccd5-6c18-4bcd-bcbb-a32aeba48dcb",
-          "claim_id": "CLM-5f9567a5",
+          "trace_id": "fd63fb09-ff3a-47d7-b96b-612651d294d1",
+          "claim_id": "CLM-1793021e",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
           "status": "OK",
@@ -1385,11 +2073,13 @@
             "signals": []
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Available claim-history fraud indicators were evaluated.",
+          "reason_code": null
         },
         {
-          "trace_id": "cf6fb783-b936-4939-9ee3-07ce3714b8ab",
-          "claim_id": "CLM-5f9567a5",
+          "trace_id": "3441269c-fe16-4ea0-b9d6-dfe59b736c70",
+          "claim_id": "CLM-1793021e",
           "step": "CONFIDENCE",
           "component": "ConfidenceEngine",
           "status": "OK",
@@ -1405,11 +2095,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Confidence was calculated from completed and degraded components.",
+          "reason_code": null
         },
         {
-          "trace_id": "73cf864e-49be-43c0-9330-bc4486241229",
-          "claim_id": "CLM-5f9567a5",
+          "trace_id": "694817e1-16e4-4baf-9913-c9c919b79019",
+          "claim_id": "CLM-1793021e",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -1423,7 +2115,9 @@
             "confidence_score": "0.90"
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "The final claim processing outcome was recorded.",
+          "reason_code": null
         }
       ]
     },
@@ -1446,8 +2140,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "5c266b71-f061-443b-a555-1367ab40900c",
-          "claim_id": "CLM-a9ee2684",
+          "trace_id": "7687ac8f-beb4-4cec-b53e-c7612f4450ff",
+          "claim_id": "CLM-c8b71ae9",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -1461,11 +2155,36 @@
           },
           "safe_output": null,
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim input was checked for the required claim details and document references.",
+          "reason_code": null
         },
         {
-          "trace_id": "dca5af66-dbad-4802-bd08-1aa90da8918b",
-          "claim_id": "CLM-a9ee2684",
+          "trace_id": "fa987fc0-e049-4459-8144-dc77e0f21ef2",
+          "claim_id": "CLM-c8b71ae9",
+          "step": "MEMBER_RESOLUTION",
+          "component": "MemberResolver",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "member_id": "EMP007",
+            "member_name": "Suresh Patil",
+            "member_found": true,
+            "policy_id": "PLUM_GHI_2024",
+            "policy_valid": true,
+            "eligible": true,
+            "dependents": [],
+            "errors": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Member and policy eligibility were resolved against the authoritative policy roster.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "63eaeb36-f043-486a-9e02-e0cd02e2f38e",
+          "claim_id": "CLM-c8b71ae9",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -1501,40 +2220,13 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Uploaded documents were classified from their extracted evidence.",
+          "reason_code": null
         },
         {
-          "trace_id": "d07ca165-e2e5-4dd3-9854-53355e75aa36",
-          "claim_id": "CLM-a9ee2684",
-          "step": "DOCUMENT_VERIFICATION",
-          "component": "DocumentVerifier",
-          "status": "OK",
-          "duration_ms": 0,
-          "safe_input": null,
-          "safe_output": {
-            "ok": true,
-            "status": "VERIFIED",
-            "message": "documents verified",
-            "required": [
-              "PRESCRIPTION",
-              "LAB_REPORT",
-              "HOSPITAL_BILL"
-            ],
-            "provided": [
-              "PRESCRIPTION",
-              "LAB_REPORT",
-              "HOSPITAL_BILL"
-            ],
-            "missing": [],
-            "unreadable": [],
-            "wrong_type": []
-          },
-          "evidence": null,
-          "error": null
-        },
-        {
-          "trace_id": "ee7dc475-e1ff-4dd8-acf8-6aab4f0b3def",
-          "claim_id": "CLM-a9ee2684",
+          "trace_id": "8b4916dc-e503-4362-8ad6-a34cabc2b4b7",
+          "claim_id": "CLM-c8b71ae9",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -1578,14 +2270,80 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Structured claim fields were extracted from the uploaded documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "b880c279-9089-4d72-8786-5bde8def03ea",
-          "claim_id": "CLM-a9ee2684",
+          "trace_id": "898b957b-f923-4e23-80ff-8bf5f99c49ca",
+          "claim_id": "CLM-c8b71ae9",
+          "step": "DOCUMENT_QUALITY",
+          "component": "DocumentVerifier",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "unreadable": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document readability was checked before adjudication.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "25bc7b4a-4bd9-44c7-9055-1f63c221027b",
+          "claim_id": "CLM-c8b71ae9",
+          "step": "DOCUMENT_VERIFICATION",
+          "component": "DocumentVerifier",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "ok": true,
+            "status": "VERIFIED",
+            "message": "documents verified",
+            "required": [
+              "PRESCRIPTION",
+              "LAB_REPORT",
+              "HOSPITAL_BILL"
+            ],
+            "provided": [
+              "PRESCRIPTION",
+              "LAB_REPORT",
+              "HOSPITAL_BILL"
+            ],
+            "missing": [],
+            "unreadable": [],
+            "wrong_type": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "All policy-required document types were present and readable.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "ee2d9cf1-d711-4555-a786-f2ced5b6dfdf",
+          "claim_id": "CLM-c8b71ae9",
+          "step": "MEMBER_DOCUMENT_CONSISTENCY",
+          "component": "MemberDocumentConsistencyAgent",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "consistent": true,
+            "mismatches": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document patient identity matches the resolved policy member.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "d821700b-8083-4d1f-a11a-12e3234f1bc3",
+          "claim_id": "CLM-c8b71ae9",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
-          "status": "OK",
+          "status": "PASSED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
@@ -1595,11 +2353,13 @@
             "mismatches": []
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Patient names, treatment dates, and bill arithmetic are consistent across the submitted documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "ed31af48-8951-4f59-8a2b-5d0059921859",
-          "claim_id": "CLM-a9ee2684",
+          "trace_id": "909c049e-5227-4227-85b2-1e3eda6fc5a5",
+          "claim_id": "CLM-c8b71ae9",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -1672,10 +2432,10 @@
               },
               {
                 "name": "category_sub_limit",
-                "ok": false,
+                "ok": true,
                 "details": {
                   "sub_limit": "10000",
-                  "claimed_amount": "15000"
+                  "status": "UTILISATION_NOT_PROVIDED"
                 }
               },
               {
@@ -1684,6 +2444,14 @@
                 "details": {
                   "annual_limit": 50000,
                   "ytd": "0",
+                  "claimed_amount": "15000"
+                }
+              },
+              {
+                "name": "minimum_claim_amount",
+                "ok": true,
+                "details": {
+                  "minimum": 500,
                   "claimed_amount": "15000"
                 }
               },
@@ -1746,11 +2514,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Deterministic policy coverage, limits, exclusions, and pre-authorization rules were evaluated.",
+          "reason_code": null
         },
         {
-          "trace_id": "3a6c166d-ac94-4ef5-8039-3956825054ce",
-          "claim_id": "CLM-a9ee2684",
+          "trace_id": "20dea8fd-df8d-47f3-84fa-9436a822cbff",
+          "claim_id": "CLM-c8b71ae9",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -1761,7 +2531,9 @@
             "reason": "WAITING_PERIOD"
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "The final claim processing outcome was recorded.",
+          "reason_code": null
         }
       ]
     },
@@ -1783,8 +2555,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "a806240f-bc31-47c6-8e78-d868a580a302",
-          "claim_id": "CLM-b4b3ba9b",
+          "trace_id": "3ebf98d5-27d6-4b14-b0da-b1c4ddf68a7a",
+          "claim_id": "CLM-9f3c249d",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -1798,11 +2570,36 @@
           },
           "safe_output": null,
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim input was checked for the required claim details and document references.",
+          "reason_code": null
         },
         {
-          "trace_id": "38883457-be0f-4d0c-92cf-de2ce735e5a9",
-          "claim_id": "CLM-b4b3ba9b",
+          "trace_id": "4d475ed4-0101-4d87-9e4d-663c7718ddd9",
+          "claim_id": "CLM-9f3c249d",
+          "step": "MEMBER_RESOLUTION",
+          "component": "MemberResolver",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "member_id": "EMP003",
+            "member_name": "Amit Verma",
+            "member_found": true,
+            "policy_id": "PLUM_GHI_2024",
+            "policy_valid": true,
+            "eligible": true,
+            "dependents": [],
+            "errors": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Member and policy eligibility were resolved against the authoritative policy roster.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "140cd60c-d4fe-470c-9161-fab051b12d75",
+          "claim_id": "CLM-9f3c249d",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -1829,38 +2626,13 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Uploaded documents were classified from their extracted evidence.",
+          "reason_code": null
         },
         {
-          "trace_id": "427aa9ac-867a-4f84-b2fd-e38bda0667a9",
-          "claim_id": "CLM-b4b3ba9b",
-          "step": "DOCUMENT_VERIFICATION",
-          "component": "DocumentVerifier",
-          "status": "OK",
-          "duration_ms": 0,
-          "safe_input": null,
-          "safe_output": {
-            "ok": true,
-            "status": "VERIFIED",
-            "message": "documents verified",
-            "required": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "provided": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "missing": [],
-            "unreadable": [],
-            "wrong_type": []
-          },
-          "evidence": null,
-          "error": null
-        },
-        {
-          "trace_id": "c55abe4f-2be0-4149-92a7-b0c194197a67",
-          "claim_id": "CLM-b4b3ba9b",
+          "trace_id": "17c660d5-841f-4771-b0d0-c390b2412e4f",
+          "claim_id": "CLM-9f3c249d",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -1902,14 +2674,78 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Structured claim fields were extracted from the uploaded documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "fc204458-adc6-4253-af92-30d74b2e9c0d",
-          "claim_id": "CLM-b4b3ba9b",
+          "trace_id": "ad55c33b-c046-4bdd-a75a-2e92fdb0c125",
+          "claim_id": "CLM-9f3c249d",
+          "step": "DOCUMENT_QUALITY",
+          "component": "DocumentVerifier",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "unreadable": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document readability was checked before adjudication.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "84d9b442-7241-462e-a4ce-980c8c5f443c",
+          "claim_id": "CLM-9f3c249d",
+          "step": "DOCUMENT_VERIFICATION",
+          "component": "DocumentVerifier",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "ok": true,
+            "status": "VERIFIED",
+            "message": "documents verified",
+            "required": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "provided": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "missing": [],
+            "unreadable": [],
+            "wrong_type": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "All policy-required document types were present and readable.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "39a3efe9-320b-4d22-aff0-ed51071c647e",
+          "claim_id": "CLM-9f3c249d",
+          "step": "MEMBER_DOCUMENT_CONSISTENCY",
+          "component": "MemberDocumentConsistencyAgent",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "consistent": true,
+            "mismatches": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document patient identity matches the resolved policy member.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "7754f188-d53f-406c-9892-7477b5e9c857",
+          "claim_id": "CLM-9f3c249d",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
-          "status": "OK",
+          "status": "PASSED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
@@ -1919,11 +2755,13 @@
             "mismatches": []
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Patient names, treatment dates, and bill arithmetic are consistent across the submitted documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "2dacf007-f572-473f-814e-70c388c0a6eb",
-          "claim_id": "CLM-b4b3ba9b",
+          "trace_id": "9e92e08f-a634-46d6-9de7-c793940bcacd",
+          "claim_id": "CLM-9f3c249d",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -1988,10 +2826,10 @@
               },
               {
                 "name": "category_sub_limit",
-                "ok": false,
+                "ok": true,
                 "details": {
                   "sub_limit": "2000",
-                  "claimed_amount": "7500"
+                  "status": "UTILISATION_NOT_PROVIDED"
                 }
               },
               {
@@ -2000,6 +2838,14 @@
                 "details": {
                   "annual_limit": 50000,
                   "ytd": "10000",
+                  "claimed_amount": "7500"
+                }
+              },
+              {
+                "name": "minimum_claim_amount",
+                "ok": true,
+                "details": {
+                  "minimum": 500,
                   "claimed_amount": "7500"
                 }
               },
@@ -2050,11 +2896,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Deterministic policy coverage, limits, exclusions, and pre-authorization rules were evaluated.",
+          "reason_code": null
         },
         {
-          "trace_id": "9bb8716c-f6a5-42f3-83b4-d5a0b518d95d",
-          "claim_id": "CLM-b4b3ba9b",
+          "trace_id": "30c341cb-d223-4dca-ab85-dc99c4838056",
+          "claim_id": "CLM-9f3c249d",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -2065,7 +2913,9 @@
             "reason": "PER_CLAIM_EXCEEDED"
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "The final claim processing outcome was recorded.",
+          "reason_code": null
         }
       ]
     },
@@ -2086,8 +2936,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "dfd73065-e03e-4ae7-832c-ada60f32737b",
-          "claim_id": "CLM-b61e2dc1",
+          "trace_id": "e701a091-9654-4269-a2a6-c7fc9eb7e250",
+          "claim_id": "CLM-0e56e03f",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -2101,11 +2951,36 @@
           },
           "safe_output": null,
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim input was checked for the required claim details and document references.",
+          "reason_code": null
         },
         {
-          "trace_id": "6bac69af-c84b-4ed1-aff9-ca8bd0fd8484",
-          "claim_id": "CLM-b61e2dc1",
+          "trace_id": "d5baa89f-675d-4e7a-b0cd-698b5cc39bc8",
+          "claim_id": "CLM-0e56e03f",
+          "step": "MEMBER_RESOLUTION",
+          "component": "MemberResolver",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "member_id": "EMP008",
+            "member_name": "Ravi Menon",
+            "member_found": true,
+            "policy_id": "PLUM_GHI_2024",
+            "policy_valid": true,
+            "eligible": true,
+            "dependents": [],
+            "errors": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Member and policy eligibility were resolved against the authoritative policy roster.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "477be5bb-7f86-4ad0-aa84-990ac3a0cfaa",
+          "claim_id": "CLM-0e56e03f",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -2132,38 +3007,13 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Uploaded documents were classified from their extracted evidence.",
+          "reason_code": null
         },
         {
-          "trace_id": "a513cb5a-746e-4610-a8d1-8162ed339158",
-          "claim_id": "CLM-b61e2dc1",
-          "step": "DOCUMENT_VERIFICATION",
-          "component": "DocumentVerifier",
-          "status": "OK",
-          "duration_ms": 0,
-          "safe_input": null,
-          "safe_output": {
-            "ok": true,
-            "status": "VERIFIED",
-            "message": "documents verified",
-            "required": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "provided": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "missing": [],
-            "unreadable": [],
-            "wrong_type": []
-          },
-          "evidence": null,
-          "error": null
-        },
-        {
-          "trace_id": "a0043877-bca5-4de9-acd7-81f626a80353",
-          "claim_id": "CLM-b61e2dc1",
+          "trace_id": "a2670103-5c09-45d1-aa34-4405e8b382a6",
+          "claim_id": "CLM-0e56e03f",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -2189,14 +3039,78 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Structured claim fields were extracted from the uploaded documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "60e36e95-983c-494e-a89d-fbdee09c888d",
-          "claim_id": "CLM-b61e2dc1",
+          "trace_id": "1bb490ce-0ab6-41ef-a8c4-d8195b8586cd",
+          "claim_id": "CLM-0e56e03f",
+          "step": "DOCUMENT_QUALITY",
+          "component": "DocumentVerifier",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "unreadable": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document readability was checked before adjudication.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "212d4a4e-cbac-487a-a680-42901339ae8c",
+          "claim_id": "CLM-0e56e03f",
+          "step": "DOCUMENT_VERIFICATION",
+          "component": "DocumentVerifier",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "ok": true,
+            "status": "VERIFIED",
+            "message": "documents verified",
+            "required": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "provided": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "missing": [],
+            "unreadable": [],
+            "wrong_type": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "All policy-required document types were present and readable.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "4c0c2760-a522-41c9-bea4-702e7cc3017c",
+          "claim_id": "CLM-0e56e03f",
+          "step": "MEMBER_DOCUMENT_CONSISTENCY",
+          "component": "MemberDocumentConsistencyAgent",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "consistent": true,
+            "mismatches": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document patient identity matches the resolved policy member.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "a5a60787-54fc-47c4-9d76-385861378fdc",
+          "claim_id": "CLM-0e56e03f",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
-          "status": "OK",
+          "status": "PASSED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
@@ -2206,11 +3120,13 @@
             "mismatches": []
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Patient names, treatment dates, and bill arithmetic are consistent across the submitted documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "1bf4a366-9520-4b81-bf1e-d4b10d7beaec",
-          "claim_id": "CLM-b61e2dc1",
+          "trace_id": "e46e69c7-a628-4062-9a05-61e0d4b4454b",
+          "claim_id": "CLM-0e56e03f",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -2275,10 +3191,10 @@
               },
               {
                 "name": "category_sub_limit",
-                "ok": false,
+                "ok": true,
                 "details": {
                   "sub_limit": "2000",
-                  "claimed_amount": "4800"
+                  "status": "UTILISATION_NOT_PROVIDED"
                 }
               },
               {
@@ -2287,6 +3203,14 @@
                 "details": {
                   "annual_limit": 50000,
                   "ytd": "0",
+                  "claimed_amount": "4800"
+                }
+              },
+              {
+                "name": "minimum_claim_amount",
+                "ok": true,
+                "details": {
+                  "minimum": 500,
                   "claimed_amount": "4800"
                 }
               },
@@ -2342,11 +3266,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Deterministic policy coverage, limits, exclusions, and pre-authorization rules were evaluated.",
+          "reason_code": null
         },
         {
-          "trace_id": "b81f404a-7eb3-41a2-ac8c-12e5b0cc3a55",
-          "claim_id": "CLM-b61e2dc1",
+          "trace_id": "bb5bfc57-8297-4ddd-880e-bf140a3b77f8",
+          "claim_id": "CLM-0e56e03f",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -2364,11 +3290,13 @@
             }
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Approved amount was calculated deterministically from policy terms.",
+          "reason_code": null
         },
         {
-          "trace_id": "96c27ee7-65d0-42fc-ad88-e6d2a03f5901",
-          "claim_id": "CLM-b61e2dc1",
+          "trace_id": "80f3d484-c5d7-45a4-988f-575c8a3274cd",
+          "claim_id": "CLM-0e56e03f",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
           "status": "OK",
@@ -2385,11 +3313,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Available claim-history fraud indicators were evaluated.",
+          "reason_code": null
         },
         {
-          "trace_id": "028bd416-4cb4-4f19-8beb-c8531ede63f5",
-          "claim_id": "CLM-b61e2dc1",
+          "trace_id": "9fdfcfc7-faad-4e2a-b5ef-d6d6dfe5803a",
+          "claim_id": "CLM-0e56e03f",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -2400,7 +3330,9 @@
             "reason": "same_day_claims"
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "The final claim processing outcome was recorded.",
+          "reason_code": null
         }
       ]
     },
@@ -2422,8 +3354,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "d45bef9e-0634-4155-b71a-1e8596ea0046",
-          "claim_id": "CLM-8375e252",
+          "trace_id": "5e0d674f-4e08-4514-9f24-2c6910e8552e",
+          "claim_id": "CLM-98c2b3d2",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -2437,11 +3369,36 @@
           },
           "safe_output": null,
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim input was checked for the required claim details and document references.",
+          "reason_code": null
         },
         {
-          "trace_id": "136236b8-4e2e-4e2a-a9e1-6fec6a3deb23",
-          "claim_id": "CLM-8375e252",
+          "trace_id": "28f5146e-dab9-4dc4-8995-af7c295e3e67",
+          "claim_id": "CLM-98c2b3d2",
+          "step": "MEMBER_RESOLUTION",
+          "component": "MemberResolver",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "member_id": "EMP010",
+            "member_name": "Deepak Shah",
+            "member_found": true,
+            "policy_id": "PLUM_GHI_2024",
+            "policy_valid": true,
+            "eligible": true,
+            "dependents": [],
+            "errors": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Member and policy eligibility were resolved against the authoritative policy roster.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "b2239f77-228e-4b98-806d-01deb09658c7",
+          "claim_id": "CLM-98c2b3d2",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -2468,38 +3425,13 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Uploaded documents were classified from their extracted evidence.",
+          "reason_code": null
         },
         {
-          "trace_id": "d39de433-5b05-4f1d-b8a1-2be2f0cb0924",
-          "claim_id": "CLM-8375e252",
-          "step": "DOCUMENT_VERIFICATION",
-          "component": "DocumentVerifier",
-          "status": "OK",
-          "duration_ms": 0,
-          "safe_input": null,
-          "safe_output": {
-            "ok": true,
-            "status": "VERIFIED",
-            "message": "documents verified",
-            "required": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "provided": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "missing": [],
-            "unreadable": [],
-            "wrong_type": []
-          },
-          "evidence": null,
-          "error": null
-        },
-        {
-          "trace_id": "c67a3869-9836-40de-be67-b3ea6cf08ed4",
-          "claim_id": "CLM-8375e252",
+          "trace_id": "d8a610e2-5fbf-46ee-ada7-c6226b0cb36b",
+          "claim_id": "CLM-98c2b3d2",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -2543,14 +3475,78 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Structured claim fields were extracted from the uploaded documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "bf3feabd-a48a-43b1-8fb6-bf0adec71bc0",
-          "claim_id": "CLM-8375e252",
+          "trace_id": "23f8e276-e3b4-499c-b984-f52948390bc4",
+          "claim_id": "CLM-98c2b3d2",
+          "step": "DOCUMENT_QUALITY",
+          "component": "DocumentVerifier",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "unreadable": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document readability was checked before adjudication.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "7f85c2c9-4972-42cb-b1cb-caad2fde1520",
+          "claim_id": "CLM-98c2b3d2",
+          "step": "DOCUMENT_VERIFICATION",
+          "component": "DocumentVerifier",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "ok": true,
+            "status": "VERIFIED",
+            "message": "documents verified",
+            "required": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "provided": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "missing": [],
+            "unreadable": [],
+            "wrong_type": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "All policy-required document types were present and readable.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "43e91330-1f63-4de5-94e2-70c4a0be2b44",
+          "claim_id": "CLM-98c2b3d2",
+          "step": "MEMBER_DOCUMENT_CONSISTENCY",
+          "component": "MemberDocumentConsistencyAgent",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "consistent": true,
+            "mismatches": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document patient identity matches the resolved policy member.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "8d3f5429-b127-49d6-babf-b0ea279be58f",
+          "claim_id": "CLM-98c2b3d2",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
-          "status": "OK",
+          "status": "PASSED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
@@ -2562,11 +3558,13 @@
             "mismatches": []
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Patient names, treatment dates, and bill arithmetic are consistent across the submitted documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "7e72efcc-e829-4ff1-866c-71f3c91c2490",
-          "claim_id": "CLM-8375e252",
+          "trace_id": "de6c96ad-f3c4-4468-b49b-6efd2a2cd453",
+          "claim_id": "CLM-98c2b3d2",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -2631,10 +3629,10 @@
               },
               {
                 "name": "category_sub_limit",
-                "ok": false,
+                "ok": true,
                 "details": {
                   "sub_limit": "2000",
-                  "claimed_amount": "4500"
+                  "status": "UTILISATION_NOT_PROVIDED"
                 }
               },
               {
@@ -2643,6 +3641,14 @@
                 "details": {
                   "annual_limit": 50000,
                   "ytd": "8000",
+                  "claimed_amount": "4500"
+                }
+              },
+              {
+                "name": "minimum_claim_amount",
+                "ok": true,
+                "details": {
+                  "minimum": 500,
                   "claimed_amount": "4500"
                 }
               },
@@ -2695,11 +3701,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Deterministic policy coverage, limits, exclusions, and pre-authorization rules were evaluated.",
+          "reason_code": null
         },
         {
-          "trace_id": "f80a989d-89af-420a-bde3-c8a6341a4d9e",
-          "claim_id": "CLM-8375e252",
+          "trace_id": "6ce551fa-9524-4760-8263-ddbb5d03abca",
+          "claim_id": "CLM-98c2b3d2",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -2717,11 +3725,13 @@
             }
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Approved amount was calculated deterministically from policy terms.",
+          "reason_code": null
         },
         {
-          "trace_id": "a0b0face-e859-4f90-9439-f99a87f40f79",
-          "claim_id": "CLM-8375e252",
+          "trace_id": "1bcf97fb-e420-4325-ae43-500feeb362f2",
+          "claim_id": "CLM-98c2b3d2",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
           "status": "OK",
@@ -2733,11 +3743,13 @@
             "signals": []
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Available claim-history fraud indicators were evaluated.",
+          "reason_code": null
         },
         {
-          "trace_id": "9f4c9322-7e46-4ccb-8630-b96990bd57a2",
-          "claim_id": "CLM-8375e252",
+          "trace_id": "e3f297aa-e820-40d5-9ab4-e480a751e234",
+          "claim_id": "CLM-98c2b3d2",
           "step": "CONFIDENCE",
           "component": "ConfidenceEngine",
           "status": "OK",
@@ -2753,11 +3765,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Confidence was calculated from completed and degraded components.",
+          "reason_code": null
         },
         {
-          "trace_id": "70a79105-53e2-4a1d-8eb5-0a9ca03511cd",
-          "claim_id": "CLM-8375e252",
+          "trace_id": "3a21786c-48ca-42dc-984a-1c2a98615970",
+          "claim_id": "CLM-98c2b3d2",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -2771,7 +3785,9 @@
             "confidence_score": "0.90"
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "The final claim processing outcome was recorded.",
+          "reason_code": null
         }
       ]
     },
@@ -2793,8 +3809,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "474bd78f-a0b0-4354-93b4-2fc3bbbe95ff",
-          "claim_id": "CLM-b8061775",
+          "trace_id": "91610434-ada4-4f59-b563-01a65610d83d",
+          "claim_id": "CLM-f6d7fa9c",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -2808,11 +3824,36 @@
           },
           "safe_output": null,
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim input was checked for the required claim details and document references.",
+          "reason_code": null
         },
         {
-          "trace_id": "6d44cb9b-c6de-4375-a041-4f7b8b3559ac",
-          "claim_id": "CLM-b8061775",
+          "trace_id": "593d5284-d9a9-4b24-8fc5-1c1b6a7e34f2",
+          "claim_id": "CLM-f6d7fa9c",
+          "step": "MEMBER_RESOLUTION",
+          "component": "MemberResolver",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "member_id": "EMP006",
+            "member_name": "Kavita Nair",
+            "member_found": true,
+            "policy_id": "PLUM_GHI_2024",
+            "policy_valid": true,
+            "eligible": true,
+            "dependents": [],
+            "errors": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Member and policy eligibility were resolved against the authoritative policy roster.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "fb67082c-69c5-4cf7-8862-e8abbe7e028c",
+          "claim_id": "CLM-f6d7fa9c",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -2839,38 +3880,13 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Uploaded documents were classified from their extracted evidence.",
+          "reason_code": null
         },
         {
-          "trace_id": "37a366ec-3dd1-41a9-90b4-194ae8dad3e9",
-          "claim_id": "CLM-b8061775",
-          "step": "DOCUMENT_VERIFICATION",
-          "component": "DocumentVerifier",
-          "status": "OK",
-          "duration_ms": 0,
-          "safe_input": null,
-          "safe_output": {
-            "ok": true,
-            "status": "VERIFIED",
-            "message": "documents verified",
-            "required": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "provided": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "missing": [],
-            "unreadable": [],
-            "wrong_type": []
-          },
-          "evidence": null,
-          "error": null
-        },
-        {
-          "trace_id": "4561a834-dba1-4361-93df-f891ffd6aaf0",
-          "claim_id": "CLM-b8061775",
+          "trace_id": "6b9bf415-0f12-4dd3-82d2-78878754233f",
+          "claim_id": "CLM-f6d7fa9c",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -2909,14 +3925,78 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Structured claim fields were extracted from the uploaded documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "841c4fc5-5a02-47fb-891c-16ddbfd788df",
-          "claim_id": "CLM-b8061775",
+          "trace_id": "9b0179de-b6d5-4abe-ad39-40b043e208ec",
+          "claim_id": "CLM-f6d7fa9c",
+          "step": "DOCUMENT_QUALITY",
+          "component": "DocumentVerifier",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "unreadable": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document readability was checked before adjudication.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "4af860a1-6ff8-4473-abf2-f5f48406acc3",
+          "claim_id": "CLM-f6d7fa9c",
+          "step": "DOCUMENT_VERIFICATION",
+          "component": "DocumentVerifier",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "ok": true,
+            "status": "VERIFIED",
+            "message": "documents verified",
+            "required": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "provided": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "missing": [],
+            "unreadable": [],
+            "wrong_type": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "All policy-required document types were present and readable.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "1bb1b6a1-ba82-4852-a409-ccc869816cab",
+          "claim_id": "CLM-f6d7fa9c",
+          "step": "MEMBER_DOCUMENT_CONSISTENCY",
+          "component": "MemberDocumentConsistencyAgent",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "consistent": true,
+            "mismatches": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document patient identity matches the resolved policy member.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "b3ac0964-d031-48d3-bc02-03ff5aaeb354",
+          "claim_id": "CLM-f6d7fa9c",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
-          "status": "OK",
+          "status": "PASSED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
@@ -2926,11 +4006,13 @@
             "mismatches": []
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Patient names, treatment dates, and bill arithmetic are consistent across the submitted documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "36e07f34-97db-450e-b160-2b6a7812d0cb",
-          "claim_id": "CLM-b8061775",
+          "trace_id": "f3eb7216-0319-4fb1-80b6-5887fce58d83",
+          "claim_id": "CLM-f6d7fa9c",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -3005,7 +4087,7 @@
                 "ok": true,
                 "details": {
                   "sub_limit": "8000",
-                  "claimed_amount": "4000"
+                  "status": "UTILISATION_NOT_PROVIDED"
                 }
               },
               {
@@ -3014,6 +4096,14 @@
                 "details": {
                   "annual_limit": 50000,
                   "ytd": "0",
+                  "claimed_amount": "4000"
+                }
+              },
+              {
+                "name": "minimum_claim_amount",
+                "ok": true,
+                "details": {
+                  "minimum": 500,
                   "claimed_amount": "4000"
                 }
               },
@@ -3064,11 +4154,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Deterministic policy coverage, limits, exclusions, and pre-authorization rules were evaluated.",
+          "reason_code": null
         },
         {
-          "trace_id": "1ef0facf-9536-482d-89ec-bb9a0c34db75",
-          "claim_id": "CLM-b8061775",
+          "trace_id": "09939633-a657-4120-9fa7-33ad56574ca8",
+          "claim_id": "CLM-f6d7fa9c",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -3086,19 +4178,21 @@
             }
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Approved amount was calculated deterministically from policy terms.",
+          "reason_code": null
         },
         {
-          "trace_id": "4598af2d-1874-4edb-b8f5-e9f299fc98cd",
-          "claim_id": "CLM-b8061775",
+          "trace_id": "5d2a00e6-f390-4a22-b694-422fd358460c",
+          "claim_id": "CLM-f6d7fa9c",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
-          "status": "OK",
+          "status": "DEGRADED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
-            "ok": true,
-            "manual_review": false,
+            "ok": null,
+            "manual_review": null,
             "signals": [
               {
                 "type": "component_failure",
@@ -3107,11 +4201,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": "component failure simulated \u2014 fraud analysis result is unreliable",
+          "summary": "Available claim-history fraud indicators were evaluated.",
+          "reason_code": null
         },
         {
-          "trace_id": "e0847455-6f67-493f-9a74-7a0e52a5f7f3",
-          "claim_id": "CLM-b8061775",
+          "trace_id": "9f248c73-5cee-4362-a6cb-4294cbcfb2b8",
+          "claim_id": "CLM-f6d7fa9c",
           "step": "CONFIDENCE",
           "component": "ConfidenceEngine",
           "status": "OK",
@@ -3131,11 +4227,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Confidence was calculated from completed and degraded components.",
+          "reason_code": null
         },
         {
-          "trace_id": "3777b5e7-05c2-418f-a295-172794287b66",
-          "claim_id": "CLM-b8061775",
+          "trace_id": "072e3ed9-0bb2-4dfa-a289-2a7eb8f90e76",
+          "claim_id": "CLM-f6d7fa9c",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -3149,7 +4247,9 @@
             "confidence_score": "0.60"
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "The final claim processing outcome was recorded.",
+          "reason_code": null
         }
       ]
     },
@@ -3169,8 +4269,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "ec32187f-6484-435d-8c47-1834dbd37df6",
-          "claim_id": "CLM-fc72fd35",
+          "trace_id": "8016c555-38a4-49ed-a214-91f50f751e8b",
+          "claim_id": "CLM-2c9655ff",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -3184,11 +4284,36 @@
           },
           "safe_output": null,
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Claim input was checked for the required claim details and document references.",
+          "reason_code": null
         },
         {
-          "trace_id": "e50cf809-2d36-40a7-8734-557560bf920f",
-          "claim_id": "CLM-fc72fd35",
+          "trace_id": "dc7abad0-52f1-44fc-be76-7da246fe1fe7",
+          "claim_id": "CLM-2c9655ff",
+          "step": "MEMBER_RESOLUTION",
+          "component": "MemberResolver",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "member_id": "EMP009",
+            "member_name": "Anita Desai",
+            "member_found": true,
+            "policy_id": "PLUM_GHI_2024",
+            "policy_valid": true,
+            "eligible": true,
+            "dependents": [],
+            "errors": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Member and policy eligibility were resolved against the authoritative policy roster.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "a2d074e8-3ed5-435f-bad1-ba1afedcb61d",
+          "claim_id": "CLM-2c9655ff",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -3215,38 +4340,13 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Uploaded documents were classified from their extracted evidence.",
+          "reason_code": null
         },
         {
-          "trace_id": "28eda87c-be95-4e62-9c2f-1370e82e4440",
-          "claim_id": "CLM-fc72fd35",
-          "step": "DOCUMENT_VERIFICATION",
-          "component": "DocumentVerifier",
-          "status": "OK",
-          "duration_ms": 0,
-          "safe_input": null,
-          "safe_output": {
-            "ok": true,
-            "status": "VERIFIED",
-            "message": "documents verified",
-            "required": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "provided": [
-              "PRESCRIPTION",
-              "HOSPITAL_BILL"
-            ],
-            "missing": [],
-            "unreadable": [],
-            "wrong_type": []
-          },
-          "evidence": null,
-          "error": null
-        },
-        {
-          "trace_id": "b7901f8c-dc64-41be-80a8-50f8af712717",
-          "claim_id": "CLM-fc72fd35",
+          "trace_id": "85442edb-30de-47ba-84e5-576efaa0271e",
+          "claim_id": "CLM-2c9655ff",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -3284,14 +4384,78 @@
             }
           ],
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Structured claim fields were extracted from the uploaded documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "ad0eef81-3bd4-44ea-8006-9eaf45a6bc40",
-          "claim_id": "CLM-fc72fd35",
+          "trace_id": "b6ee9e7b-b4b5-4a99-8ae6-87135e1e1213",
+          "claim_id": "CLM-2c9655ff",
+          "step": "DOCUMENT_QUALITY",
+          "component": "DocumentVerifier",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "unreadable": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document readability was checked before adjudication.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "53536257-09ea-4026-a5cd-a1ae7ed9596e",
+          "claim_id": "CLM-2c9655ff",
+          "step": "DOCUMENT_VERIFICATION",
+          "component": "DocumentVerifier",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "ok": true,
+            "status": "VERIFIED",
+            "message": "documents verified",
+            "required": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "provided": [
+              "PRESCRIPTION",
+              "HOSPITAL_BILL"
+            ],
+            "missing": [],
+            "unreadable": [],
+            "wrong_type": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "All policy-required document types were present and readable.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "af41ceeb-d478-4253-8084-2faee1d2150a",
+          "claim_id": "CLM-2c9655ff",
+          "step": "MEMBER_DOCUMENT_CONSISTENCY",
+          "component": "MemberDocumentConsistencyAgent",
+          "status": "PASSED",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "consistent": true,
+            "mismatches": []
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Document patient identity matches the resolved policy member.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "13bf0562-915a-4266-b742-5cc0bcfee31c",
+          "claim_id": "CLM-2c9655ff",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
-          "status": "OK",
+          "status": "PASSED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
@@ -3301,11 +4465,13 @@
             "mismatches": []
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Patient names, treatment dates, and bill arithmetic are consistent across the submitted documents.",
+          "reason_code": null
         },
         {
-          "trace_id": "4c1de70b-bd39-4da0-b1b0-c56f03a30af9",
-          "claim_id": "CLM-fc72fd35",
+          "trace_id": "8a433128-44d0-43a7-b4fc-5bdd8f31e262",
+          "claim_id": "CLM-2c9655ff",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -3370,10 +4536,10 @@
               },
               {
                 "name": "category_sub_limit",
-                "ok": false,
+                "ok": true,
                 "details": {
                   "sub_limit": "2000",
-                  "claimed_amount": "8000"
+                  "status": "UTILISATION_NOT_PROVIDED"
                 }
               },
               {
@@ -3382,6 +4548,14 @@
                 "details": {
                   "annual_limit": 50000,
                   "ytd": "0",
+                  "claimed_amount": "8000"
+                }
+              },
+              {
+                "name": "minimum_claim_amount",
+                "ok": true,
+                "details": {
+                  "minimum": 500,
                   "claimed_amount": "8000"
                 }
               },
@@ -3434,11 +4608,13 @@
             ]
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "Deterministic policy coverage, limits, exclusions, and pre-authorization rules were evaluated.",
+          "reason_code": null
         },
         {
-          "trace_id": "481debe7-1a64-4862-927e-20e992170e1f",
-          "claim_id": "CLM-fc72fd35",
+          "trace_id": "52d5ea69-7b3e-4d84-a9e4-53b096374b3e",
+          "claim_id": "CLM-2c9655ff",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -3449,7 +4625,9 @@
             "reason": "EXCLUDED_CONDITION"
           },
           "evidence": null,
-          "error": null
+          "error": null,
+          "summary": "The final claim processing outcome was recorded.",
+          "reason_code": null
         }
       ]
     }

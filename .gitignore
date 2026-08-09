@@ -1,8 +1,13 @@
 .env
 .env.*
 !.env.example
+.next/
+node_modules/
+frontend/.next/
+frontend/node_modules/
 __pycache__/
 *.pyc
+*.tsbuildinfo
 .pytest_cache/
 .venv/
 venv/

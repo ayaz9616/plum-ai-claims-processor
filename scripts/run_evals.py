@@ -1,6 +1,10 @@
+import os
 import json
 import sys
 from pathlib import Path
+
+# Clear DATABASE_URL so evals run without requiring psycopg
+os.environ["DATABASE_URL"] = ""
 
 # ensure repo root on path
 ROOT = Path(__file__).resolve().parent.parent
