@@ -137,27 +137,8 @@ class PolicyEvaluator:
         minimum_ok = minimum is None or claimed_amount >= Decimal(str(minimum))
         checks.append(RuleResult(name="minimum_claim_amount", ok=minimum_ok, details={"minimum": minimum, "claimed_amount": str(claimed_amount)}))
 
-        # 8b. fraud signals (simple same-day/monthly checks if history provided)
-        fraud_thresholds = self.policy.get("fraud_thresholds", {})
-        fraud_issues = []
-        history = claim.get("claims_history", []) or []
-        if history and treatment_date:
-            same_day = 0
-            for h in history:
-                try:
-                    # prefer simple string equality for robust matching
-                    if str(h.get("date")) == str(treatment_date):
-                        same_day += 1
-                        continue
-                    hd = _parse_date(h.get("date")).date()
-                    td = _parse_date(treatment_date).date()
-                    if hd == td:
-                        same_day += 1
-                except Exception:
-                    continue
-            if same_day >= int(fraud_thresholds.get("same_day_claims_limit", 9999)):
-                fraud_issues.append({"type": "same_day_claims", "count": same_day})
-        checks.append(RuleResult(name="fraud_signals", ok=(len(fraud_issues) == 0), details={"issues": fraud_issues}))
+        # 8b. fraud signals (moved to FraudAnalyzer)
+        checks.append(RuleResult(name="fraud_signals", ok=True, details={"issues": []}))
 
         # 8. waiting periods and specific conditions
         wp = self.policy.get("waiting_periods", {})
@@ -225,11 +206,18 @@ class PolicyEvaluator:
         checks.append(RuleResult(name="pre_authorization", ok=ok, details={"required": pre_auth_required, "reasons": pre_auth_reasons}))
 
         # 11. network hospital lookup
-        network_hospitals = [h.lower() for h in self.policy.get("network_hospitals", [])]
+        network_hospitals = [h.lower().strip() for h in self.policy.get("network_hospitals", [])]
+        
         hospital_name = claim.get("hospital_name")
+        if not hospital_name:
+            for d in claim.get("documents", []):
+                if isinstance(d, dict) and d.get("extracted", {}).get("hospital_name"):
+                    hospital_name = d["extracted"]["hospital_name"]
+                    break
+                    
         is_network = False
         if hospital_name:
-            is_network = any(hospital_name.lower() == n for n in network_hospitals)
+            is_network = any(hospital_name.lower().strip() == n for n in network_hospitals)
         checks.append(RuleResult(name="network_hospital", ok=is_network, details={"hospital": hospital_name, "is_network": is_network}))
 
         # 12. cross-document identity consistency

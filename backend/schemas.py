@@ -121,6 +121,7 @@ class ConsistencyResult(BaseModel):
     review_required: bool = False
 
 
+
 class FinancialCalculationResult(BaseModel):
     approved_amount: Decimal
     decision_hint: str
@@ -131,6 +132,11 @@ class FraudAnalysis(BaseModel):
     ok: bool
     manual_review: bool = False
     signals: List[Dict[str, Any]] = Field(default_factory=list)
+    fraud_score: float = 0.0
+    risk_level: str = "LOW"
+    checks: Dict[str, Any] = Field(default_factory=dict)
+    explanation: str = ""
+    confidence: float = 1.0
 
 
 class ConfidenceResult(BaseModel):

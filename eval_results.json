@@ -25,8 +25,8 @@
       "validation_failures": [],
       "trace_events": [
         {
-          "trace_id": "238c3e68-3125-406b-8096-813fb2429a0b",
-          "claim_id": "CLM-4c61c7b2",
+          "trace_id": "68299929-591a-41f1-ab22-293eee729b39",
+          "claim_id": "CLM-19dd8de5",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -45,8 +45,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "ea9b0d11-8810-4637-aa1c-f9a91861ab97",
-          "claim_id": "CLM-4c61c7b2",
+          "trace_id": "203aca9a-ca24-4c61-a575-f4dfeadceebd",
+          "claim_id": "CLM-19dd8de5",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -81,8 +81,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "cd11e21c-d6c8-44a6-a95f-be139e6dd1ee",
-          "claim_id": "CLM-4c61c7b2",
+          "trace_id": "f7d8cae3-80b3-4041-8c37-b742383aa3fe",
+          "claim_id": "CLM-19dd8de5",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -114,8 +114,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "da9f9d18-5daf-4d34-88d9-fc6a433b7fe9",
-          "claim_id": "CLM-4c61c7b2",
+          "trace_id": "f2ae97fe-234a-4200-b44e-90fd6e935bb2",
+          "claim_id": "CLM-19dd8de5",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "FAILED",
@@ -145,8 +145,8 @@
           "reason_code": "DOCUMENT_VERIFICATION_FAILED"
         },
         {
-          "trace_id": "ac169167-2f5c-46f7-b4b8-cc1c3a698084",
-          "claim_id": "CLM-4c61c7b2",
+          "trace_id": "57118f6e-9771-4471-8934-c54deabf0a8d",
+          "claim_id": "CLM-19dd8de5",
           "step": "POLICY_EVALUATION",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -161,8 +161,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "6b1039c8-ba45-454a-8936-368c124f7a55",
-          "claim_id": "CLM-4c61c7b2",
+          "trace_id": "e726cd68-e247-44a6-aaac-35311a29ef47",
+          "claim_id": "CLM-19dd8de5",
           "step": "FINANCIAL_CALCULATION",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -177,8 +177,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "655242c9-6c60-4064-a177-3fcd5e09fa58",
-          "claim_id": "CLM-4c61c7b2",
+          "trace_id": "8f577520-e1e0-4ab1-a9bc-4dbe477657a3",
+          "claim_id": "CLM-19dd8de5",
           "step": "FRAUD_ANALYSIS",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -193,8 +193,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "53b32e5c-134c-45cd-8661-b933d1fbc3f7",
-          "claim_id": "CLM-4c61c7b2",
+          "trace_id": "fc82c07f-5573-4daf-ae0c-abe782f84e9e",
+          "claim_id": "CLM-19dd8de5",
           "step": "CONFIDENCE",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -209,8 +209,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "f867254d-0ca7-46e4-a298-9245eba77295",
-          "claim_id": "CLM-4c61c7b2",
+          "trace_id": "75bee1e0-fbf6-4cfb-b591-03e302f23695",
+          "claim_id": "CLM-19dd8de5",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "BLOCKED",
@@ -252,8 +252,8 @@
       "validation_failures": [],
       "trace_events": [
         {
-          "trace_id": "03373ae7-7a3c-4209-a757-aed91005216c",
-          "claim_id": "CLM-1b908955",
+          "trace_id": "eb86748e-9fb8-444a-8b90-5ed7ffaf1118",
+          "claim_id": "CLM-9a301353",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -272,8 +272,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "330199f1-626e-443e-8349-edb859c4fd48",
-          "claim_id": "CLM-1b908955",
+          "trace_id": "3ce91899-f570-4ec3-a066-2581666e8e93",
+          "claim_id": "CLM-9a301353",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -295,8 +295,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "3f78b4fb-d8ec-4441-b1d0-e74f26d1cd76",
-          "claim_id": "CLM-1b908955",
+          "trace_id": "279974ee-51b9-4120-b1ef-5e220f952463",
+          "claim_id": "CLM-9a301353",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -329,8 +329,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "70107597-d9ea-49b3-8f55-86ff47fbc0d0",
-          "claim_id": "CLM-1b908955",
+          "trace_id": "d41386ff-b706-44b6-9d3d-4713d160ca07",
+          "claim_id": "CLM-9a301353",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -358,8 +358,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "8f5252ac-f0e4-496e-9996-6c617a1af031",
-          "claim_id": "CLM-1b908955",
+          "trace_id": "07abe0b6-0645-427e-b525-4695c223bbf5",
+          "claim_id": "CLM-9a301353",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentQualityGate",
           "status": "NEEDS_REUPLOAD",
@@ -388,8 +388,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "5fb58bc6-d95d-43ce-8d0e-734557ebfc7b",
-          "claim_id": "CLM-1b908955",
+          "trace_id": "68918a21-ec66-4d74-a7d5-f2588c01f799",
+          "claim_id": "CLM-9a301353",
           "step": "POLICY_EVALUATION",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -404,8 +404,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "8451b1cd-0aec-409c-b029-639e7abc8807",
-          "claim_id": "CLM-1b908955",
+          "trace_id": "f94e6bef-29bf-4582-a25a-86a636a89413",
+          "claim_id": "CLM-9a301353",
           "step": "FINANCIAL_CALCULATION",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -420,8 +420,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "b7ed083b-5639-46b3-8510-87fda4a8d08f",
-          "claim_id": "CLM-1b908955",
+          "trace_id": "e2fa5c43-19fa-4b82-9502-183f06d5384e",
+          "claim_id": "CLM-9a301353",
           "step": "FRAUD_ANALYSIS",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -436,8 +436,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "3a6a0eb4-df7a-4e16-bb74-3022040a2105",
-          "claim_id": "CLM-1b908955",
+          "trace_id": "16e12571-843b-4e36-b629-4d8f067aa8b6",
+          "claim_id": "CLM-9a301353",
           "step": "CONFIDENCE",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -452,8 +452,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "e2263d2b-ba37-4d31-95fe-499b3b376198",
-          "claim_id": "CLM-1b908955",
+          "trace_id": "386d05af-38d9-4852-a250-2d48ebf84efe",
+          "claim_id": "CLM-9a301353",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "BLOCKED",
@@ -495,8 +495,8 @@
       "validation_failures": [],
       "trace_events": [
         {
-          "trace_id": "b4c31382-5bad-4c15-b37f-f7f4cdb9d603",
-          "claim_id": "CLM-44d0c6d7",
+          "trace_id": "21686a78-7b91-406d-937b-8f97158ff04f",
+          "claim_id": "CLM-944d83c9",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -515,8 +515,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "32c5f1a3-0ac4-4217-a82a-45aa01cc09be",
-          "claim_id": "CLM-44d0c6d7",
+          "trace_id": "2bd1b687-e9fa-4d0e-a3f5-94b86a2400ca",
+          "claim_id": "CLM-944d83c9",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -551,8 +551,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "3fc67f74-32dc-4d60-b18a-812eab28975c",
-          "claim_id": "CLM-44d0c6d7",
+          "trace_id": "e2aa62b4-3cab-411c-9102-752ab16b95ac",
+          "claim_id": "CLM-944d83c9",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -584,8 +584,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "b7b44561-faad-44eb-a2f1-9de6b1b76ada",
-          "claim_id": "CLM-44d0c6d7",
+          "trace_id": "3c10423f-f16f-48d9-80ce-8e4a9ed7c1b8",
+          "claim_id": "CLM-944d83c9",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -613,8 +613,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "c73d9a4f-7310-4edd-893d-b58be3d3199a",
-          "claim_id": "CLM-44d0c6d7",
+          "trace_id": "380c5dfd-5006-4bc9-be2f-45d65ee69e0f",
+          "claim_id": "CLM-944d83c9",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentQualityGate",
           "status": "OK",
@@ -629,8 +629,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "c450cd16-4298-4647-9242-1fa3a8addb8b",
-          "claim_id": "CLM-44d0c6d7",
+          "trace_id": "137f941f-bff5-4196-8d8c-831615e144b1",
+          "claim_id": "CLM-944d83c9",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -660,8 +660,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "3f1a2c78-0b69-4687-b375-76a1675e7089",
-          "claim_id": "CLM-44d0c6d7",
+          "trace_id": "84c7fd11-72de-46a0-a40f-498a875ac1c3",
+          "claim_id": "CLM-944d83c9",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "FAILED",
@@ -685,8 +685,8 @@
           "reason_code": "DOCUMENT_VERIFICATION_FAILED"
         },
         {
-          "trace_id": "b5f6ff2e-ae8c-4171-94d2-52ab50aa6b3f",
-          "claim_id": "CLM-44d0c6d7",
+          "trace_id": "0f47db5a-d451-4cad-bf29-238e2ffcf54c",
+          "claim_id": "CLM-944d83c9",
           "step": "POLICY_EVALUATION",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -701,8 +701,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "0663e68f-98ab-4e27-ab42-e058af4157f8",
-          "claim_id": "CLM-44d0c6d7",
+          "trace_id": "1a391058-8cf3-47d3-920a-4e0c28c17ce9",
+          "claim_id": "CLM-944d83c9",
           "step": "FINANCIAL_CALCULATION",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -717,8 +717,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "d5758ff6-5133-4fbf-9a7a-7066618d76d9",
-          "claim_id": "CLM-44d0c6d7",
+          "trace_id": "da4eef59-ea05-4685-8763-301c1189cdee",
+          "claim_id": "CLM-944d83c9",
           "step": "FRAUD_ANALYSIS",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -733,8 +733,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "211fa9ad-ec6f-4104-9539-ca9290208a39",
-          "claim_id": "CLM-44d0c6d7",
+          "trace_id": "b0fb5ceb-6dc2-4295-9f02-802f3d6fbb78",
+          "claim_id": "CLM-944d83c9",
           "step": "CONFIDENCE",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -749,8 +749,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "c1914892-7a03-4d96-83d9-096d4632e95f",
-          "claim_id": "CLM-44d0c6d7",
+          "trace_id": "a6a545a2-067c-43ce-b45d-86a42ec3b8cf",
+          "claim_id": "CLM-944d83c9",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "BLOCKED",
@@ -790,8 +790,8 @@
       "validation_failures": [],
       "trace_events": [
         {
-          "trace_id": "81c58bd9-4158-4298-a1e7-9a040c2b6fd0",
-          "claim_id": "CLM-2737a700",
+          "trace_id": "0fec1604-53a7-48c4-9f94-ec3a606127c2",
+          "claim_id": "CLM-12db3694",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -810,8 +810,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "65aff0c2-c0da-4a1e-bbaf-9607b5e0c2f8",
-          "claim_id": "CLM-2737a700",
+          "trace_id": "45067a78-2803-4413-92d6-1685feaf203c",
+          "claim_id": "CLM-12db3694",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -846,8 +846,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "e0a3c734-2507-46f4-84ea-03ba2a171a0d",
-          "claim_id": "CLM-2737a700",
+          "trace_id": "c7e6cff8-8152-4d51-9c74-5573c6685bbd",
+          "claim_id": "CLM-12db3694",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -879,8 +879,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "858e34c5-a0cc-4500-96b7-fc3d83286f4b",
-          "claim_id": "CLM-2737a700",
+          "trace_id": "b045d46d-20a0-4222-ba9b-c4227a781cad",
+          "claim_id": "CLM-12db3694",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -908,8 +908,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "a8c2b05a-ebf0-42ed-a485-9dba0c8918cc",
-          "claim_id": "CLM-2737a700",
+          "trace_id": "03e68c6b-0a54-4430-806c-733319ac7a3c",
+          "claim_id": "CLM-12db3694",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentQualityGate",
           "status": "OK",
@@ -924,8 +924,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "5ff6ae23-71f3-44fa-88d0-e221f23e10b2",
-          "claim_id": "CLM-2737a700",
+          "trace_id": "34b4c5dd-e611-4f46-8708-f3403ef032fe",
+          "claim_id": "CLM-12db3694",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -980,8 +980,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "30e25a6a-6950-4375-893b-d42ac3137ab7",
-          "claim_id": "CLM-2737a700",
+          "trace_id": "f27c41d0-e41e-46a9-839c-6b041a2aa7e3",
+          "claim_id": "CLM-12db3694",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -997,8 +997,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "fdf3ae3c-8b12-4521-855e-2000e866816e",
-          "claim_id": "CLM-2737a700",
+          "trace_id": "209024e5-0c5d-4388-9062-039e8f5e29e3",
+          "claim_id": "CLM-12db3694",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -1019,8 +1019,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "81dd083d-79a2-4a32-92ff-894986203804",
-          "claim_id": "CLM-2737a700",
+          "trace_id": "fbd190a6-cd4a-4903-9025-cb915ecbaa9b",
+          "claim_id": "CLM-12db3694",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -1141,7 +1141,7 @@
                 "name": "network_hospital",
                 "ok": false,
                 "details": {
-                  "hospital": null,
+                  "hospital": "City Clinic, Bengaluru",
                   "is_network": false
                 }
               },
@@ -1162,8 +1162,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "93fabed6-d974-4272-a057-be2e5803f72d",
-          "claim_id": "CLM-2737a700",
+          "trace_id": "253937cd-2132-4c58-a517-a78fe8c75fa3",
+          "claim_id": "CLM-12db3694",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -1186,8 +1186,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "45214e5d-8c22-40f1-99fb-86d094b5d229",
-          "claim_id": "CLM-2737a700",
+          "trace_id": "c3a42f59-d06d-4c77-99d8-d1f85f8b2a54",
+          "claim_id": "CLM-12db3694",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
           "status": "OK",
@@ -1196,7 +1196,28 @@
           "safe_output": {
             "ok": true,
             "manual_review": false,
-            "signals": []
+            "signals": [],
+            "fraud_score": 0.0,
+            "risk_level": "LOW",
+            "checks": {
+              "same_day_claims": {
+                "count": 0,
+                "threshold": 2,
+                "status": "PASSED"
+              },
+              "monthly_claims": {
+                "count": 0,
+                "threshold": 6,
+                "status": "PASSED"
+              },
+              "high_value_claim": {
+                "amount": 1500.0,
+                "threshold": 25000.0,
+                "status": "PASSED"
+              }
+            },
+            "explanation": "No fraud signals detected.",
+            "confidence": 1.0
           },
           "evidence": null,
           "error": null,
@@ -1204,8 +1225,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "657f9552-adcf-4b1f-a7e0-43525a4bc84e",
-          "claim_id": "CLM-2737a700",
+          "trace_id": "9f96e947-3921-4e51-8cb2-ce50d5d44c8f",
+          "claim_id": "CLM-12db3694",
           "step": "CONFIDENCE",
           "component": "ConfidenceEngine",
           "status": "OK",
@@ -1226,8 +1247,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "b9be6e6e-3048-45f4-84c4-13bbcd7f5dd0",
-          "claim_id": "CLM-2737a700",
+          "trace_id": "c536da48-a912-4a82-8925-ef708ee8b790",
+          "claim_id": "CLM-12db3694",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -1274,8 +1295,8 @@
       "validation_failures": [],
       "trace_events": [
         {
-          "trace_id": "075f60b6-7748-4702-83f4-420ced39a405",
-          "claim_id": "CLM-6ec934cb",
+          "trace_id": "e9b7850b-30f9-475a-995d-c66a10d3543a",
+          "claim_id": "CLM-52372369",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -1294,8 +1315,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "046e10db-4d9b-44f6-9303-426f5f726b4a",
-          "claim_id": "CLM-6ec934cb",
+          "trace_id": "a9333cd4-9db4-4038-85cd-1dd8db714a0a",
+          "claim_id": "CLM-52372369",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -1317,8 +1338,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "b92fb630-f67c-4e13-8832-e2d6bbfb8327",
-          "claim_id": "CLM-6ec934cb",
+          "trace_id": "5b5e1d9f-044f-4149-bf63-fd63252d6cea",
+          "claim_id": "CLM-52372369",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -1350,8 +1371,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "848f8125-d355-4d72-958b-d437163b73d2",
-          "claim_id": "CLM-6ec934cb",
+          "trace_id": "088baac8-6824-405e-a830-17c00a434035",
+          "claim_id": "CLM-52372369",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -1379,8 +1400,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "34c51055-4d1f-451f-8dc6-a20f89c701c0",
-          "claim_id": "CLM-6ec934cb",
+          "trace_id": "81e214ca-0be6-46a9-ac73-d343ebabb06d",
+          "claim_id": "CLM-52372369",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentQualityGate",
           "status": "OK",
@@ -1395,8 +1416,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "c43f8ec1-8600-411b-a1a6-72b37bdef1b4",
-          "claim_id": "CLM-6ec934cb",
+          "trace_id": "be1aed75-4a93-4e33-8700-f07eee9bd0c8",
+          "claim_id": "CLM-52372369",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -1435,8 +1456,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "c6b5667c-598b-47dd-b391-ca025473cbfb",
-          "claim_id": "CLM-6ec934cb",
+          "trace_id": "e304e4be-7216-46f5-ba93-921126bf67f3",
+          "claim_id": "CLM-52372369",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -1452,8 +1473,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "396b98c3-5150-42cd-9950-a82b9fbe6003",
-          "claim_id": "CLM-6ec934cb",
+          "trace_id": "5d0b7615-dd58-4125-8363-0f63bef6981e",
+          "claim_id": "CLM-52372369",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -1474,8 +1495,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "92fb5053-1953-4e70-82d0-97cfd15c9dce",
-          "claim_id": "CLM-6ec934cb",
+          "trace_id": "19936c37-b084-4dc6-983f-13aedfd8056f",
+          "claim_id": "CLM-52372369",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -1623,8 +1644,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "9903d8af-a319-4fc4-ae8b-b561021f4088",
-          "claim_id": "CLM-6ec934cb",
+          "trace_id": "6e8a928d-bb32-419c-86b3-3ac116baabdd",
+          "claim_id": "CLM-52372369",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -1667,8 +1688,8 @@
       "validation_failures": [],
       "trace_events": [
         {
-          "trace_id": "35cff888-7243-46c4-a1d4-52cacb28c415",
-          "claim_id": "CLM-8ba4704f",
+          "trace_id": "2daec490-e6eb-4c54-a025-4e22fbc52ba3",
+          "claim_id": "CLM-d5060a6d",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -1687,8 +1708,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "b0c4b18a-ef74-405a-b68c-94032cb3cfa6",
-          "claim_id": "CLM-8ba4704f",
+          "trace_id": "7d9102ba-0794-44b9-9a4f-17af5b783521",
+          "claim_id": "CLM-d5060a6d",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -1710,8 +1731,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "0dd73516-4ac2-4be6-9fde-1cb96c5043c7",
-          "claim_id": "CLM-8ba4704f",
+          "trace_id": "09e6561b-61d0-4d06-b3b3-149e59aea31a",
+          "claim_id": "CLM-d5060a6d",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -1734,8 +1755,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "ea3da047-4912-4cf7-b899-24f6c39d33b7",
-          "claim_id": "CLM-8ba4704f",
+          "trace_id": "690b0e8c-b4d8-468b-8774-b41d1ff48a8d",
+          "claim_id": "CLM-d5060a6d",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -1761,8 +1782,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "c1d89cb1-d96b-4379-b215-3cd4cf05db55",
-          "claim_id": "CLM-8ba4704f",
+          "trace_id": "dd9419c8-7810-42d6-abff-78a3b686a0f4",
+          "claim_id": "CLM-d5060a6d",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentQualityGate",
           "status": "OK",
@@ -1777,8 +1798,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "8ffeb42b-97d5-4591-8be3-73bbbe33ca48",
-          "claim_id": "CLM-8ba4704f",
+          "trace_id": "3c03ff1b-cfbe-4ea4-8916-2aa6c3d06223",
+          "claim_id": "CLM-d5060a6d",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -1812,8 +1833,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "81626c13-d195-4f3b-adad-5bb4bd8d15d1",
-          "claim_id": "CLM-8ba4704f",
+          "trace_id": "3b96482c-8e75-4aae-922d-818e90a8569e",
+          "claim_id": "CLM-d5060a6d",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -1829,8 +1850,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "249f62c6-3489-4c25-9e23-1cdd9edc9e8d",
-          "claim_id": "CLM-8ba4704f",
+          "trace_id": "49b19af1-717f-4e7c-b216-7f3a4d09a99b",
+          "claim_id": "CLM-d5060a6d",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -1851,8 +1872,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "1282ef5c-ab24-4001-9184-ebf01545dd3e",
-          "claim_id": "CLM-8ba4704f",
+          "trace_id": "8a3d1f0e-943a-4db6-84b5-b281ccc7fb96",
+          "claim_id": "CLM-d5060a6d",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -1986,7 +2007,7 @@
                 "name": "network_hospital",
                 "ok": false,
                 "details": {
-                  "hospital": null,
+                  "hospital": "Smile Dental Clinic",
                   "is_network": false
                 }
               },
@@ -2007,8 +2028,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "6a9c68c6-f56b-4a3c-b96f-830731949c0c",
-          "claim_id": "CLM-8ba4704f",
+          "trace_id": "f74a1d63-5ba3-4ea1-8bec-327da45f9cd0",
+          "claim_id": "CLM-d5060a6d",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -2052,8 +2073,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "7a28b623-9252-430d-bc51-edef2746a954",
-          "claim_id": "CLM-8ba4704f",
+          "trace_id": "7686cc3a-5bef-46ec-9765-9ab446805ab8",
+          "claim_id": "CLM-d5060a6d",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
           "status": "OK",
@@ -2062,7 +2083,28 @@
           "safe_output": {
             "ok": true,
             "manual_review": false,
-            "signals": []
+            "signals": [],
+            "fraud_score": 0.0,
+            "risk_level": "LOW",
+            "checks": {
+              "same_day_claims": {
+                "count": 0,
+                "threshold": 2,
+                "status": "PASSED"
+              },
+              "monthly_claims": {
+                "count": 0,
+                "threshold": 6,
+                "status": "PASSED"
+              },
+              "high_value_claim": {
+                "amount": 12000.0,
+                "threshold": 25000.0,
+                "status": "PASSED"
+              }
+            },
+            "explanation": "No fraud signals detected.",
+            "confidence": 1.0
           },
           "evidence": null,
           "error": null,
@@ -2070,8 +2112,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "396de06e-bef6-4825-8a1c-f3df30f9dcfc",
-          "claim_id": "CLM-8ba4704f",
+          "trace_id": "d8de3d85-686a-4b3f-aa5d-955fa5a5d367",
+          "claim_id": "CLM-d5060a6d",
           "step": "CONFIDENCE",
           "component": "ConfidenceEngine",
           "status": "OK",
@@ -2092,8 +2134,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "11b06bcf-d0c4-4e7a-8328-49a1c29eef86",
-          "claim_id": "CLM-8ba4704f",
+          "trace_id": "cf750404-9431-4d46-b1a0-005f395224e5",
+          "claim_id": "CLM-d5060a6d",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -2141,8 +2183,8 @@
       "validation_failures": [],
       "trace_events": [
         {
-          "trace_id": "ebf44519-fbbd-4108-b959-1212ac20820d",
-          "claim_id": "CLM-c31c4651",
+          "trace_id": "c8d2eee2-2e95-4d8c-8d00-5d971324e883",
+          "claim_id": "CLM-356deef3",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -2161,8 +2203,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "c8524c03-4047-4757-aa09-3d1e441c168b",
-          "claim_id": "CLM-c31c4651",
+          "trace_id": "c7e86ad6-5162-4428-a4ae-ea85c26a1459",
+          "claim_id": "CLM-356deef3",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -2184,8 +2226,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "d1fde999-da10-4d01-87bd-7982df27c9d3",
-          "claim_id": "CLM-c31c4651",
+          "trace_id": "6954a35a-cc29-4262-978d-5e16f387ee78",
+          "claim_id": "CLM-356deef3",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -2226,8 +2268,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "724d5fe7-b702-463b-a726-f8e8512ae161",
-          "claim_id": "CLM-c31c4651",
+          "trace_id": "390e6870-ea91-40ce-bab8-9c3396a058dd",
+          "claim_id": "CLM-356deef3",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -2257,8 +2299,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "5e38d946-5971-45a2-9cfa-ab8a71b93a79",
-          "claim_id": "CLM-c31c4651",
+          "trace_id": "6e6eb832-92df-4f15-8a65-fe62b09c0b47",
+          "claim_id": "CLM-356deef3",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentQualityGate",
           "status": "OK",
@@ -2273,8 +2315,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "ebbf94f0-31ca-4459-9c87-57f977ffc4b1",
-          "claim_id": "CLM-c31c4651",
+          "trace_id": "99d3c559-a90b-4fc2-8f7e-452ca96eb7b9",
+          "claim_id": "CLM-356deef3",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -2323,8 +2365,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "dfb5b216-d37f-45eb-904c-5fdf661b90b5",
-          "claim_id": "CLM-c31c4651",
+          "trace_id": "b9dbb133-5593-4c04-8264-c6a8b040b432",
+          "claim_id": "CLM-356deef3",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -2340,8 +2382,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "2a495e7f-3c68-4705-a164-8dafa133f299",
-          "claim_id": "CLM-c31c4651",
+          "trace_id": "ef1a1552-918a-4fb1-8aa4-1ecaf98b4399",
+          "claim_id": "CLM-356deef3",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -2360,8 +2402,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "f9271c6a-a7a7-4f9e-a14b-47d1c02dcf6b",
-          "claim_id": "CLM-c31c4651",
+          "trace_id": "26fca472-23f7-4450-909b-4e8aeaf034a6",
+          "claim_id": "CLM-356deef3",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -2515,8 +2557,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "89fbdaa0-23c5-4b72-873a-1252eff115b1",
-          "claim_id": "CLM-c31c4651",
+          "trace_id": "4da35194-3b96-43b4-ad00-a73fcf5b2e2a",
+          "claim_id": "CLM-356deef3",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -2560,8 +2602,8 @@
       "validation_failures": [],
       "trace_events": [
         {
-          "trace_id": "128b2d29-52f0-4d60-b381-f9fc0aabc272",
-          "claim_id": "CLM-fc88c875",
+          "trace_id": "9114edc2-9423-4d10-ab12-9dbb618fee3f",
+          "claim_id": "CLM-a472156f",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -2580,8 +2622,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "8b6e24c7-cb8e-4a67-9096-10d3520ad2a5",
-          "claim_id": "CLM-fc88c875",
+          "trace_id": "6b99e249-b648-4129-bf56-3e44855725b1",
+          "claim_id": "CLM-a472156f",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -2603,8 +2645,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "027067cb-cef0-4e74-8878-28899d776ff2",
-          "claim_id": "CLM-fc88c875",
+          "trace_id": "57889a80-7776-41e4-8e13-d9141969feeb",
+          "claim_id": "CLM-a472156f",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -2636,8 +2678,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "92429fe6-b430-4b05-82ff-c35326452c0b",
-          "claim_id": "CLM-fc88c875",
+          "trace_id": "6e3f799a-2bed-4fb6-a64a-c9d2b76eca6b",
+          "claim_id": "CLM-a472156f",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -2665,8 +2707,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "92dacb88-b1b9-4bd8-90e4-116a716519d9",
-          "claim_id": "CLM-fc88c875",
+          "trace_id": "f609af00-9383-4811-908a-51170ae1a717",
+          "claim_id": "CLM-a472156f",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentQualityGate",
           "status": "OK",
@@ -2681,8 +2723,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "6b3e7711-eb86-4931-a77e-fe2f1acedb77",
-          "claim_id": "CLM-fc88c875",
+          "trace_id": "ef5551c0-53fe-4108-ae97-02a5091ab199",
+          "claim_id": "CLM-a472156f",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -2729,8 +2771,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "225c53bb-add5-4a78-a82c-5c652c7c4e10",
-          "claim_id": "CLM-fc88c875",
+          "trace_id": "757a25a2-1136-4086-927c-6e67eacef307",
+          "claim_id": "CLM-a472156f",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -2746,8 +2788,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "3c027e86-656a-4923-ba44-83b33d871ee1",
-          "claim_id": "CLM-fc88c875",
+          "trace_id": "af29476b-7e49-442c-a9b8-2eab339263fb",
+          "claim_id": "CLM-a472156f",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -2766,8 +2808,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "7c33cfa3-893e-47f1-b860-2d3f49178e99",
-          "claim_id": "CLM-fc88c875",
+          "trace_id": "3b6e135c-9901-49ba-bf4e-1584d6c339a1",
+          "claim_id": "CLM-a472156f",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -2907,8 +2949,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "23ae169f-c4bd-4951-b761-9691fef41a07",
-          "claim_id": "CLM-fc88c875",
+          "trace_id": "f5ec0692-a207-4a5b-a933-3d7232b5e5c3",
+          "claim_id": "CLM-a472156f",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -2941,7 +2983,7 @@
         "approved_amount": "0",
         "confidence_score": "0.50",
         "processing_status": "PENDING_MANUAL_REVIEW",
-        "reason": "same_day_claims",
+        "reason": "3 prior same-day claims exceeded the configured limit of 2.\nFraud score exceeded manual review threshold.",
         "reason_code": null,
         "decision_summary": "Your consultation claim has been sent for manual review because 4 claims were submitted by the same member on the same day, which requires further verification.",
         "degraded": false,
@@ -2951,8 +2993,8 @@
       "validation_failures": [],
       "trace_events": [
         {
-          "trace_id": "3f47c854-73d5-4f62-9e3b-6d42df91b211",
-          "claim_id": "CLM-34cbd17a",
+          "trace_id": "a0d7c580-015b-4ee3-923f-e328d74ae48f",
+          "claim_id": "CLM-1ffad2e4",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -2971,8 +3013,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "8d15d1f9-0b50-4749-920d-56fd9a77a3e9",
-          "claim_id": "CLM-34cbd17a",
+          "trace_id": "386d614e-c96e-47d6-a300-05e56440813c",
+          "claim_id": "CLM-1ffad2e4",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -2994,8 +3036,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "ebed7682-e5d6-4cf9-be6d-5fa96e159c4b",
-          "claim_id": "CLM-34cbd17a",
+          "trace_id": "49a17fd1-b8d2-4cbf-ad8d-54730630a779",
+          "claim_id": "CLM-1ffad2e4",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -3027,8 +3069,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "077b4c43-8912-4d42-8353-28b3dbdf6379",
-          "claim_id": "CLM-34cbd17a",
+          "trace_id": "ff05a512-5bae-4276-98ba-f9cb49fb6f85",
+          "claim_id": "CLM-1ffad2e4",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -3056,8 +3098,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "d38bd802-390d-433e-8765-0c8660895ac3",
-          "claim_id": "CLM-34cbd17a",
+          "trace_id": "852658df-859f-4168-b15c-8c15fb2e5c28",
+          "claim_id": "CLM-1ffad2e4",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentQualityGate",
           "status": "OK",
@@ -3072,8 +3114,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "1f6a105c-1648-4a6f-a5ae-87f012f3a60b",
-          "claim_id": "CLM-34cbd17a",
+          "trace_id": "3b96c8e1-d744-4c91-a718-1566623d322d",
+          "claim_id": "CLM-1ffad2e4",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -3104,8 +3146,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "3a37804f-ce9b-4895-aebe-f17ebdd6d598",
-          "claim_id": "CLM-34cbd17a",
+          "trace_id": "0aefea22-49a5-4646-adf0-2fbd748aaa8d",
+          "claim_id": "CLM-1ffad2e4",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -3121,8 +3163,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "dfae5df8-3600-409f-a93e-4adcbbeb3fd7",
-          "claim_id": "CLM-34cbd17a",
+          "trace_id": "12e6793a-ee43-4e90-bdd6-37df21989937",
+          "claim_id": "CLM-1ffad2e4",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -3141,8 +3183,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "eeae750e-cbf4-4bdd-a13c-c283ac669476",
-          "claim_id": "CLM-34cbd17a",
+          "trace_id": "dd7fddc6-7685-4346-b085-171b437bfa0d",
+          "claim_id": "CLM-1ffad2e4",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -3232,14 +3274,9 @@
               },
               {
                 "name": "fraud_signals",
-                "ok": false,
+                "ok": true,
                 "details": {
-                  "issues": [
-                    {
-                      "type": "same_day_claims",
-                      "count": 3
-                    }
-                  ]
+                  "issues": []
                 }
               },
               {
@@ -3287,8 +3324,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "fbb5030c-6c20-4e5c-a01a-b8e240b5f512",
-          "claim_id": "CLM-34cbd17a",
+          "trace_id": "c5d67bd8-e270-4290-8d61-8b39f965c84d",
+          "claim_id": "CLM-1ffad2e4",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -3311,8 +3348,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "3fa676ae-126b-46f2-bce8-8b39ae00fb2c",
-          "claim_id": "CLM-34cbd17a",
+          "trace_id": "a94db4b8-6904-4e50-ab8e-50f47980dbee",
+          "claim_id": "CLM-1ffad2e4",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
           "status": "OK",
@@ -3324,9 +3361,33 @@
             "signals": [
               {
                 "type": "same_day_claims",
-                "count": 3
+                "severity": "HIGH",
+                "count": 3,
+                "threshold": 2,
+                "message": "3 prior claims were submitted by EMP008 on 30 October 2024. This exceeds the policy limit of 2 same-day claims."
               }
-            ]
+            ],
+            "fraud_score": 0.86,
+            "risk_level": "HIGH",
+            "checks": {
+              "same_day_claims": {
+                "count": 3,
+                "threshold": 2,
+                "status": "FAILED"
+              },
+              "monthly_claims": {
+                "count": 3,
+                "threshold": 6,
+                "status": "PASSED"
+              },
+              "high_value_claim": {
+                "amount": 4800.0,
+                "threshold": 25000.0,
+                "status": "PASSED"
+              }
+            },
+            "explanation": "3 prior same-day claims exceeded the configured limit of 2.\nFraud score exceeded manual review threshold.",
+            "confidence": 1.0
           },
           "evidence": null,
           "error": null,
@@ -3334,8 +3395,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "68d91b6b-4996-4ab0-9231-2ce4379ef33d",
-          "claim_id": "CLM-34cbd17a",
+          "trace_id": "8a118c6c-369d-4ad7-9902-0397cfc2d4f6",
+          "claim_id": "CLM-1ffad2e4",
           "step": "CONFIDENCE",
           "component": "ConfidenceEngine",
           "status": "OK",
@@ -3360,8 +3421,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "3ee24ccf-ae32-4429-a8fd-4f7bbc10fe93",
-          "claim_id": "CLM-34cbd17a",
+          "trace_id": "f0399682-b49c-46f9-a434-1b1f58f7594d",
+          "claim_id": "CLM-1ffad2e4",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -3371,7 +3432,7 @@
             "decision": "MANUAL_REVIEW",
             "approved_amount": "0",
             "processing_status": "PENDING_MANUAL_REVIEW",
-            "reason": "same_day_claims",
+            "reason": "3 prior same-day claims exceeded the configured limit of 2.\nFraud score exceeded manual review threshold.",
             "confidence_score": "0.50",
             "decision_summary": "Your consultation claim has been sent for manual review because 4 claims were submitted by the same member on the same day, which requires further verification."
           },
@@ -3408,8 +3469,8 @@
       "validation_failures": [],
       "trace_events": [
         {
-          "trace_id": "1624c760-c0c5-4c23-9e42-a7f4fec9d19e",
-          "claim_id": "CLM-0ff6d9b6",
+          "trace_id": "c010f45a-5455-4b12-8181-0e2018c8aa1c",
+          "claim_id": "CLM-8b06a710",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -3428,8 +3489,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "70cc0791-1f81-4420-984d-2435963ed561",
-          "claim_id": "CLM-0ff6d9b6",
+          "trace_id": "38c1a9f2-e160-4b1d-8a8e-a49eebd756eb",
+          "claim_id": "CLM-8b06a710",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -3451,8 +3512,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "5465b0fd-f23f-4650-bfd7-33e0fb7f8486",
-          "claim_id": "CLM-0ff6d9b6",
+          "trace_id": "71b89b32-533e-4c7a-8fc2-4b93b716c919",
+          "claim_id": "CLM-8b06a710",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -3484,8 +3545,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "f316d067-1bfc-4b6f-9be3-1549de7f056b",
-          "claim_id": "CLM-0ff6d9b6",
+          "trace_id": "f72428c7-f506-4f7a-a84a-3f0e2043d21f",
+          "claim_id": "CLM-8b06a710",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -3513,8 +3574,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "cd56264f-1226-4722-a0b3-7c64898dc224",
-          "claim_id": "CLM-0ff6d9b6",
+          "trace_id": "ba7e7f38-a0fe-4b4e-89a9-4921412a4dc5",
+          "claim_id": "CLM-8b06a710",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentQualityGate",
           "status": "OK",
@@ -3529,8 +3590,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "c5fb2f96-2160-4b52-b705-2bcffc05d8b0",
-          "claim_id": "CLM-0ff6d9b6",
+          "trace_id": "be2876e3-0b31-4be5-a7c3-08f96720b4d4",
+          "claim_id": "CLM-8b06a710",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -3579,8 +3640,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "b3e227f5-2f99-4f4e-b394-6d29e88da345",
-          "claim_id": "CLM-0ff6d9b6",
+          "trace_id": "6e2f91db-15b9-4b3e-af76-df86ccda82c8",
+          "claim_id": "CLM-8b06a710",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -3596,8 +3657,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "52cfb879-da93-4b0f-ad00-23d5779e0058",
-          "claim_id": "CLM-0ff6d9b6",
+          "trace_id": "69470359-7cd5-4507-86ea-5500b8d46242",
+          "claim_id": "CLM-8b06a710",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -3618,8 +3679,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "b0608004-fd1c-4598-a30f-a180f07a6114",
-          "claim_id": "CLM-0ff6d9b6",
+          "trace_id": "25446ee8-bdfa-4c1d-a47a-14e22040ac9d",
+          "claim_id": "CLM-8b06a710",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -3761,8 +3822,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "c57f42f4-0664-43de-b40b-39fb6d0eaeee",
-          "claim_id": "CLM-0ff6d9b6",
+          "trace_id": "2b84ad2c-f89e-4f00-a884-79f6591879a1",
+          "claim_id": "CLM-8b06a710",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -3785,8 +3846,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "fd80eb28-4f76-44e3-81ce-5f566fdbde57",
-          "claim_id": "CLM-0ff6d9b6",
+          "trace_id": "faee67a5-58b2-4610-bd06-37bb97803c67",
+          "claim_id": "CLM-8b06a710",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
           "status": "OK",
@@ -3795,7 +3856,28 @@
           "safe_output": {
             "ok": true,
             "manual_review": false,
-            "signals": []
+            "signals": [],
+            "fraud_score": 0.0,
+            "risk_level": "LOW",
+            "checks": {
+              "same_day_claims": {
+                "count": 0,
+                "threshold": 2,
+                "status": "PASSED"
+              },
+              "monthly_claims": {
+                "count": 0,
+                "threshold": 6,
+                "status": "PASSED"
+              },
+              "high_value_claim": {
+                "amount": 4500.0,
+                "threshold": 25000.0,
+                "status": "PASSED"
+              }
+            },
+            "explanation": "No fraud signals detected.",
+            "confidence": 1.0
           },
           "evidence": null,
           "error": null,
@@ -3803,8 +3885,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "dc862f4b-b231-4038-ab4f-016947dc4cd8",
-          "claim_id": "CLM-0ff6d9b6",
+          "trace_id": "a8d95e3b-bc0c-465e-bac2-58b039b99471",
+          "claim_id": "CLM-8b06a710",
           "step": "CONFIDENCE",
           "component": "ConfidenceEngine",
           "status": "OK",
@@ -3825,8 +3907,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "337097fc-a318-43e7-868a-aa835b8e802e",
-          "claim_id": "CLM-0ff6d9b6",
+          "trace_id": "be7b87b9-5d75-4d5d-ac2b-36d094be4188",
+          "claim_id": "CLM-8b06a710",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -3879,8 +3961,8 @@
       "validation_failures": [],
       "trace_events": [
         {
-          "trace_id": "9e06dcc8-78ee-41b6-974e-c04d80b0b6c3",
-          "claim_id": "CLM-a00e2b94",
+          "trace_id": "d57b76ad-c9a8-4f43-88ee-d3dd8ecbab11",
+          "claim_id": "CLM-402fda8b",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -3899,8 +3981,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "3b598997-9fd9-43e2-b0d9-4f65133597b5",
-          "claim_id": "CLM-a00e2b94",
+          "trace_id": "351abf34-bdfa-4c38-93a3-ba61f70902ac",
+          "claim_id": "CLM-402fda8b",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -3922,8 +4004,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "bc824ec5-5d8d-4bd9-8a12-b8c850c04b1c",
-          "claim_id": "CLM-a00e2b94",
+          "trace_id": "4112d4b1-dbea-4812-bf1e-65fc7b091a5a",
+          "claim_id": "CLM-402fda8b",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -3955,8 +4037,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "4bfec84a-a7f5-45b6-b4dc-ce12c63c262b",
-          "claim_id": "CLM-a00e2b94",
+          "trace_id": "c04304b5-8483-4662-9523-81c7598fc63d",
+          "claim_id": "CLM-402fda8b",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -3984,8 +4066,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "d463595d-0d5b-4932-8eb7-7d4b711f47f3",
-          "claim_id": "CLM-a00e2b94",
+          "trace_id": "d9506546-7956-481b-81a8-dff030a92da8",
+          "claim_id": "CLM-402fda8b",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentQualityGate",
           "status": "OK",
@@ -4000,8 +4082,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "4b390db9-5cb5-4dac-a3a8-676e61ec7412",
-          "claim_id": "CLM-a00e2b94",
+          "trace_id": "1411fd25-67c1-4ffd-818b-034b5a9bbbe1",
+          "claim_id": "CLM-402fda8b",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -4045,8 +4127,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "d79425be-ba93-4595-a3d7-854b43707c14",
-          "claim_id": "CLM-a00e2b94",
+          "trace_id": "1170b887-08bb-43bc-8316-fa306037069b",
+          "claim_id": "CLM-402fda8b",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -4062,8 +4144,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "9e28529d-4d24-4549-afdb-4b6d05528299",
-          "claim_id": "CLM-a00e2b94",
+          "trace_id": "e5194d21-ba91-4f65-9b09-5424e5c463d3",
+          "claim_id": "CLM-402fda8b",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -4082,8 +4164,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "8b1c209b-082a-44f5-b03e-b032b5e5f391",
-          "claim_id": "CLM-a00e2b94",
+          "trace_id": "2eabb88b-7af6-42b7-aa58-725486ace9a2",
+          "claim_id": "CLM-402fda8b",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -4211,7 +4293,7 @@
                 "name": "network_hospital",
                 "ok": false,
                 "details": {
-                  "hospital": null,
+                  "hospital": "Ayur Wellness Centre",
                   "is_network": false
                 }
               },
@@ -4230,8 +4312,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "382b8dd7-f685-4564-9b6f-b34d47450d67",
-          "claim_id": "CLM-a00e2b94",
+          "trace_id": "4ea55ded-e11d-4123-93fa-27b9af4e2a18",
+          "claim_id": "CLM-402fda8b",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -4254,22 +4336,27 @@
           "reason_code": null
         },
         {
-          "trace_id": "ff8b577e-ac80-4f2e-b79c-0a75af054b1c",
-          "claim_id": "CLM-a00e2b94",
+          "trace_id": "9fe206ae-ecb0-4808-9aa9-d9285f120405",
+          "claim_id": "CLM-402fda8b",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
           "status": "DEGRADED",
           "duration_ms": 0,
           "safe_input": null,
           "safe_output": {
-            "ok": null,
-            "manual_review": null,
+            "ok": true,
+            "manual_review": false,
             "signals": [
               {
                 "type": "component_failure",
                 "component": "FraudAnalyzer"
               }
-            ]
+            ],
+            "fraud_score": 0.0,
+            "risk_level": "LOW",
+            "checks": {},
+            "explanation": "Component failure simulated \u2014 fraud analysis skipped.",
+            "confidence": 0.5
           },
           "evidence": null,
           "error": "component failure simulated \u2014 fraud analysis result is unreliable",
@@ -4277,8 +4364,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "28e5336e-4a8a-4b37-8821-2c4ff48e3b7b",
-          "claim_id": "CLM-a00e2b94",
+          "trace_id": "4fb85b09-ac23-4e36-a476-da53aacb873c",
+          "claim_id": "CLM-402fda8b",
           "step": "CONFIDENCE",
           "component": "ConfidenceEngine",
           "status": "OK",
@@ -4303,8 +4390,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "468ff2f7-a506-4dc7-a2e2-262f22197d76",
-          "claim_id": "CLM-a00e2b94",
+          "trace_id": "c08322f2-0feb-480f-9da5-17cef0329855",
+          "claim_id": "CLM-402fda8b",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -4349,8 +4436,8 @@
       "validation_failures": [],
       "trace_events": [
         {
-          "trace_id": "5266cfd4-391c-44a1-9eec-cb36bd255044",
-          "claim_id": "CLM-e67187fb",
+          "trace_id": "270493e3-0145-4757-90d7-506307c4f5a7",
+          "claim_id": "CLM-c8af79bb",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -4369,8 +4456,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "b327024f-b05f-47be-9e7b-0ffb13c24d8d",
-          "claim_id": "CLM-e67187fb",
+          "trace_id": "08284947-a513-4f46-9a6c-6e5d50c090c2",
+          "claim_id": "CLM-c8af79bb",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -4392,8 +4479,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "f7728378-68c2-47c1-ae34-44003090699e",
-          "claim_id": "CLM-e67187fb",
+          "trace_id": "0ca15456-9160-4d99-ba3c-1a45915be7eb",
+          "claim_id": "CLM-c8af79bb",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -4425,8 +4512,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "072779a4-c818-4860-a4bf-a9eb644f9cac",
-          "claim_id": "CLM-e67187fb",
+          "trace_id": "1e145ef3-ee33-4c4a-9cf6-f73627edcbbf",
+          "claim_id": "CLM-c8af79bb",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -4454,8 +4541,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "b088f00b-e23b-494b-b2bf-df8c2f621924",
-          "claim_id": "CLM-e67187fb",
+          "trace_id": "51ae2703-d580-4342-b869-9b0a537b6b5c",
+          "claim_id": "CLM-c8af79bb",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentQualityGate",
           "status": "OK",
@@ -4470,8 +4557,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "4e7afe0b-34a9-4d31-bd4d-d7e058b1261d",
-          "claim_id": "CLM-e67187fb",
+          "trace_id": "b89f7c7b-919c-428c-af55-c9ce536f4bb9",
+          "claim_id": "CLM-c8af79bb",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -4514,8 +4601,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "2e9e8a46-cff9-4d30-91a0-01092bbaabdd",
-          "claim_id": "CLM-e67187fb",
+          "trace_id": "cbfce32e-f188-4f28-9d05-3625d1044262",
+          "claim_id": "CLM-c8af79bb",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -4531,8 +4618,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "e55e12fd-acde-48d0-af40-7f3725733675",
-          "claim_id": "CLM-e67187fb",
+          "trace_id": "10e87899-dda6-4b89-ad42-c0a9ca17cdfe",
+          "claim_id": "CLM-c8af79bb",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -4551,8 +4638,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "ff7c41ab-c6aa-4a2d-b1fb-87bada0758f8",
-          "claim_id": "CLM-e67187fb",
+          "trace_id": "14b24cc6-ec2a-4580-ac87-f6baabf61c5c",
+          "claim_id": "CLM-c8af79bb",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -4694,8 +4781,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "60573749-9866-4f6c-af82-a3a896c6ef40",
-          "claim_id": "CLM-e67187fb",
+          "trace_id": "a4e4a9e4-9d85-43cd-a06c-a16d280d9390",
+          "claim_id": "CLM-c8af79bb",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -4934,7 +5021,7 @@
         "approved_amount": "0",
         "confidence_score": "0.50",
         "processing_status": "PENDING_MANUAL_REVIEW",
-        "reason": "same_day_claims",
+        "reason": "3 prior same-day claims exceeded the configured limit of 2.\nFraud score exceeded manual review threshold.",
         "reason_code": null,
         "decision_summary": "Your consultation claim has been sent for manual review because 4 claims were submitted by the same member on the same day, which requires further verification.",
         "degraded": false,

@@ -38,6 +38,7 @@ from .schemas import (
     TraceEvent,
 )
 from .trace import TraceManager
+from .fraud_analyzer import FraudAnalyzer
 
 
 class ClaimState(TypedDict, total=False):
@@ -432,9 +433,16 @@ class CalculationEngine:
             decision_hint = "PARTIAL" if approved_amount > 0 else "REJECTED"
             return FinancialCalculationResult(approved_amount=approved_amount, decision_hint=decision_hint, breakdown=breakdown)
 
-        hospital_name = str(claim.get("hospital_name") or "")
-        network_hospitals = {str(hospital).lower() for hospital in policy_raw.get("network_hospitals", [])}
-        is_network = hospital_name.lower() in network_hospitals if hospital_name else False
+        hospital_name = claim.get("hospital_name")
+        if not hospital_name:
+            for d in claim.get("documents", []):
+                if isinstance(d, dict) and d.get("extracted", {}).get("hospital_name"):
+                    hospital_name = d["extracted"]["hospital_name"]
+                    break
+        hospital_name = str(hospital_name or "")
+        
+        network_hospitals = {str(hospital).lower().strip() for hospital in policy_raw.get("network_hospitals", [])}
+        is_network = hospital_name.lower().strip() in network_hospitals if hospital_name else False
         amount = claimed_amount
         breakdown: Dict[str, Any] = {"claimed": str(claimed_amount), "network_applied": is_network}
 
@@ -453,20 +461,6 @@ class CalculationEngine:
         breakdown["approved"] = str(approved_amount)
         return FinancialCalculationResult(approved_amount=approved_amount, decision_hint="APPROVED", breakdown=breakdown)
 
-
-class FraudAnalyzer:
-    def analyze(self, claim: Dict[str, Any], policy_raw: Dict[str, Any]) -> FraudAnalysis:
-        if claim.get("simulate_component_failure"):
-            return FraudAnalysis(ok=True, manual_review=False, signals=[{"type": "component_failure", "component": "FraudAnalyzer"}])
-
-        thresholds = policy_raw.get("fraud_thresholds", {})
-        history = claim.get("claims_history") or []
-        treatment_date = str(claim.get("treatment_date") or "")
-        same_day = sum(1 for item in history if str(item.get("date")) == treatment_date)
-        signals: List[Dict[str, Any]] = []
-        if same_day >= int(thresholds.get("same_day_claims_limit", 9999)):
-            signals.append({"type": "same_day_claims", "count": same_day})
-        return FraudAnalysis(ok=not signals, manual_review=bool(signals), signals=signals)
 
 
 class ConfidenceEngine:
@@ -1097,18 +1091,22 @@ class ClaimWorkflow:
             state["degraded"] = True
             failure_record = {"component": "FraudAnalyzer", "severity": "NON_CRITICAL", "reason": "simulated failure — fraud analysis skipped"}
             state.setdefault("component_failures", []).append(failure_record)
-            # Trace the degradation clearly so it is visible in audit
             _trace_event(
                 self.trace_manager, claim_id, "FRAUD_ANALYSIS", "FraudAnalyzer", "DEGRADED",
-                safe_output={"ok": None, "manual_review": None, "signals": fraud.signals},
+                safe_output=fraud.model_dump(mode="python"),
                 error="component failure simulated — fraud analysis result is unreliable",
             )
         else:
             if fraud.manual_review:
                 state["manual_review_reason"] = ", ".join(signal.get("type", "fraud_signal") for signal in fraud.signals) or "fraud signal"
-            _trace_event(self.trace_manager, claim_id, "FRAUD_ANALYSIS", "FraudAnalyzer", "OK", safe_output=fraud.model_dump(mode="python"))
+            
+            # Use degraded status if risk level is DEGRADED
+            status = "DEGRADED" if getattr(fraud, "risk_level", "LOW") == "DEGRADED" else "OK"
+            
+            _trace_event(self.trace_manager, claim_id, "FRAUD_ANALYSIS", "FraudAnalyzer", status, safe_output=fraud.model_dump(mode="python"))
+            
         if fraud.manual_review and not state["normalized_claim"].get("simulate_component_failure"):
-            state["manual_review_reason"] = ", ".join(signal.get("type", "fraud_signal") for signal in fraud.signals) or "fraud signal"
+            state["manual_review_reason"] = getattr(fraud, "explanation", "") or ", ".join(signal.get("type", "fraud_signal") for signal in fraud.signals) or "fraud signal"
         return state
 
     def _route_after_fraud(self, state: ClaimState) -> str:

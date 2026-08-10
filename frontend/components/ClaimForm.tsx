@@ -239,7 +239,7 @@ export function ClaimForm({ onSubmit, isLoading }: ClaimFormProps) {
             <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-plum-900/10 bg-cream-50 p-4 hover:border-plum-900/20 transition-colors">
               <input type="checkbox" checked={form.simulateFailure} onChange={event => setField("simulateFailure", event.target.checked)} className="mt-1 accent-coral-500 w-4 h-4 rounded border-plum-900/20 text-coral-500 focus:ring-coral-500/20" />
               <div>
-                <span className="block text-sm font-medium text-plum-900">Simulate Component Failure (TC011 Demo)</span>
+                <span className="block text-sm font-medium text-plum-900">Simulate Component Failure (Only check for Testcase 11(TC011) Demo)</span>
                 <span className="text-sm text-text-secondary mt-0.5 block">Intentionally fail fraud analysis to demonstrate graceful degradation.</span>
               </div>
             </label>
