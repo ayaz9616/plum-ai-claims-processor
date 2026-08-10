@@ -153,17 +153,33 @@ app = FastAPI(title="Plum Claims - Backend")
 # Multiple origins can be supplied as comma-separated values.
 frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
+# ---------------------------------------------------------------------------
+# CORS
+# ---------------------------------------------------------------------------
+
 allowed_origins = [
-    origin.strip()
-    for origin in frontend_url.split(",")
-    if origin.strip()
+    "http://localhost:3000",
+    "https://plum-ai-claims-processor.vercel.app",
 ]
+
+# Also allow additional origins supplied through the environment.
+frontend_url = os.getenv("FRONTEND_URL", "")
+
+if frontend_url:
+    allowed_origins.extend(
+        origin.strip().rstrip("/")
+        for origin in frontend_url.split(",")
+        if origin.strip()
+    )
+
+# Remove duplicates while preserving order.
+allowed_origins = list(dict.fromkeys(allowed_origins))
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=False,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
