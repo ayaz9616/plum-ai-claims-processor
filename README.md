@@ -5,7 +5,7 @@
 >
 > An explainable, policy-driven claims processing platform that validates medical documents, extracts structured information, evaluates insurance rules, detects risk signals, calculates eligible amounts, and produces auditable claim decisions with confidence scores.
 
-**Live Application:** [YOUR_DEPLOYMENT_URL](YOUR_DEPLOYMENT_URL)  
+**Live Application:** [YOUR_DEPLOYMENT_URL](https://plum-ai-claims-processor.vercel.app/)  
 **Repository:** [YOUR_GITHUB_URL](YOUR_GITHUB_URL)  
 **Demo Video:** [YOUR_DEMO_VIDEO_URL](YOUR_DEMO_VIDEO_URL)
 
