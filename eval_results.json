@@ -17,8 +17,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "76d8077f-8074-4359-aa46-2684f5a8d36b",
-          "claim_id": "CLM-9abf1177",
+          "trace_id": "8e662f6a-170d-402a-9831-dcce43dadcae",
+          "claim_id": "CLM-99dedc8c",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -37,8 +37,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "a0d8944a-40a1-4928-be7e-89051fe78ab3",
-          "claim_id": "CLM-9abf1177",
+          "trace_id": "d31c905f-2878-4cdf-b9af-781618df131b",
+          "claim_id": "CLM-99dedc8c",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -73,8 +73,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "f1f339ac-7460-4aa3-882f-8ee55d1838df",
-          "claim_id": "CLM-9abf1177",
+          "trace_id": "ab10d67d-8c37-42c2-a438-1934372af87d",
+          "claim_id": "CLM-99dedc8c",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -106,8 +106,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "21c89dd4-e4a2-41c9-92d8-aded88e48853",
-          "claim_id": "CLM-9abf1177",
+          "trace_id": "f3ae0912-0bf3-4f85-86c7-966d7bbfd25d",
+          "claim_id": "CLM-99dedc8c",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -133,8 +133,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "06734a2c-833f-4d74-be15-4882af29330b",
-          "claim_id": "CLM-9abf1177",
+          "trace_id": "00d4ac54-5c3e-40df-b092-8a5ef41cb5a0",
+          "claim_id": "CLM-99dedc8c",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentVerifier",
           "status": "OK",
@@ -149,8 +149,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "9176747f-b841-4c16-8eef-3e920c598982",
-          "claim_id": "CLM-9abf1177",
+          "trace_id": "685b7e8b-e5c2-4fe2-bb29-b38e021fee2d",
+          "claim_id": "CLM-99dedc8c",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "FAILED",
@@ -159,7 +159,7 @@
           "safe_output": {
             "ok": false,
             "status": "BLOCKED_DOCUMENT",
-            "message": "missing required document(s): HOSPITAL_BILL",
+            "message": "you uploaded PRESCRIPTION, PRESCRIPTION, but HOSPITAL_BILL is required for this consultation claim",
             "required": [
               "PRESCRIPTION",
               "HOSPITAL_BILL"
@@ -176,12 +176,12 @@
           },
           "evidence": null,
           "error": null,
-          "summary": "missing required document(s): HOSPITAL_BILL. Claim adjudication was blocked.",
+          "summary": "you uploaded PRESCRIPTION, PRESCRIPTION, but HOSPITAL_BILL is required for this consultation claim. Claim adjudication was blocked.",
           "reason_code": "DOCUMENT_VERIFICATION_FAILED"
         },
         {
-          "trace_id": "f6924ba0-fd32-40b3-83c5-80cb308d4a6b",
-          "claim_id": "CLM-9abf1177",
+          "trace_id": "c46daf7f-905b-4462-b3f3-4e0de4eec4c0",
+          "claim_id": "CLM-99dedc8c",
           "step": "POLICY_EVALUATION",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -196,8 +196,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "5523660a-5dfc-4aaf-b92d-be034c42cd1c",
-          "claim_id": "CLM-9abf1177",
+          "trace_id": "90cf5704-0998-460c-a485-8347b0e3c55f",
+          "claim_id": "CLM-99dedc8c",
           "step": "FINANCIAL_CALCULATION",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -212,8 +212,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "196ee5cc-daaf-4b32-9b78-6655b84bb9ac",
-          "claim_id": "CLM-9abf1177",
+          "trace_id": "c3d637b8-c0df-4a51-afdc-d6eca26178d4",
+          "claim_id": "CLM-99dedc8c",
           "step": "FRAUD_ANALYSIS",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -228,8 +228,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "2d343ffa-c5cf-4366-b8be-2216c372d831",
-          "claim_id": "CLM-9abf1177",
+          "trace_id": "5ca32419-df94-4cbf-86bb-12907ade1a0a",
+          "claim_id": "CLM-99dedc8c",
           "step": "CONFIDENCE",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -244,8 +244,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "755b0c02-44fc-4994-9bd2-389a3834c492",
-          "claim_id": "CLM-9abf1177",
+          "trace_id": "7edc106d-a48b-45b3-bee1-13ee6235485c",
+          "claim_id": "CLM-99dedc8c",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "BLOCKED",
@@ -253,11 +253,11 @@
           "safe_input": null,
           "safe_output": {
             "decision": null,
-            "reason": "missing required document(s): HOSPITAL_BILL"
+            "reason": "you uploaded PRESCRIPTION, PRESCRIPTION, but HOSPITAL_BILL is required for this consultation claim"
           },
           "evidence": null,
           "error": null,
-          "summary": "Claim processing was blocked: missing required document(s): HOSPITAL_BILL",
+          "summary": "Claim processing was blocked: you uploaded PRESCRIPTION, PRESCRIPTION, but HOSPITAL_BILL is required for this consultation claim",
           "reason_code": "DOCUMENT_VERIFICATION_FAILED"
         }
       ]
@@ -279,8 +279,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "e4d633fd-be04-4d90-b00e-9fdbcee0fe00",
-          "claim_id": "CLM-ae03487f",
+          "trace_id": "6bef28e0-26d6-42eb-ab8e-65a0207f2ba7",
+          "claim_id": "CLM-f62bfcf8",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -299,8 +299,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "550681b9-ce31-412d-a53d-32f7f012e667",
-          "claim_id": "CLM-ae03487f",
+          "trace_id": "a6783b16-7dfb-4681-8787-1b3e4474fc8e",
+          "claim_id": "CLM-f62bfcf8",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -322,8 +322,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "9a788175-226b-474f-b2fe-53c41ade3a9d",
-          "claim_id": "CLM-ae03487f",
+          "trace_id": "a93b79c6-6ad3-44c6-83c4-9c39a3f31439",
+          "claim_id": "CLM-f62bfcf8",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -356,8 +356,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "6e9e0cf2-039a-4b5f-b377-fa4b6a672cd5",
-          "claim_id": "CLM-ae03487f",
+          "trace_id": "09ad5518-ec78-4a5f-9d5c-d3c33273f726",
+          "claim_id": "CLM-f62bfcf8",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -383,8 +383,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "7b63ff42-5f0b-4f6a-9325-d972f1b054d2",
-          "claim_id": "CLM-ae03487f",
+          "trace_id": "703436fb-d313-4b28-937b-324fdfccf110",
+          "claim_id": "CLM-f62bfcf8",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentVerifier",
           "status": "ERROR",
@@ -401,8 +401,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "df1ad5a2-98a2-44fd-8651-e149ca86465b",
-          "claim_id": "CLM-ae03487f",
+          "trace_id": "5198e536-e347-41e7-9c1a-156656e3ac10",
+          "claim_id": "CLM-f62bfcf8",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "FAILED",
@@ -411,7 +411,7 @@
           "safe_output": {
             "ok": false,
             "status": "BLOCKED_DOCUMENT",
-            "message": "re-upload required for unreadable document(s): F004",
+            "message": "please re-upload a clear pharmacy bill",
             "required": [
               "PRESCRIPTION",
               "PHARMACY_BILL"
@@ -429,12 +429,12 @@
           },
           "evidence": null,
           "error": null,
-          "summary": "re-upload required for unreadable document(s): F004. Claim adjudication was blocked.",
+          "summary": "please re-upload a clear pharmacy bill. Claim adjudication was blocked.",
           "reason_code": "DOCUMENT_VERIFICATION_FAILED"
         },
         {
-          "trace_id": "da3387e0-513a-4eb0-a876-3e4da148f30a",
-          "claim_id": "CLM-ae03487f",
+          "trace_id": "55dcebea-4eb9-44f1-9068-f6ab6b81dfbe",
+          "claim_id": "CLM-f62bfcf8",
           "step": "POLICY_EVALUATION",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -449,8 +449,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "e6babaef-35d9-48d2-9f6d-c24696a3cb14",
-          "claim_id": "CLM-ae03487f",
+          "trace_id": "4213da0a-4e6f-4411-9b43-e1b67c0ce80b",
+          "claim_id": "CLM-f62bfcf8",
           "step": "FINANCIAL_CALCULATION",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -465,8 +465,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "6d45122b-4744-4d15-9f56-bcd6e218eeb9",
-          "claim_id": "CLM-ae03487f",
+          "trace_id": "d77066c1-8073-404d-b5fa-1edf93692372",
+          "claim_id": "CLM-f62bfcf8",
           "step": "FRAUD_ANALYSIS",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -481,8 +481,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "59b6b5da-12fe-4f1e-8a7a-cd0376266273",
-          "claim_id": "CLM-ae03487f",
+          "trace_id": "e3a2fc6f-1c88-434d-b925-bf03e54e8976",
+          "claim_id": "CLM-f62bfcf8",
           "step": "CONFIDENCE",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -497,8 +497,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "646796a1-477b-4790-9d15-964260b8bffe",
-          "claim_id": "CLM-ae03487f",
+          "trace_id": "9e673275-3faa-4497-9b15-7187165d40de",
+          "claim_id": "CLM-f62bfcf8",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "BLOCKED",
@@ -506,11 +506,11 @@
           "safe_input": null,
           "safe_output": {
             "decision": null,
-            "reason": "re-upload required for unreadable document(s): F004"
+            "reason": "please re-upload a clear pharmacy bill"
           },
           "evidence": null,
           "error": null,
-          "summary": "Claim processing was blocked: re-upload required for unreadable document(s): F004",
+          "summary": "Claim processing was blocked: please re-upload a clear pharmacy bill",
           "reason_code": "DOCUMENT_VERIFICATION_FAILED"
         }
       ]
@@ -532,8 +532,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "78e258aa-a48c-4875-810e-f0d90e8ed1fb",
-          "claim_id": "CLM-f27230c1",
+          "trace_id": "bbf8e0bb-62ab-4d7c-beac-8db9572e4c1e",
+          "claim_id": "CLM-37df7bb9",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -552,8 +552,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "bd3e79c4-6849-4a41-a727-5cc50b1a1c6c",
-          "claim_id": "CLM-f27230c1",
+          "trace_id": "4f9ffa53-a1c1-42b4-90d0-751a79655fa9",
+          "claim_id": "CLM-37df7bb9",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -588,8 +588,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "05b6b455-c0a5-4a12-8fa2-3e13cd52956d",
-          "claim_id": "CLM-f27230c1",
+          "trace_id": "4589d823-62ef-44d5-89b1-d664bb172d46",
+          "claim_id": "CLM-37df7bb9",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -621,8 +621,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "22005ab2-0725-4ccd-9627-091270ce3162",
-          "claim_id": "CLM-f27230c1",
+          "trace_id": "d9db8959-4a4c-4b44-be88-43de8d9e0002",
+          "claim_id": "CLM-37df7bb9",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -652,8 +652,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "35e88abe-7cc8-40b1-b4f9-d3263314ed01",
-          "claim_id": "CLM-f27230c1",
+          "trace_id": "88bc2550-d97a-489b-aa88-3bcd15911b72",
+          "claim_id": "CLM-37df7bb9",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentVerifier",
           "status": "OK",
@@ -668,8 +668,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "f6dcb90a-760c-4055-a791-fe8d10ccbde5",
-          "claim_id": "CLM-f27230c1",
+          "trace_id": "7c370d36-afea-47eb-82b8-85db02580c91",
+          "claim_id": "CLM-37df7bb9",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -697,8 +697,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "1411ad4b-2d65-44ba-b110-1326089d9a47",
-          "claim_id": "CLM-f27230c1",
+          "trace_id": "433fa4fc-bbad-44f1-897e-57176918379d",
+          "claim_id": "CLM-37df7bb9",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "FAILED",
@@ -722,8 +722,8 @@
           "reason_code": "DOCUMENT_VERIFICATION_FAILED"
         },
         {
-          "trace_id": "b614d91c-cc38-4a2e-9315-596f1c65f04d",
-          "claim_id": "CLM-f27230c1",
+          "trace_id": "bb97c995-9440-46b1-893d-8928f3541334",
+          "claim_id": "CLM-37df7bb9",
           "step": "POLICY_EVALUATION",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -738,8 +738,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "8a846d88-16e2-4ccd-99fe-24f8c150a5f1",
-          "claim_id": "CLM-f27230c1",
+          "trace_id": "50fb9ca4-1c68-4267-b7d9-eec56e79477d",
+          "claim_id": "CLM-37df7bb9",
           "step": "FINANCIAL_CALCULATION",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -754,8 +754,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "75e32895-8552-4179-a8c8-db9671fbb310",
-          "claim_id": "CLM-f27230c1",
+          "trace_id": "e02679bd-b55e-4f8a-b320-85d7883b604e",
+          "claim_id": "CLM-37df7bb9",
           "step": "FRAUD_ANALYSIS",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -770,8 +770,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "7edd47b5-e714-4596-ab08-b6f9b086e4b6",
-          "claim_id": "CLM-f27230c1",
+          "trace_id": "964ce6e3-8a64-47df-b29e-beb723ce0633",
+          "claim_id": "CLM-37df7bb9",
           "step": "CONFIDENCE",
           "component": "Workflow",
           "status": "SKIPPED",
@@ -786,8 +786,8 @@
           "reason_code": "UPSTREAM_STAGE_FAILED"
         },
         {
-          "trace_id": "dde3b6e8-09cf-4c6b-bb74-0c0b8b256b31",
-          "claim_id": "CLM-f27230c1",
+          "trace_id": "03afb58f-bb57-4c12-b17c-06397b78e05f",
+          "claim_id": "CLM-37df7bb9",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "BLOCKED",
@@ -819,8 +819,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "5d13f901-a42d-4907-88c6-de58ea7c7803",
-          "claim_id": "CLM-eec684a4",
+          "trace_id": "6da25711-7911-48ea-bc07-d49f81217b03",
+          "claim_id": "CLM-9b49330d",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -839,8 +839,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "8281c832-3dbf-4a42-9f14-bca97e7ca09c",
-          "claim_id": "CLM-eec684a4",
+          "trace_id": "70a8dc2b-dba9-4d7c-8432-9c429cd0d723",
+          "claim_id": "CLM-9b49330d",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -875,8 +875,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "f416b993-1879-4666-b42d-8d064c8c1c63",
-          "claim_id": "CLM-eec684a4",
+          "trace_id": "a555d45c-0e2a-414a-ad5b-e9600ad0965a",
+          "claim_id": "CLM-9b49330d",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -908,8 +908,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "73479c7a-9422-48e8-a97d-1f7d9ba62593",
-          "claim_id": "CLM-eec684a4",
+          "trace_id": "888c06a5-b992-4e31-a8b7-78680e214b42",
+          "claim_id": "CLM-9b49330d",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -964,8 +964,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "8d71cf59-62bf-495b-8c4f-cbc2b81b984e",
-          "claim_id": "CLM-eec684a4",
+          "trace_id": "ca507f37-be68-4f81-8c66-85617a09ea1e",
+          "claim_id": "CLM-9b49330d",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentVerifier",
           "status": "OK",
@@ -980,8 +980,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "3032e138-63c6-4649-a36d-2bcfccb6560b",
-          "claim_id": "CLM-eec684a4",
+          "trace_id": "62635b87-cff0-48aa-8633-33662df6a522",
+          "claim_id": "CLM-9b49330d",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -1009,8 +1009,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "5c989094-ed52-4d64-bf09-233964dc9ba9",
-          "claim_id": "CLM-eec684a4",
+          "trace_id": "2cc8979a-e9bc-4dc9-9590-17bac13a8251",
+          "claim_id": "CLM-9b49330d",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -1026,8 +1026,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "4d87fe2a-aa50-40c0-a039-7b421e9755b1",
-          "claim_id": "CLM-eec684a4",
+          "trace_id": "c5c39c08-97bf-4395-b860-3357d8f3f436",
+          "claim_id": "CLM-9b49330d",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -1037,9 +1037,10 @@
             "ok": true,
             "message": "documents consistent",
             "found_names": [
-              "Rajesh Kumar"
+              "rajesh kumar"
             ],
-            "mismatches": []
+            "mismatches": [],
+            "review_required": false
           },
           "evidence": null,
           "error": null,
@@ -1047,8 +1048,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "25ec7887-a08b-44d4-a9f3-fb6f21d39f78",
-          "claim_id": "CLM-eec684a4",
+          "trace_id": "7f114ff6-28a4-44c3-9872-ae712b8354b2",
+          "claim_id": "CLM-9b49330d",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -1190,8 +1191,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "a647465f-7847-4ec6-90d2-9e97399650a5",
-          "claim_id": "CLM-eec684a4",
+          "trace_id": "5ee777d6-6a5a-4290-a6c5-3d23d85d337f",
+          "claim_id": "CLM-9b49330d",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -1214,8 +1215,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "73f5c1b1-8ea5-4352-9abf-565f38cc2a1f",
-          "claim_id": "CLM-eec684a4",
+          "trace_id": "ff3d5ae8-ec65-4646-b9fa-f545eea3fb99",
+          "claim_id": "CLM-9b49330d",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
           "status": "OK",
@@ -1232,8 +1233,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "6967e541-29f6-4601-ac1a-ebdaa2eaf567",
-          "claim_id": "CLM-eec684a4",
+          "trace_id": "5f4047fa-2a4c-4512-b0d2-05bd26c3d353",
+          "claim_id": "CLM-9b49330d",
           "step": "CONFIDENCE",
           "component": "ConfidenceEngine",
           "status": "OK",
@@ -1254,8 +1255,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "c647143f-baf6-47fd-ba12-3bc51e008f06",
-          "claim_id": "CLM-eec684a4",
+          "trace_id": "c48e027f-2f21-4de2-8809-cc1e9a3d1c55",
+          "claim_id": "CLM-9b49330d",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -1266,7 +1267,8 @@
             "approved_amount": "1350",
             "processing_status": "COMPLETED",
             "reason": "approved by deterministic policy and financial engine",
-            "confidence_score": "0.90"
+            "confidence_score": "0.90",
+            "decision_summary": "Your consultation claim for \u20b91,500 was approved because the prescription and hospital bill were successfully verified and the treatment is covered under your policy, and the \u20b9150 co-pay was deducted from the \u20b91,500 eligible amount, resulting in an approved amount of \u20b91,350."
           },
           "evidence": null,
           "error": null,
@@ -1293,8 +1295,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "bee83146-c240-435a-bf00-aeea5f4a9255",
-          "claim_id": "CLM-ef2f60e7",
+          "trace_id": "9388e547-c04c-477f-ac56-c923605bc049",
+          "claim_id": "CLM-5ce50e75",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -1313,8 +1315,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "5fda6fd8-618e-4675-bc23-b17c81b19cca",
-          "claim_id": "CLM-ef2f60e7",
+          "trace_id": "ecd7e815-f64b-4084-9dff-62eea1418d6c",
+          "claim_id": "CLM-5ce50e75",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -1336,8 +1338,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "cc189fae-4b63-46de-9a96-d65d31f08e25",
-          "claim_id": "CLM-ef2f60e7",
+          "trace_id": "9423c508-3d67-4394-92c9-2e63707f6172",
+          "claim_id": "CLM-5ce50e75",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -1369,8 +1371,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "f3849c83-74fa-41fa-ad7f-b709fd900e7b",
-          "claim_id": "CLM-ef2f60e7",
+          "trace_id": "7f293bb5-40d3-48e4-b9a9-0ef3fac1fa55",
+          "claim_id": "CLM-5ce50e75",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -1409,8 +1411,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "201c6ca1-56fb-4e9c-8e66-b698c0ec1005",
-          "claim_id": "CLM-ef2f60e7",
+          "trace_id": "d28cfc82-cd0b-4d6f-9397-7f8ddb49fb32",
+          "claim_id": "CLM-5ce50e75",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentVerifier",
           "status": "OK",
@@ -1425,8 +1427,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "acb84dfc-90c8-4901-803f-c64b609f2099",
-          "claim_id": "CLM-ef2f60e7",
+          "trace_id": "93cfd4fa-6f41-42ac-9c3c-96da3ab6933a",
+          "claim_id": "CLM-5ce50e75",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -1454,8 +1456,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "d16a5a7f-a54d-475b-b676-84cd5517c09e",
-          "claim_id": "CLM-ef2f60e7",
+          "trace_id": "1b1daf96-00c0-48a6-9d63-3af25104ade0",
+          "claim_id": "CLM-5ce50e75",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -1471,8 +1473,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "b81b114e-37aa-45df-97e2-618edc995149",
-          "claim_id": "CLM-ef2f60e7",
+          "trace_id": "6617cbd0-936d-4118-99a1-bc20150cbc81",
+          "claim_id": "CLM-5ce50e75",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -1482,9 +1484,10 @@
             "ok": true,
             "message": "documents consistent",
             "found_names": [
-              "Vikram Joshi"
+              "vikram joshi"
             ],
-            "mismatches": []
+            "mismatches": [],
+            "review_required": false
           },
           "evidence": null,
           "error": null,
@@ -1492,8 +1495,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "0f747f4a-12a8-4a39-bac7-98112a52f8da",
-          "claim_id": "CLM-ef2f60e7",
+          "trace_id": "39ecc543-db4b-4b70-bd7f-21a9fa302dac",
+          "claim_id": "CLM-5ce50e75",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -1641,8 +1644,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "8fa1ef55-26a0-49b6-8e27-024fe681a7e5",
-          "claim_id": "CLM-ef2f60e7",
+          "trace_id": "e567d69c-0371-4437-80c9-db2fbf610c0d",
+          "claim_id": "CLM-5ce50e75",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -1650,7 +1653,8 @@
           "safe_input": null,
           "safe_output": {
             "decision": "REJECTED",
-            "reason": "WAITING_PERIOD"
+            "reason": "WAITING_PERIOD",
+            "decision_summary": "Your consultation claim was rejected because the treatment falls within the policy waiting period."
           },
           "evidence": null,
           "error": null,
@@ -1676,8 +1680,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "bf81544e-4ae3-4135-9bfe-995a349fbaa6",
-          "claim_id": "CLM-1793021e",
+          "trace_id": "1b78496d-4c2b-433d-99e4-b47ff18a14b6",
+          "claim_id": "CLM-70f9fb37",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -1696,8 +1700,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "32f0f79e-a8f3-44df-b6a7-3e3225bf766b",
-          "claim_id": "CLM-1793021e",
+          "trace_id": "c7ab703f-cdac-492a-beb2-fe3018dbc3cb",
+          "claim_id": "CLM-70f9fb37",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -1719,8 +1723,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "fb68d35f-6aad-45b8-941e-8023d520386d",
-          "claim_id": "CLM-1793021e",
+          "trace_id": "2a4c0dc2-4221-4456-88ab-b2247f73048e",
+          "claim_id": "CLM-70f9fb37",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -1743,8 +1747,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "5c570cb4-bbcd-4b3b-b9c6-e5a5d7616bf7",
-          "claim_id": "CLM-1793021e",
+          "trace_id": "6a6fc456-be65-4b1c-974a-9c170f05e3a8",
+          "claim_id": "CLM-70f9fb37",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -1778,8 +1782,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "a5960774-d848-4432-8e3a-44fae873cfeb",
-          "claim_id": "CLM-1793021e",
+          "trace_id": "da3c7b1d-5f3a-4b01-a7a6-b2e8eff89281",
+          "claim_id": "CLM-70f9fb37",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentVerifier",
           "status": "OK",
@@ -1794,8 +1798,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "6370341e-1d6a-46d1-9237-d14b10667c92",
-          "claim_id": "CLM-1793021e",
+          "trace_id": "36b442cd-a69e-48d0-8bc6-9fabfb630093",
+          "claim_id": "CLM-70f9fb37",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -1821,8 +1825,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "ad7273a4-dee5-41b0-9a40-bc92ddff6caf",
-          "claim_id": "CLM-1793021e",
+          "trace_id": "a4caf853-d0dd-435f-8ca3-a93feda05dba",
+          "claim_id": "CLM-70f9fb37",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -1838,8 +1842,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "afff24b7-8a75-4296-8b0e-3ee7fa6f6c54",
-          "claim_id": "CLM-1793021e",
+          "trace_id": "030d7b78-bab4-4acd-9767-fa829201ebb5",
+          "claim_id": "CLM-70f9fb37",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -1849,9 +1853,10 @@
             "ok": true,
             "message": "documents consistent",
             "found_names": [
-              "Priya Singh"
+              "priya singh"
             ],
-            "mismatches": []
+            "mismatches": [],
+            "review_required": false
           },
           "evidence": null,
           "error": null,
@@ -1859,8 +1864,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "87c03d6f-708f-419a-a995-570ccf6e8148",
-          "claim_id": "CLM-1793021e",
+          "trace_id": "49e3b90b-a604-42bf-abb8-cc8e8c90deac",
+          "claim_id": "CLM-70f9fb37",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -2015,8 +2020,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "91e8f7f6-e0d0-4cc6-b393-7f5252fb1b67",
-          "claim_id": "CLM-1793021e",
+          "trace_id": "ba219935-8c7d-4484-b77b-5afc402030bc",
+          "claim_id": "CLM-70f9fb37",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -2060,8 +2065,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "fd63fb09-ff3a-47d7-b96b-612651d294d1",
-          "claim_id": "CLM-1793021e",
+          "trace_id": "3e3bfa4b-5727-4ce0-845c-da311a84e7c4",
+          "claim_id": "CLM-70f9fb37",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
           "status": "OK",
@@ -2078,8 +2083,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "3441269c-fe16-4ea0-b9d6-dfe59b736c70",
-          "claim_id": "CLM-1793021e",
+          "trace_id": "f3aa9037-0cbf-47d5-8967-19fc0c9efa8b",
+          "claim_id": "CLM-70f9fb37",
           "step": "CONFIDENCE",
           "component": "ConfidenceEngine",
           "status": "OK",
@@ -2100,8 +2105,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "694817e1-16e4-4baf-9913-c9c919b79019",
-          "claim_id": "CLM-1793021e",
+          "trace_id": "7a5f70f0-e7fa-425e-986f-49060c74e9ba",
+          "claim_id": "CLM-70f9fb37",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -2112,7 +2117,8 @@
             "approved_amount": "8000",
             "processing_status": "COMPLETED",
             "reason": "approved by deterministic policy and financial engine",
-            "confidence_score": "0.90"
+            "confidence_score": "0.90",
+            "decision_summary": "Your dental claim was partially approved for \u20b98,000 because the \u20b98,000 Root Canal Treatment is covered under your policy, while the \u20b94,000 Teeth Whitening is excluded as a cosmetic treatment."
           },
           "evidence": null,
           "error": null,
@@ -2140,8 +2146,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "7687ac8f-beb4-4cec-b53e-c7612f4450ff",
-          "claim_id": "CLM-c8b71ae9",
+          "trace_id": "02fae667-019d-4f6a-9611-4a105e147f0d",
+          "claim_id": "CLM-58e373c8",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -2160,8 +2166,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "fa987fc0-e049-4459-8144-dc77e0f21ef2",
-          "claim_id": "CLM-c8b71ae9",
+          "trace_id": "453d5cb4-0633-48a8-bf49-cc70887561d5",
+          "claim_id": "CLM-58e373c8",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -2183,8 +2189,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "63eaeb36-f043-486a-9e02-e0cd02e2f38e",
-          "claim_id": "CLM-c8b71ae9",
+          "trace_id": "ebfe9e65-8254-45a5-bca3-8c9351309972",
+          "claim_id": "CLM-58e373c8",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -2225,8 +2231,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "8b4916dc-e503-4362-8ad6-a34cabc2b4b7",
-          "claim_id": "CLM-c8b71ae9",
+          "trace_id": "522b83c7-21bf-4888-b273-5641b5698783",
+          "claim_id": "CLM-58e373c8",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -2275,8 +2281,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "898b957b-f923-4e23-80ff-8bf5f99c49ca",
-          "claim_id": "CLM-c8b71ae9",
+          "trace_id": "cdc25642-925f-4fbf-8256-0c2af3867470",
+          "claim_id": "CLM-58e373c8",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentVerifier",
           "status": "OK",
@@ -2291,8 +2297,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "25bc7b4a-4bd9-44c7-9055-1f63c221027b",
-          "claim_id": "CLM-c8b71ae9",
+          "trace_id": "fc4eb80d-4e11-4ef0-96bf-d3af44f7f107",
+          "claim_id": "CLM-58e373c8",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -2322,8 +2328,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "ee2d9cf1-d711-4555-a786-f2ced5b6dfdf",
-          "claim_id": "CLM-c8b71ae9",
+          "trace_id": "f2bc9a02-abb3-4d7f-b42d-2d864a26936e",
+          "claim_id": "CLM-58e373c8",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -2339,8 +2345,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "d821700b-8083-4d1f-a11a-12e3234f1bc3",
-          "claim_id": "CLM-c8b71ae9",
+          "trace_id": "d93c54d8-24d4-4580-9c7d-0a4c98488be8",
+          "claim_id": "CLM-58e373c8",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -2350,7 +2356,8 @@
             "ok": true,
             "message": "documents consistent",
             "found_names": [],
-            "mismatches": []
+            "mismatches": [],
+            "review_required": false
           },
           "evidence": null,
           "error": null,
@@ -2358,8 +2365,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "909c049e-5227-4227-85b2-1e3eda6fc5a5",
-          "claim_id": "CLM-c8b71ae9",
+          "trace_id": "8bfdf745-927d-4a76-aed6-be642697e35a",
+          "claim_id": "CLM-58e373c8",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -2519,8 +2526,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "20dea8fd-df8d-47f3-84fa-9436a822cbff",
-          "claim_id": "CLM-c8b71ae9",
+          "trace_id": "9b686c81-2836-4507-9cec-a3f97f9ea980",
+          "claim_id": "CLM-58e373c8",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -2528,7 +2535,8 @@
           "safe_input": null,
           "safe_output": {
             "decision": "REJECTED",
-            "reason": "WAITING_PERIOD"
+            "reason": "WAITING_PERIOD",
+            "decision_summary": "Your diagnostic claim was rejected because the \u20b915,000 MRI LUMBAR SPINE required pre-authorization under your policy and no valid pre-authorization was provided."
           },
           "evidence": null,
           "error": null,
@@ -2555,8 +2563,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "3ebf98d5-27d6-4b14-b0da-b1c4ddf68a7a",
-          "claim_id": "CLM-9f3c249d",
+          "trace_id": "86325af9-e4ca-48fc-8de3-977e1ea6cedc",
+          "claim_id": "CLM-e870a887",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -2575,8 +2583,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "4d475ed4-0101-4d87-9e4d-663c7718ddd9",
-          "claim_id": "CLM-9f3c249d",
+          "trace_id": "85c2ff1c-7fd7-4b94-ad03-cfd0a08fc3da",
+          "claim_id": "CLM-e870a887",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -2598,8 +2606,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "140cd60c-d4fe-470c-9161-fab051b12d75",
-          "claim_id": "CLM-9f3c249d",
+          "trace_id": "baf49f69-2f84-4ff3-98be-ce4343b59227",
+          "claim_id": "CLM-e870a887",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -2631,8 +2639,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "17c660d5-841f-4771-b0d0-c390b2412e4f",
-          "claim_id": "CLM-9f3c249d",
+          "trace_id": "21545c27-18b0-443e-8df6-79a0ec361bf5",
+          "claim_id": "CLM-e870a887",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -2679,8 +2687,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "ad55c33b-c046-4bdd-a75a-2e92fdb0c125",
-          "claim_id": "CLM-9f3c249d",
+          "trace_id": "f9414781-d6d6-43fd-a7cf-bc5c005778b7",
+          "claim_id": "CLM-e870a887",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentVerifier",
           "status": "OK",
@@ -2695,8 +2703,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "84d9b442-7241-462e-a4ce-980c8c5f443c",
-          "claim_id": "CLM-9f3c249d",
+          "trace_id": "97fe90e9-3dd5-434a-ac38-149bc22096a9",
+          "claim_id": "CLM-e870a887",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -2724,8 +2732,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "39a3efe9-320b-4d22-aff0-ed51071c647e",
-          "claim_id": "CLM-9f3c249d",
+          "trace_id": "98685efc-9127-4cac-a7dd-0b6ab5bc8daf",
+          "claim_id": "CLM-e870a887",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -2741,8 +2749,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "7754f188-d53f-406c-9892-7477b5e9c857",
-          "claim_id": "CLM-9f3c249d",
+          "trace_id": "52216fe7-db24-4d56-bdc0-e0a03c295d8c",
+          "claim_id": "CLM-e870a887",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -2752,7 +2760,8 @@
             "ok": true,
             "message": "documents consistent",
             "found_names": [],
-            "mismatches": []
+            "mismatches": [],
+            "review_required": false
           },
           "evidence": null,
           "error": null,
@@ -2760,8 +2769,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "9e92e08f-a634-46d6-9de7-c793940bcacd",
-          "claim_id": "CLM-9f3c249d",
+          "trace_id": "b19e84d8-81aa-4e77-b791-cc6b6862f254",
+          "claim_id": "CLM-e870a887",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -2901,8 +2910,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "30c341cb-d223-4dca-ab85-dc99c4838056",
-          "claim_id": "CLM-9f3c249d",
+          "trace_id": "508a08e9-41b0-4272-99a1-51fae3552b43",
+          "claim_id": "CLM-e870a887",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -2910,7 +2919,8 @@
           "safe_input": null,
           "safe_output": {
             "decision": "REJECTED",
-            "reason": "PER_CLAIM_EXCEEDED"
+            "reason": "PER_CLAIM_EXCEEDED",
+            "decision_summary": "Your consultation claim was rejected because the claimed amount of \u20b97,500 exceeds your policy's per-claim limit of \u20b95,000."
           },
           "evidence": null,
           "error": null,
@@ -2936,8 +2946,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "e701a091-9654-4269-a2a6-c7fc9eb7e250",
-          "claim_id": "CLM-0e56e03f",
+          "trace_id": "3caa74ee-106a-498d-b366-f55124018680",
+          "claim_id": "CLM-297adf69",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -2956,8 +2966,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "d5baa89f-675d-4e7a-b0cd-698b5cc39bc8",
-          "claim_id": "CLM-0e56e03f",
+          "trace_id": "5461f335-982d-4575-b94f-68567c4c659c",
+          "claim_id": "CLM-297adf69",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -2979,8 +2989,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "477be5bb-7f86-4ad0-aa84-990ac3a0cfaa",
-          "claim_id": "CLM-0e56e03f",
+          "trace_id": "c32867c4-7c6e-48d3-b1d5-9ac793b7da6b",
+          "claim_id": "CLM-297adf69",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -3012,8 +3022,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "a2670103-5c09-45d1-aa34-4405e8b382a6",
-          "claim_id": "CLM-0e56e03f",
+          "trace_id": "b7b747c4-8312-4ebc-ae6c-21bfe6d50d8e",
+          "claim_id": "CLM-297adf69",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -3044,8 +3054,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "1bb490ce-0ab6-41ef-a8c4-d8195b8586cd",
-          "claim_id": "CLM-0e56e03f",
+          "trace_id": "f740a1ab-4445-4c6d-a3be-0172e064cc86",
+          "claim_id": "CLM-297adf69",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentVerifier",
           "status": "OK",
@@ -3060,8 +3070,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "212d4a4e-cbac-487a-a680-42901339ae8c",
-          "claim_id": "CLM-0e56e03f",
+          "trace_id": "6af70943-8c8e-4efd-a371-22d221917df1",
+          "claim_id": "CLM-297adf69",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -3089,8 +3099,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "4c0c2760-a522-41c9-bea4-702e7cc3017c",
-          "claim_id": "CLM-0e56e03f",
+          "trace_id": "c69eaffc-93bd-4615-857e-aac9f0acb048",
+          "claim_id": "CLM-297adf69",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -3106,8 +3116,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "a5a60787-54fc-47c4-9d76-385861378fdc",
-          "claim_id": "CLM-0e56e03f",
+          "trace_id": "61a13323-a766-41f2-ba86-91df1004b5ae",
+          "claim_id": "CLM-297adf69",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -3117,7 +3127,8 @@
             "ok": true,
             "message": "documents consistent",
             "found_names": [],
-            "mismatches": []
+            "mismatches": [],
+            "review_required": false
           },
           "evidence": null,
           "error": null,
@@ -3125,8 +3136,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "e46e69c7-a628-4062-9a05-61e0d4b4454b",
-          "claim_id": "CLM-0e56e03f",
+          "trace_id": "42875995-b82b-4030-8b72-7a502fecff6f",
+          "claim_id": "CLM-297adf69",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -3271,8 +3282,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "bb5bfc57-8297-4ddd-880e-bf140a3b77f8",
-          "claim_id": "CLM-0e56e03f",
+          "trace_id": "36bdc192-a5cd-4302-82bf-ba9b0aa99c21",
+          "claim_id": "CLM-297adf69",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -3295,8 +3306,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "80f3d484-c5d7-45a4-988f-575c8a3274cd",
-          "claim_id": "CLM-0e56e03f",
+          "trace_id": "38e9fdb5-f6d0-4002-9173-4bdb7d0f0877",
+          "claim_id": "CLM-297adf69",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
           "status": "OK",
@@ -3318,8 +3329,34 @@
           "reason_code": null
         },
         {
-          "trace_id": "9fdfcfc7-faad-4e2a-b5ef-d6d6dfe5803a",
-          "claim_id": "CLM-0e56e03f",
+          "trace_id": "36e5b5cd-9d35-4d3a-8ea6-f1e23abdd9fa",
+          "claim_id": "CLM-297adf69",
+          "step": "CONFIDENCE",
+          "component": "ConfidenceEngine",
+          "status": "OK",
+          "duration_ms": 0,
+          "safe_input": null,
+          "safe_output": {
+            "score": "0.50",
+            "factors": [
+              {
+                "factor": "base",
+                "value": "0.90"
+              },
+              {
+                "factor": "manual_review",
+                "value": "-0.40"
+              }
+            ]
+          },
+          "evidence": null,
+          "error": null,
+          "summary": "Confidence was calculated from completed and degraded components.",
+          "reason_code": null
+        },
+        {
+          "trace_id": "cc9aa176-de80-4eed-b055-02079f0227d8",
+          "claim_id": "CLM-297adf69",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -3327,7 +3364,11 @@
           "safe_input": null,
           "safe_output": {
             "decision": "MANUAL_REVIEW",
-            "reason": "same_day_claims"
+            "approved_amount": "0",
+            "processing_status": "PENDING_MANUAL_REVIEW",
+            "reason": "same_day_claims",
+            "confidence_score": "0.50",
+            "decision_summary": "Your consultation claim has been sent for manual review because 4 claims were submitted by the same member on the same day, which requires further verification."
           },
           "evidence": null,
           "error": null,
@@ -3354,8 +3395,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "5e0d674f-4e08-4514-9f24-2c6910e8552e",
-          "claim_id": "CLM-98c2b3d2",
+          "trace_id": "0c2df4a0-a44d-40db-891f-627817c70761",
+          "claim_id": "CLM-03d63c18",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -3374,8 +3415,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "28f5146e-dab9-4dc4-8995-af7c295e3e67",
-          "claim_id": "CLM-98c2b3d2",
+          "trace_id": "17977cea-c4ac-4457-8e7b-605bac4543ac",
+          "claim_id": "CLM-03d63c18",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -3397,8 +3438,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "b2239f77-228e-4b98-806d-01deb09658c7",
-          "claim_id": "CLM-98c2b3d2",
+          "trace_id": "5ed66797-acea-4762-90be-779bf6848faf",
+          "claim_id": "CLM-03d63c18",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -3430,8 +3471,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "d8a610e2-5fbf-46ee-ada7-c6226b0cb36b",
-          "claim_id": "CLM-98c2b3d2",
+          "trace_id": "bbcaffe1-2c8d-4979-9087-0ce2929c88e0",
+          "claim_id": "CLM-03d63c18",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -3480,8 +3521,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "23f8e276-e3b4-499c-b984-f52948390bc4",
-          "claim_id": "CLM-98c2b3d2",
+          "trace_id": "277ecda3-f0d7-46d4-80ed-0f7475063497",
+          "claim_id": "CLM-03d63c18",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentVerifier",
           "status": "OK",
@@ -3496,8 +3537,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "7f85c2c9-4972-42cb-b1cb-caad2fde1520",
-          "claim_id": "CLM-98c2b3d2",
+          "trace_id": "b93e6517-7965-468b-bd7e-e9e8c8f7a1d6",
+          "claim_id": "CLM-03d63c18",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -3525,8 +3566,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "43e91330-1f63-4de5-94e2-70c4a0be2b44",
-          "claim_id": "CLM-98c2b3d2",
+          "trace_id": "15b8ac3d-4db3-4a2c-b8d5-f82500ed55fb",
+          "claim_id": "CLM-03d63c18",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -3542,8 +3583,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "8d3f5429-b127-49d6-babf-b0ea279be58f",
-          "claim_id": "CLM-98c2b3d2",
+          "trace_id": "d0f8dc94-c77a-4bb2-bfc9-9fb396545451",
+          "claim_id": "CLM-03d63c18",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -3553,9 +3594,10 @@
             "ok": true,
             "message": "documents consistent",
             "found_names": [
-              "Deepak Shah"
+              "deepak shah"
             ],
-            "mismatches": []
+            "mismatches": [],
+            "review_required": false
           },
           "evidence": null,
           "error": null,
@@ -3563,8 +3605,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "de6c96ad-f3c4-4468-b49b-6efd2a2cd453",
-          "claim_id": "CLM-98c2b3d2",
+          "trace_id": "bb2cb2be-0755-470a-a09b-f09f1842db34",
+          "claim_id": "CLM-03d63c18",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -3706,8 +3748,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "6ce551fa-9524-4760-8263-ddbb5d03abca",
-          "claim_id": "CLM-98c2b3d2",
+          "trace_id": "321b128b-8e07-451e-a36d-3b79f93f9f55",
+          "claim_id": "CLM-03d63c18",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -3730,8 +3772,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "1bcf97fb-e420-4325-ae43-500feeb362f2",
-          "claim_id": "CLM-98c2b3d2",
+          "trace_id": "cc238a5b-5ef6-44af-9dca-1cf690ad3baa",
+          "claim_id": "CLM-03d63c18",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
           "status": "OK",
@@ -3748,8 +3790,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "e3f297aa-e820-40d5-9ab4-e480a751e234",
-          "claim_id": "CLM-98c2b3d2",
+          "trace_id": "221e8306-35c9-4028-bbab-aed8b5f66d67",
+          "claim_id": "CLM-03d63c18",
           "step": "CONFIDENCE",
           "component": "ConfidenceEngine",
           "status": "OK",
@@ -3770,8 +3812,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "3a21786c-48ca-42dc-984a-1c2a98615970",
-          "claim_id": "CLM-98c2b3d2",
+          "trace_id": "ed3c43ed-29b5-492f-8fdc-cfd873ea48fe",
+          "claim_id": "CLM-03d63c18",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -3782,7 +3824,8 @@
             "approved_amount": "3240",
             "processing_status": "COMPLETED",
             "reason": "approved by deterministic policy and financial engine",
-            "confidence_score": "0.90"
+            "confidence_score": "0.90",
+            "decision_summary": "Your consultation claim for \u20b94,500 was approved because the prescription and hospital bill were successfully verified and the treatment is covered under your policy, and the \u20b9360 co-pay was deducted from the \u20b94,500 eligible amount, resulting in an approved amount of \u20b93,240."
           },
           "evidence": null,
           "error": null,
@@ -3809,8 +3852,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "91610434-ada4-4f59-b563-01a65610d83d",
-          "claim_id": "CLM-f6d7fa9c",
+          "trace_id": "db9a9161-6890-4a86-af00-cea2d450ba00",
+          "claim_id": "CLM-2434c490",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -3829,8 +3872,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "593d5284-d9a9-4b24-8fc5-1c1b6a7e34f2",
-          "claim_id": "CLM-f6d7fa9c",
+          "trace_id": "3a659d41-abd7-414b-86a5-dd90850bdecd",
+          "claim_id": "CLM-2434c490",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -3852,8 +3895,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "fb67082c-69c5-4cf7-8862-e8abbe7e028c",
-          "claim_id": "CLM-f6d7fa9c",
+          "trace_id": "4c83d96d-eb43-49f0-b718-20362c78efb3",
+          "claim_id": "CLM-2434c490",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -3885,8 +3928,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "6b9bf415-0f12-4dd3-82d2-78878754233f",
-          "claim_id": "CLM-f6d7fa9c",
+          "trace_id": "375b217a-c089-45f5-b91d-a3d83e2605b1",
+          "claim_id": "CLM-2434c490",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -3930,8 +3973,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "9b0179de-b6d5-4abe-ad39-40b043e208ec",
-          "claim_id": "CLM-f6d7fa9c",
+          "trace_id": "7ec9ca8a-f1b9-443a-8e83-9f7872e3ab2e",
+          "claim_id": "CLM-2434c490",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentVerifier",
           "status": "OK",
@@ -3946,8 +3989,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "4af860a1-6ff8-4473-abf2-f5f48406acc3",
-          "claim_id": "CLM-f6d7fa9c",
+          "trace_id": "7239616b-0329-4ca9-b3cf-e62ef64cf405",
+          "claim_id": "CLM-2434c490",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -3975,8 +4018,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "1bb1b6a1-ba82-4852-a409-ccc869816cab",
-          "claim_id": "CLM-f6d7fa9c",
+          "trace_id": "4134b363-8dd2-4800-92eb-cf7334b6a91d",
+          "claim_id": "CLM-2434c490",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -3992,8 +4035,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "b3ac0964-d031-48d3-bc02-03ff5aaeb354",
-          "claim_id": "CLM-f6d7fa9c",
+          "trace_id": "eb024923-4dda-4769-8fa0-9d54515d3cb4",
+          "claim_id": "CLM-2434c490",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -4003,7 +4046,8 @@
             "ok": true,
             "message": "documents consistent",
             "found_names": [],
-            "mismatches": []
+            "mismatches": [],
+            "review_required": false
           },
           "evidence": null,
           "error": null,
@@ -4011,8 +4055,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "f3eb7216-0319-4fb1-80b6-5887fce58d83",
-          "claim_id": "CLM-f6d7fa9c",
+          "trace_id": "ed5cb3b1-c3e3-4b1e-b2b0-6c52d05049e0",
+          "claim_id": "CLM-2434c490",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -4159,8 +4203,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "09939633-a657-4120-9fa7-33ad56574ca8",
-          "claim_id": "CLM-f6d7fa9c",
+          "trace_id": "d0196f9d-00e4-4f0c-b24b-2b94695430db",
+          "claim_id": "CLM-2434c490",
           "step": "FINANCIAL_CALCULATION",
           "component": "CalculationEngine",
           "status": "OK",
@@ -4183,8 +4227,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "5d2a00e6-f390-4a22-b694-422fd358460c",
-          "claim_id": "CLM-f6d7fa9c",
+          "trace_id": "7711a978-f438-46ea-8739-c4fcddba4664",
+          "claim_id": "CLM-2434c490",
           "step": "FRAUD_ANALYSIS",
           "component": "FraudAnalyzer",
           "status": "DEGRADED",
@@ -4206,8 +4250,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "9f248c73-5cee-4362-a6cb-4294cbcfb2b8",
-          "claim_id": "CLM-f6d7fa9c",
+          "trace_id": "ac5dc92b-ced9-4274-8894-0c9dd6dd74bf",
+          "claim_id": "CLM-2434c490",
           "step": "CONFIDENCE",
           "component": "ConfidenceEngine",
           "status": "OK",
@@ -4232,8 +4276,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "072e3ed9-0bb2-4dfa-a289-2a7eb8f90e76",
-          "claim_id": "CLM-f6d7fa9c",
+          "trace_id": "497c71ea-b035-40a9-9157-e4b87192fcc5",
+          "claim_id": "CLM-2434c490",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -4244,7 +4288,8 @@
             "approved_amount": "4000",
             "processing_status": "COMPLETED",
             "reason": "approved by deterministic policy and financial engine",
-            "confidence_score": "0.60"
+            "confidence_score": "0.60",
+            "decision_summary": "Your alternative medicine claim for \u20b94,000 was approved because the prescription and hospital bill were successfully verified and the treatment is covered under your policy, resulting in an approved amount of \u20b94,000. Processing was degraded because FraudAnalyzer was unavailable, so manual review is recommended."
           },
           "evidence": null,
           "error": null,
@@ -4269,8 +4314,8 @@
       },
       "trace_events": [
         {
-          "trace_id": "8016c555-38a4-49ed-a214-91f50f751e8b",
-          "claim_id": "CLM-2c9655ff",
+          "trace_id": "9292be34-f8a2-40d5-95da-7dd97e621105",
+          "claim_id": "CLM-fbada006",
           "step": "INPUT_VALIDATION",
           "component": "ClaimIntake",
           "status": "OK",
@@ -4289,8 +4334,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "dc7abad0-52f1-44fc-be76-7da246fe1fe7",
-          "claim_id": "CLM-2c9655ff",
+          "trace_id": "65adf5c3-0a9a-4aae-abde-b2425ec48c11",
+          "claim_id": "CLM-fbada006",
           "step": "MEMBER_RESOLUTION",
           "component": "MemberResolver",
           "status": "OK",
@@ -4312,8 +4357,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "a2d074e8-3ed5-435f-bad1-ba1afedcb61d",
-          "claim_id": "CLM-2c9655ff",
+          "trace_id": "9de1a65e-e8b2-43b9-8969-e12fc3027659",
+          "claim_id": "CLM-fbada006",
           "step": "DOCUMENT_CLASSIFICATION",
           "component": "DocumentClassifier",
           "status": "OK",
@@ -4345,8 +4390,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "85442edb-30de-47ba-84e5-576efaa0271e",
-          "claim_id": "CLM-2c9655ff",
+          "trace_id": "adaadec0-7d8d-453f-938a-ac49e15021bc",
+          "claim_id": "CLM-fbada006",
           "step": "DOCUMENT_EXTRACTION",
           "component": "DocumentExtractor",
           "status": "OK",
@@ -4389,8 +4434,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "b6ee9e7b-b4b5-4a99-8ae6-87135e1e1213",
-          "claim_id": "CLM-2c9655ff",
+          "trace_id": "0c59a8ca-eb00-4124-b06d-51f4dd5f5ebf",
+          "claim_id": "CLM-fbada006",
           "step": "DOCUMENT_QUALITY",
           "component": "DocumentVerifier",
           "status": "OK",
@@ -4405,8 +4450,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "53536257-09ea-4026-a5cd-a1ae7ed9596e",
-          "claim_id": "CLM-2c9655ff",
+          "trace_id": "19b69846-5ec7-4cb6-8677-335da875c5cb",
+          "claim_id": "CLM-fbada006",
           "step": "DOCUMENT_VERIFICATION",
           "component": "DocumentVerifier",
           "status": "PASSED",
@@ -4434,8 +4479,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "af41ceeb-d478-4253-8084-2faee1d2150a",
-          "claim_id": "CLM-2c9655ff",
+          "trace_id": "7f14992e-d0f3-4ce3-aa1f-0d7e48820bcb",
+          "claim_id": "CLM-fbada006",
           "step": "MEMBER_DOCUMENT_CONSISTENCY",
           "component": "MemberDocumentConsistencyAgent",
           "status": "PASSED",
@@ -4451,8 +4496,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "13bf0562-915a-4266-b742-5cc0bcfee31c",
-          "claim_id": "CLM-2c9655ff",
+          "trace_id": "575fee32-6091-41d2-9a5c-eaaccc251826",
+          "claim_id": "CLM-fbada006",
           "step": "CROSS_DOCUMENT_CONSISTENCY",
           "component": "ConsistencyAgent",
           "status": "PASSED",
@@ -4462,7 +4507,8 @@
             "ok": true,
             "message": "documents consistent",
             "found_names": [],
-            "mismatches": []
+            "mismatches": [],
+            "review_required": false
           },
           "evidence": null,
           "error": null,
@@ -4470,8 +4516,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "8a433128-44d0-43a7-b4fc-5bdd8f31e262",
-          "claim_id": "CLM-2c9655ff",
+          "trace_id": "89c16fe5-61d5-4e74-9330-9a6a7bbe9bf7",
+          "claim_id": "CLM-fbada006",
           "step": "POLICY_EVALUATION",
           "component": "PolicyEvaluator",
           "status": "OK",
@@ -4613,8 +4659,8 @@
           "reason_code": null
         },
         {
-          "trace_id": "52d5ea69-7b3e-4d84-a9e4-53b096374b3e",
-          "claim_id": "CLM-2c9655ff",
+          "trace_id": "1c7d1ecf-efd0-4f45-9ef6-5c6801c2e6b2",
+          "claim_id": "CLM-fbada006",
           "step": "DECISION",
           "component": "DecisionEngine",
           "status": "OK",
@@ -4622,7 +4668,8 @@
           "safe_input": null,
           "safe_output": {
             "decision": "REJECTED",
-            "reason": "EXCLUDED_CONDITION"
+            "reason": "EXCLUDED_CONDITION",
+            "decision_summary": "Your consultation claim was rejected because the claimed amount of \u20b98,000 exceeds your policy's per-claim limit of \u20b95,000."
           },
           "evidence": null,
           "error": null,

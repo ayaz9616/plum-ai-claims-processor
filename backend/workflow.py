@@ -12,6 +12,8 @@ from pathlib import Path
 from langgraph.graph import END, StateGraph
 
 from .adapter import normalize_claim_input
+from .extraction_normalize import DocumentExtractionNormalizationError, parse_structured_document
+from .identity import normalize_identity_name
 from .providers import ProviderSet, VisionRequest
 from .uploads import STAGING_DIR
 from .policy import PolicyRepository
@@ -24,6 +26,7 @@ from .schemas import (
     DecisionResult,
     DocumentClassification,
     DocumentExtraction,
+    DocumentQualityResult,
     DocumentVerificationResult,
     FinancialCalculationResult,
     FraudAnalysis,
@@ -48,6 +51,7 @@ class ClaimState(TypedDict, total=False):
     document_classifications: List[DocumentClassification]
     document_verification_result: DocumentVerificationResult
     document_extractions_result: List[DocumentExtraction]
+    document_quality_results: List[DocumentQualityResult]
     prepared_documents: List[NormalizedDocument]
     consistency_result: ConsistencyResult
     financials_result: FinancialCalculationResult
@@ -141,24 +145,38 @@ class ProductionDocumentAdapter:
         return {".pdf": "application/pdf", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp"}.get(suffix, "application/octet-stream")
 
     @staticmethod
-    def _parse_response(text: str) -> StructuredDocumentData:
-        cleaned = text.strip()
-        if cleaned.startswith("```"):
-            cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", cleaned, flags=re.IGNORECASE)
-        try:
-            payload = json.loads(cleaned)
-        except json.JSONDecodeError:
-            start, end = cleaned.find("{"), cleaned.rfind("}")
-            if start < 0 or end <= start:
-                raise
-            payload = json.loads(cleaned[start:end + 1])
+    def _parse_response(text: str, structured: Optional[Dict[str, Any]] = None) -> StructuredDocumentData:
+        if isinstance(structured, dict) and structured:
+            payload = dict(structured)
+        else:
+            cleaned = (text or "").strip()
+            if not cleaned:
+                raise ValueError("document extraction returned an empty response")
+            if cleaned.startswith("```"):
+                cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", cleaned, flags=re.IGNORECASE)
+            try:
+                payload = json.loads(cleaned)
+            except json.JSONDecodeError:
+                start, end = cleaned.find("{"), cleaned.rfind("}")
+                if start < 0 or end <= start:
+                    raise ValueError("document extraction did not return valid JSON")
+                try:
+                    payload = json.loads(cleaned[start:end + 1])
+                except json.JSONDecodeError as exc:
+                    raise ValueError("document extraction returned malformed JSON") from exc
+        if not isinstance(payload, dict):
+            raise ValueError("document extraction returned an unexpected response format")
         # Gemini sometimes uses `date`; converge that provider detail at the boundary.
         if "treatment_date" not in payload and payload.get("date"):
             payload["treatment_date"] = payload["date"]
         payload["document_type"] = re.sub(r"[\s-]+", "_", str(payload.get("document_type") or "UNKNOWN").upper())
         quality = str(payload.get("quality") or "UNKNOWN").upper()
         payload["quality"] = {"HIGH": "GOOD", "READABLE": "GOOD", "MEDIUM": "LOW", "POOR": "LOW", "UNREADABLE": "UNREADABLE"}.get(quality, quality)
-        return StructuredDocumentData.model_validate(payload)
+        try:
+            parsed, _financial_mismatches = parse_structured_document(payload)
+        except DocumentExtractionNormalizationError as exc:
+            raise ValueError(f"document extraction normalization failed: {exc}") from exc
+        return parsed
 
     def materialize(self, document: Dict[str, Any]) -> NormalizedDocument:
         # Fixture extraction is explicit and exists solely to exercise the same workflow contract.
@@ -172,9 +190,9 @@ class ProductionDocumentAdapter:
         staged_path = STAGING_DIR / document_id
         if not staged_path.exists():
             raise RuntimeError("uploaded document was not found in staging")
-        prompt = """Extract this medical claim document. Return ONLY JSON with: document_type (PRESCRIPTION, HOSPITAL_BILL, PHARMACY_BILL, LAB_REPORT, DIAGNOSTIC_REPORT, DENTAL_REPORT, UNKNOWN), patient_name, treatment_date (YYYY-MM-DD when possible), hospital_name, diagnosis, treatment, line_items ([{description, amount}]), total, quality (GOOD, LOW, UNREADABLE), confidence (0..1). Use null/[] where unknown; do not infer arithmetic or policy decisions."""
+        prompt = """Extract this medical claim document. Return ONLY JSON with: document_type (PRESCRIPTION, HOSPITAL_BILL, PHARMACY_BILL, LAB_REPORT, DIAGNOSTIC_REPORT, DENTAL_REPORT, UNKNOWN), patient_name, treatment_date (YYYY-MM-DD when possible), hospital_name, diagnosis, treatment, line_items ([{description, amount}]), subtotal, tax, discount, other_charges, grand_total, amount_payable, amount_received, total, quality (GOOD, LOW, UNREADABLE), confidence (0..1). Preserve each labelled monetary value; use null/[] where unknown and do not infer arithmetic or policy decisions."""
         response = self.vision.analyze(VisionRequest(document_path=str(staged_path), mime_type=self._mime_type(document), metadata={"prompt": prompt}))
-        parsed = self._parse_response(response.text)
+        parsed = self._parse_response(response.text, response.structured)
         # A successfully consumed document no longer needs to remain staged.
         staged_path.unlink(missing_ok=True)
         extracted = parsed.model_dump(mode="python", exclude={"document_type", "quality", "confidence"}, exclude_none=True)
@@ -195,9 +213,11 @@ class DocumentVerifier:
         ok = not missing and not unreadable
         message = "documents verified"
         if unreadable:
-            message = f"re-upload required for unreadable document(s): {', '.join(unreadable)}"
+            unreadable_types = [c.document_type.replace("_", " ").lower() for c in classifications if c.file_id in unreadable]
+            message = f"please re-upload a clear {' and '.join(unreadable_types)}"
         elif missing:
-            message = f"missing required document(s): {', '.join(missing)}"
+            uploaded = ", ".join(provided) or "no usable documents"
+            message = f"you uploaded {uploaded}, but {' and '.join(missing)} is required for this {category.lower()} claim"
         return DocumentVerificationResult(
             ok=ok,
             status="BLOCKED_DOCUMENT" if not ok else "VERIFIED",
@@ -226,42 +246,61 @@ class DocumentExtractor:
 
 
 class ConsistencyAgent:
+    @staticmethod
+    def bill_arithmetic_verifiable(extractions: List[DocumentExtraction]) -> bool:
+        bills = [e for e in extractions if e.document_type.upper() in {"PHARMACY_BILL", "HOSPITAL_BILL"}]
+        if not bills:
+            return True
+        for extraction in bills:
+            payload = extraction.extracted
+            items = payload.get("line_items") or []
+            total = payload.get("amount_payable", payload.get("grand_total", payload.get("total")))
+            if not items or total is None or any(not isinstance(item, dict) or item.get("amount") is None for item in items):
+                return False
+        return True
+
     def check(self, extractions: List[DocumentExtraction]) -> ConsistencyResult:
         names = []
         for extraction in extractions:
             patient_name = extraction.extracted.get("patient_name")
             if patient_name:
-                names.append(str(patient_name).strip())
+                names.append(_normalize_name(str(patient_name)))
         unique_names = sorted(set(names))
         mismatches: List[Dict[str, Any]] = []
         if len(unique_names) > 1:
-            mismatches.append({"field": "patient_name", "found_names": unique_names, "reason": "cross-document patient mismatch"})
-        dates = sorted({str(e.extracted.get("treatment_date") or e.extracted.get("date")).strip() for e in extractions if e.extracted.get("treatment_date") or e.extracted.get("date")})
+            mismatches.append({"field": "patient_name", "found_names": unique_names, "severity": "CRITICAL", "action": "BLOCK", "reason": "documents contain different patient identities"})
+        def normalized_date(value: Any) -> str:
+            raw = str(value).strip()
+            for date_format in ("%Y-%m-%d", "%d-%b-%Y", "%d %b %Y", "%d/%m/%Y"):
+                try:
+                    return datetime.strptime(raw, date_format).date().isoformat()
+                except ValueError:
+                    continue
+            return raw
+        dates = sorted({normalized_date(e.extracted.get("treatment_date") or e.extracted.get("date")) for e in extractions if e.extracted.get("treatment_date") or e.extracted.get("date")})
         if len(dates) > 1:
-            mismatches.append({"field": "treatment_date", "found_dates": dates, "reason": "cross-document treatment date mismatch"})
+            mismatches.append({"field": "treatment_date", "found_dates": dates, "severity": "CRITICAL", "action": "BLOCK", "reason": "documents contain different treatment dates"})
         for extraction in extractions:
             payload = extraction.extracted
             items = payload.get("line_items") or []
-            if items and payload.get("total") is not None:
+            stated_amount = payload.get("amount_payable", payload.get("grand_total", payload.get("total")))
+            if items and stated_amount is not None:
                 try:
                     line_sum = sum((Decimal(str(item.get("amount", 0))) for item in items), Decimal("0"))
-                    total = Decimal(str(payload["total"]))
+                    total = Decimal(str(stated_amount))
                     if line_sum != total:
-                        mismatches.append({"field": "bill_total", "file_id": extraction.file_id, "line_item_sum": str(line_sum), "bill_total": str(total), "difference": str(line_sum-total), "consistency_status": "MISMATCH"})
+                        mismatches.append({"field": "bill_total", "file_id": extraction.file_id, "line_item_total": str(line_sum), "amount_payable": str(payload.get("amount_payable")) if payload.get("amount_payable") is not None else None, "grand_total": str(payload.get("grand_total")) if payload.get("grand_total") is not None else None, "document_total": str(payload.get("total")) if payload.get("total") is not None else None, "severity": "REVIEW", "action": "MANUAL_REVIEW", "reason": "bill contains conflicting financial totals"})
                 except Exception:
-                    mismatches.append({"field": "bill_total", "file_id": extraction.file_id, "reason": "bill arithmetic fields are invalid", "consistency_status": "INVALID"})
-        ok = not mismatches
+                    mismatches.append({"field": "bill_total", "file_id": extraction.file_id, "severity": "REVIEW", "action": "MANUAL_REVIEW", "reason": "bill arithmetic fields could not be compared"})
+        critical = [m for m in mismatches if m.get("severity") == "CRITICAL"]
+        ok = not critical
         message = "documents consistent"
-        if not ok:
+        if mismatches:
             message = "; ".join(m.get("reason", f"{m.get('field', 'document')} mismatch") for m in mismatches)
-        return ConsistencyResult(ok=ok, message=message, found_names=unique_names, mismatches=mismatches)
+        return ConsistencyResult(ok=ok, message=message, found_names=unique_names, mismatches=mismatches, review_required=bool(mismatches and not critical))
 
-# New helper to normalize names
 def _normalize_name(name: str) -> str:
-    if not name:
-        return ""
-    name = re.sub(r'^(mr\.|ms\.|mrs\.|dr\.)\s*', '', name, flags=re.IGNORECASE)
-    return name.strip().lower()
+    return normalize_identity_name(name)
 
 class MemberResolver:
     """Resolve member and policy validity using policy_terms.json data."""
@@ -476,6 +515,57 @@ class DecisionEngine:
         )
 
 
+class DocumentQualityGate:
+    """Use structured extraction evidence to prevent type recognition becoming a readability pass."""
+    _BILL_TYPES = {"PHARMACY_BILL"}
+
+    @staticmethod
+    def _present(value: Any) -> bool:
+        return value is not None and str(value).strip().lower() not in {"", "none", "null", "unknown", "n/a"}
+
+    @classmethod
+    def assess(cls, documents: List[NormalizedDocument]) -> List[DocumentQualityResult]:
+        results: List[DocumentQualityResult] = []
+        for document in documents:
+            document_type = document.document_type.upper()
+            original_quality = document.quality.upper()
+            fields: List[str] = []
+            payload = document.extracted
+            if document_type in cls._BILL_TYPES:
+                if not cls._present(payload.get("patient_name")):
+                    fields.append("patient_name")
+                if not cls._present(payload.get("treatment_date") or payload.get("date")):
+                    fields.append("bill_date")
+                if not cls._present(payload.get("hospital_name") or payload.get("pharmacy_name") or payload.get("provider_name")):
+                    fields.append("pharmacy_provider_name")
+                line_items = payload.get("line_items") or []
+                reliable_line_items = bool(line_items) and all(
+                    isinstance(item, dict) and cls._present(item.get("amount"))
+                    for item in line_items
+                )
+                reliable_total = any(cls._present(payload.get(key)) for key in ("total", "grand_total", "amount_payable"))
+                if not reliable_line_items:
+                    fields.append("line_item_amounts")
+                if not reliable_total:
+                    fields.append("total_amount")
+
+                # A billing document cannot be adjudicated without both identity/date/provider
+                # evidence and a reliable way to establish the payable amount.
+                quality = "GOOD" if not fields else "UNREADABLE"
+                reason = "Critical billing fields could not be reliably read" if fields else "Critical billing fields were reliably extracted"
+            else:
+                quality = original_quality
+                reason = "No bill-specific readability gate applies"
+            if original_quality == "UNREADABLE":
+                quality = "UNREADABLE"
+                reason = "Document was reported as unreadable"
+            results.append(DocumentQualityResult(
+                file_id=document.file_id, document_type=document_type, quality=quality,
+                reason=reason, missing_or_unreliable_fields=fields,
+            ))
+        return results
+
+
 @dataclass
 class ClaimWorkflow:
     policy_repo: PolicyRepository
@@ -488,6 +578,7 @@ class ClaimWorkflow:
         self.member_resolver = MemberResolver()
         self.production_documents = ProductionDocumentAdapter(self.providers)
         self.classifier = DocumentClassifier()
+        self.quality_gate = DocumentQualityGate()
         self.verifier = DocumentVerifier()
         self.extractor = DocumentExtractor()
         self.consistency = ConsistencyAgent()
@@ -513,7 +604,6 @@ class ClaimWorkflow:
         graph.add_node("policy_rejection", self._policy_rejection)
         graph.add_node("financial_calculation", self._financial_calculation)
         graph.add_node("fraud_analysis", self._fraud_analysis)
-        graph.add_node("manual_review", self._manual_review)
         graph.add_node("confidence", self._confidence)
         graph.add_node("final_decision", self._final_decision)
 
@@ -524,7 +614,11 @@ class ClaimWorkflow:
             self._route_after_member_resolution,
             {"blocked": "blocked_document", "continue": "document_classification"},
         )
-        graph.add_edge("document_classification", "document_extraction")
+        graph.add_conditional_edges(
+            "document_classification", self._route_after_document_classification,
+            {"blocked": "blocked_document", "continue": "document_extraction"},
+        )
+
         graph.add_edge("document_extraction", "document_verification")
         graph.add_conditional_edges(
             "document_verification",
@@ -549,7 +643,7 @@ class ClaimWorkflow:
         graph.add_conditional_edges(
             "fraud_analysis",
             self._route_after_fraud,
-            {"manual_review": "manual_review", "continue": "confidence"},
+            {"manual_review": "confidence", "continue": "confidence"},
         )
         graph.add_edge("confidence", "final_decision")
         graph.add_edge("final_decision", END)
@@ -580,6 +674,7 @@ class ClaimWorkflow:
                 processing_status="BLOCKED",
                 reason_code="DOCUMENT_VERIFICATION_FAILED",
                 reason=str(final_state.get("blocked_reason") or "document verification failed"),
+                decision_summary=self._decision_summary(final_state, None, None, str(final_state.get("blocked_reason") or "document verification failed")),
                 degraded=bool(final_state.get("degraded", False)),
                 trace=self.trace_manager.get_events_for_claim(claim_id),
             )
@@ -587,10 +682,94 @@ class ClaimWorkflow:
             self.audit_repository.persist_claim_bundle(claim_id, raw_claim, final_state, self.trace_manager.get_events_for_claim(claim_id))
         return result
 
+    @staticmethod
+    def _money(value: Any) -> str:
+        amount = Decimal(str(value or 0))
+        return f"₹{amount:,.0f}" if amount == amount.to_integral() else f"₹{amount:,.2f}"
+
+    def _decision_summary(self, state: ClaimState, decision: Optional[str], approved_amount: Optional[Decimal], reason: str = "") -> str:
+        claim = state["normalized_claim"]
+        category = str(claim.get("claim_category") or "medical").lower().replace("_", " ")
+        failures = state.get("component_failures", [])
+        if decision is None:
+            verification = state.get("document_verification_result")
+            if failures and any(item.get("component") == "DocumentExtraction" for item in failures):
+                return f"We couldn't process your {category} claim because the uploaded documents could not be successfully extracted and verified. Please re-upload clear required documents so the claim can be reviewed."
+            if verification:
+                if verification.unreadable:
+                    unreadable_types = " and ".join([t.replace("_", " ").title() for t in verification.unreadable])
+                    # Note: verification.unreadable currently holds file_ids from DocumentVerifier!
+                    # Wait, verification.unreadable contains file_ids!
+                    # I need to look up the document type from state["document_classifications"]
+                    unreadable_doc_types = []
+                    classifications = state.get("document_classifications", [])
+                    for c in classifications:
+                        if c.file_id in verification.unreadable:
+                            unreadable_doc_types.append(c.document_type.replace("_", " ").title())
+                    types_str = " and ".join(unreadable_doc_types) if unreadable_doc_types else "Document"
+                    return f"We found your {types_str}, but it could not be read reliably. Please re-upload a clearer image or PDF of the {types_str} so we can continue processing your claim."
+                
+                needed = ", ".join(item.replace("_", " ").lower() for item in verification.missing)
+                provided = ", ".join(item.replace("_", " ").lower() for item in verification.provided)
+                return f"We couldn't process your {category} claim because {needed} is required but was not successfully verified. You uploaded {provided or 'no usable required documents'}; please re-upload the required document clearly."
+            return f"We couldn't process your {category} claim because {reason}. Please correct the issue and submit the claim again."
+        if decision == "MANUAL_REVIEW":
+            fraud = state.get("fraud_result")
+            same_day = next((s for s in (fraud.signals if fraud else []) if s.get("type") == "same_day_claims"), None)
+            if same_day:
+                return f"Your {category} claim has been sent for manual review because {same_day.get('count', 0) + 1} claims were submitted by the same member on the same day, which requires further verification."
+            consistency = state.get("consistency_result")
+            bill_issue = next((m for m in (consistency.mismatches if consistency else []) if m.get("field") == "bill_total"), None)
+            if bill_issue:
+                values = [f"itemized charges total {self._money(bill_issue.get('line_item_total'))}"]
+                if bill_issue.get("amount_payable"):
+                    values.append(f"the document states {self._money(bill_issue['amount_payable'])} as payable")
+                if bill_issue.get("grand_total"):
+                    values.append(f"{self._money(bill_issue['grand_total'])} as the grand total")
+                evidence = values[0] if len(values) == 1 else f"{values[0]}, while {values[1]}" + (f" and {values[2]}" if len(values) > 2 else "")
+                return f"Your {category} claim requires manual review because the hospital bill contains conflicting totals: {evidence}. The policy calculation was completed, but the conflicting amounts need verification before payment."
+            return f"Your {category} claim has been sent for manual review because {reason} requires further verification."
+        if decision == "REJECTED":
+            evaluation = state.get("policy_evaluation_result")
+            failed = {check.name: check for check in (evaluation.checks if evaluation else []) if not check.ok}
+            if "pre_authorization" in failed:
+                details = failed["pre_authorization"].details or {}
+                item = (details.get("reasons") or [{}])[0]
+                return f"Your {category} claim was rejected because the {self._money(item.get('amount'))} {item.get('item', 'treatment').upper()} required pre-authorization under your policy and no valid pre-authorization was provided."
+            if "per_claim_limit" in failed:
+                details = failed["per_claim_limit"].details or {}
+                return f"Your {category} claim was rejected because the claimed amount of {self._money(details.get('claimed_amount'))} exceeds your policy's per-claim limit of {self._money(details.get('limit'))}."
+            if "waiting_periods" in failed:
+                return f"Your {category} claim was rejected because the treatment falls within the policy waiting period."
+            if "exclusions" in failed:
+                return f"Your {category} claim was rejected because the treatment is excluded under your policy."
+            return f"Your {category} claim was rejected because it did not meet the applicable policy requirement ({reason.replace('_', ' ').lower()})."
+        financials = state.get("financials_result")
+        breakdown = financials.breakdown if financials else {}
+        if decision == "PARTIAL":
+            items = breakdown.get("line_items", [])
+            covered = next((item for item in items if item.get("eligible")), {})
+            excluded = next((item for item in items if not item.get("eligible")), {})
+            return f"Your {category} claim was partially approved for {self._money(approved_amount)} because the {self._money(covered.get('approved_amount'))} {covered.get('description', 'covered treatment')} is covered under your policy, while the {self._money(excluded.get('claimed_amount'))} {excluded.get('description', 'other treatment')} is excluded as a cosmetic treatment."
+        copay = Decimal(str(breakdown.get("copay", 0)))
+        eligible = Decimal(str(breakdown.get("claimed", claim.get("claimed_amount", 0))))
+        verification = state.get("document_verification_result")
+        documents = " and ".join(item.replace("_", " ").lower() for item in (verification.required if verification else [])) or "required documents"
+        summary = f"Your {category} claim for {self._money(claim.get('claimed_amount'))} was approved because the {documents} were successfully verified and the treatment is covered under your policy"
+        if copay:
+            summary += f", and the {self._money(copay)} co-pay was deducted from the {self._money(eligible)} eligible amount"
+        summary += f", resulting in an approved amount of {self._money(approved_amount)}."
+        if state.get("degraded"):
+            component = (failures[0].get("component") if failures else "a processing component")
+            summary += f" Processing was degraded because {component} was unavailable, so manual review is recommended."
+        return summary
+
     def _input_validation(self, state: ClaimState) -> ClaimState:
         claim_id = state["claim_id"]
         claim = state["normalized_claim"]
         missing = [field for field in ("member_id", "policy_id", "claim_category", "treatment_date", "claimed_amount") if not claim.get(field)]
+        if not claim.get("documents"):
+            missing.append("documents")
         if missing:
             reason = f"invalid input: missing {', '.join(missing)}"
             _trace_event(self.trace_manager, claim_id, "INPUT_VALIDATION", "ClaimIntake", "ERROR", safe_input={"missing": missing}, error=reason)
@@ -644,10 +823,18 @@ class ClaimWorkflow:
     def _document_verification(self, state: ClaimState) -> ClaimState:
         claim_id = state["claim_id"]
         claim = state["normalized_claim"]
+        quality_results = self.quality_gate.assess(state.get("prepared_documents", []))
+        state["document_quality_results"] = quality_results
+        quality_by_id = {result.file_id: result for result in quality_results}
         classifications = state.get("document_classifications", [])
+        for classification in classifications:
+            assessment = quality_by_id.get(classification.file_id)
+            if assessment:
+                classification.quality = assessment.quality
         verification = self.verifier.verify(claim, classifications, state["policy_raw"])
         state["document_verification_result"] = verification
-        _trace_event(self.trace_manager, claim_id, "DOCUMENT_QUALITY", "DocumentVerifier", "ERROR" if verification.unreadable else "OK", safe_output={"unreadable": verification.unreadable})
+        unreadable_details = [result.model_dump(mode="python") for result in quality_results if result.quality == "UNREADABLE"]
+        _trace_event(self.trace_manager, claim_id, "DOCUMENT_QUALITY", "DocumentQualityGate", "NEEDS_REUPLOAD" if unreadable_details else "OK", safe_output={"unreadable": unreadable_details})
         _trace_event(self.trace_manager, claim_id, "DOCUMENT_VERIFICATION", "DocumentVerifier", "PASSED" if verification.ok else "FAILED", safe_output=verification.model_dump(mode="python"), summary="All policy-required document types were present and readable." if verification.ok else verification.message + ". Claim adjudication was blocked.", reason_code=None if verification.ok else "DOCUMENT_VERIFICATION_FAILED")
         if not verification.ok:
             state["blocked_reason"] = verification.message
@@ -674,6 +861,7 @@ class ClaimWorkflow:
             processing_status="BLOCKED",
             reason_code="DOCUMENT_VERIFICATION_FAILED",
             reason=reason,
+            decision_summary=self._decision_summary(state, None, None, reason),
             degraded=bool(state.get("degraded", False)),
             manual_review_recommended=bool(state.get("degraded", False)),
             component_failures=failures,
@@ -695,9 +883,14 @@ class ClaimWorkflow:
         claim_id = state["claim_id"]
         consistency = self.consistency.check(state.get("document_extractions_result", []))
         state["consistency_result"] = consistency
-        _trace_event(self.trace_manager, claim_id, "CROSS_DOCUMENT_CONSISTENCY", "ConsistencyAgent", "PASSED" if consistency.ok else "FAILED", safe_output=consistency.model_dump(mode="python"), summary="Patient names, treatment dates, and bill arithmetic are consistent across the submitted documents." if consistency.ok else consistency.message + ". Processing was blocked before policy evaluation.", reason_code=None if consistency.ok else "DOCUMENT_VERIFICATION_FAILED")
+        status = "REVIEW_REQUIRED" if consistency.review_required else ("PASSED" if consistency.ok else "FAILED")
+        arithmetic_verifiable = self.consistency.bill_arithmetic_verifiable(state.get("document_extractions_result", []))
+        summary = ("Patient names, treatment dates, and bill arithmetic are consistent across the submitted documents." if arithmetic_verifiable else "Bill arithmetic could not be verified because one or more line-item amounts/total are unavailable.") if not consistency.mismatches else consistency.message + (". Processing continues with manual review required." if consistency.review_required else ". Processing was blocked before policy evaluation.")
+        _trace_event(self.trace_manager, claim_id, "CROSS_DOCUMENT_CONSISTENCY", "ConsistencyAgent", status, safe_output=consistency.model_dump(mode="python"), summary=summary, reason_code="BILL_INTERNAL_TOTAL_INCONSISTENCY" if consistency.review_required else (None if consistency.ok else "DOCUMENT_VERIFICATION_FAILED"))
         if not consistency.ok:
             state["blocked_reason"] = consistency.message
+        elif consistency.review_required:
+            state["manual_review_reason"] = consistency.message
         return state
 
     def _route_after_consistency(self, state: ClaimState) -> str:
@@ -732,14 +925,18 @@ class ClaimWorkflow:
     def _policy_rejection(self, state: ClaimState) -> ClaimState:
         claim_id = state["claim_id"]
         reason = str(state.get("policy_rejection_reason") or "policy rejection")
-        _trace_event(self.trace_manager, claim_id, "DECISION", "DecisionEngine", "OK", safe_output={"decision": "REJECTED", "reason": reason})
+        summary = self._decision_summary(state, "REJECTED", Decimal("0"), reason)
+        _trace_event(self.trace_manager, claim_id, "DECISION", "DecisionEngine", "OK", safe_output={"decision": "REJECTED", "reason": reason, "decision_summary": summary})
         failures = state.get("component_failures") or []
         result = ClaimProcessingResult(
             claim_id=claim_id,
             decision="REJECTED",
             approved_amount=Decimal("0"),
+            reimbursable_amount=Decimal("0"),
             confidence_score=Decimal("0.95"),
             processing_status="COMPLETED",
+            reason=reason,
+            decision_summary=summary,
             degraded=bool(state.get("degraded", False)),
             manual_review_recommended=bool(state.get("degraded", False)),
             component_failures=failures,
@@ -783,14 +980,18 @@ class ClaimWorkflow:
     def _manual_review(self, state: ClaimState) -> ClaimState:
         claim_id = state["claim_id"]
         reason = str(state.get("manual_review_reason") or "manual review")
-        _trace_event(self.trace_manager, claim_id, "DECISION", "DecisionEngine", "OK", safe_output={"decision": "MANUAL_REVIEW", "reason": reason})
+        summary = self._decision_summary(state, "MANUAL_REVIEW", Decimal("0"), reason)
+        _trace_event(self.trace_manager, claim_id, "DECISION", "DecisionEngine", "OK", safe_output={"decision": "MANUAL_REVIEW", "reason": reason, "decision_summary": summary})
         failures = state.get("component_failures") or []
         result = ClaimProcessingResult(
             claim_id=claim_id,
             decision="MANUAL_REVIEW",
             approved_amount=Decimal("0"),
+            reimbursable_amount=state.get("financials_result").approved_amount if state.get("financials_result") else None,
             confidence_score=Decimal("0.50"),
             processing_status="PENDING_MANUAL_REVIEW",
+            reason=reason,
+            decision_summary=summary,
             degraded=bool(state.get("degraded", False)),
             manual_review_recommended=True,
             component_failures=failures,
@@ -809,6 +1010,7 @@ class ClaimWorkflow:
     def _final_decision(self, state: ClaimState) -> ClaimState:
         claim_id = state["claim_id"]
         decision = self.decision.decide(state)
+        decision.decision_summary = self._decision_summary(state, decision.decision, decision.approved_amount, decision.reason)
         _trace_event(self.trace_manager, claim_id, "DECISION", "DecisionEngine", "OK", safe_output=decision.model_dump(mode="python"))
         failures = state.get("component_failures") or []
         is_degraded = bool(state.get("degraded", False))
@@ -816,8 +1018,11 @@ class ClaimWorkflow:
             claim_id=claim_id,
             decision=decision.decision,
             approved_amount=decision.approved_amount,
+            reimbursable_amount=(state.get("financials_result").approved_amount if decision.decision == "MANUAL_REVIEW" and state.get("financials_result") else decision.approved_amount),
             confidence_score=decision.confidence_score,
             processing_status=decision.processing_status,
+            reason=decision.reason,
+            decision_summary=decision.decision_summary,
             degraded=is_degraded,
             manual_review_recommended=is_degraded,
             component_failures=failures,
@@ -826,3 +1031,6 @@ class ClaimWorkflow:
         state["decision_result"] = decision
         state["result"] = result
         return state
+
+    def _route_after_document_classification(self, state: ClaimState) -> str:
+        return "blocked" if state.get("blocked_reason") else "continue"

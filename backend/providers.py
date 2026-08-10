@@ -112,12 +112,18 @@ class GeminiVisionProvider(VisionProvider):
             response = client.models.generate_content(
                 model=self.model,
                 contents=contents,
+                config=types.GenerateContentConfig(response_mime_type="application/json"),
             )
         except Exception as e:
             raise RuntimeError(f"Gemini API error: {e}")
 
         text = getattr(response, "text", "") or ""
-        return VisionResponse(text=text, structured={}, metadata={"model": self.model, **(request.metadata or {})})
+        # Keep provider-native structured data at the boundary when it is available.
+        # The adapter remains responsible for validation and fallback parsing.
+        structured = getattr(response, "parsed", None)
+        if not isinstance(structured, dict):
+            structured = {}
+        return VisionResponse(text=text, structured=structured, metadata={"model": self.model, **(request.metadata or {})})
 
 
 @dataclass
@@ -135,4 +141,4 @@ def build_provider_set() -> ProviderSet:
     if config.gemini_ocr_api_key:
         vision = GeminiVisionProvider(config.gemini_ocr_api_key, config.gemini_ocr_model)
 
-    return ProviderSet(llm=llm, vision=vision)
+    return ProviderSet(llm=llm, vision=vision)

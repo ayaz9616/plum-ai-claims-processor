@@ -1,6 +1,7 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
 import type { ClaimProcessingResult, ClaimSubmission, TraceEvent } from '../app/types';
+import { formatCurrency, formatPercentage } from '../app/utils';
 
 const styles = StyleSheet.create({
   page: {
@@ -125,6 +126,9 @@ export function ClaimReportPDF({ submission, result }: ClaimReportPDFProps) {
   const fraudTrace = result.trace.find(t => t.step === "FRAUD_ANALYSIS");
 
   const lineItems = financeTrace?.safe_output?.breakdown?.line_items || [];
+  const isManualReview = result.decision === 'MANUAL_REVIEW';
+  const showPayment = isManualReview || result.decision === 'APPROVED' || result.decision === 'PARTIAL' || result.decision === 'REJECTED' || (result.decision === 'BLOCKED' && result.reimbursable_amount != null);
+  const paymentAmount = isManualReview ? result.reimbursable_amount : result.approved_amount;
   
   return (
     <Document>
@@ -144,8 +148,10 @@ export function ClaimReportPDF({ submission, result }: ClaimReportPDFProps) {
           <View style={styles.row}><Text style={styles.label}>Policy ID:</Text><Text style={styles.value}>{submission.policy_id}</Text></View>
           <View style={styles.row}><Text style={styles.label}>Claim Category:</Text><Text style={styles.value}>{submission.claim_category}</Text></View>
           <View style={styles.row}><Text style={styles.label}>Treatment Date:</Text><Text style={styles.value}>{submission.treatment_date}</Text></View>
-          <View style={styles.row}><Text style={styles.label}>Claimed Amount:</Text><Text style={styles.value}>₹{submission.claimed_amount}</Text></View>
-          <View style={styles.row}><Text style={styles.label}>Approved Amount:</Text><Text style={styles.value}>{result.approved_amount != null ? `₹${result.approved_amount}` : 'N/A'}</Text></View>
+          <View style={styles.row}><Text style={styles.label}>Claimed Amount:</Text><Text style={styles.value}>{formatCurrency(submission.claimed_amount)}</Text></View>
+          {showPayment && <View style={styles.row}><Text style={styles.label}>{isManualReview ? 'Estimated Reimbursable Amount:' : 'Approved Amount:'}</Text><Text style={styles.value}>{formatCurrency(paymentAmount)}</Text></View>}
+          {isManualReview && <View style={styles.row}><Text style={styles.label}>Status:</Text><Text style={styles.value}>Pending manual verification</Text></View>}
+          {isManualReview && <View style={styles.row}><Text style={styles.label}>Final Approved Amount:</Text><Text style={styles.value}>Not finalized</Text></View>}
           <View style={styles.row}><Text style={styles.label}>Final Decision:</Text><Text style={styles.value}>{result.decision || 'N/A'}</Text></View>
           <View style={styles.row}><Text style={styles.label}>Processing Status:</Text><Text style={styles.value}>{result.processing_status}</Text></View>
         </View>
@@ -154,9 +160,10 @@ export function ClaimReportPDF({ submission, result }: ClaimReportPDFProps) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Decision &amp; Confidence</Text>
           <View style={styles.row}><Text style={styles.label}>Decision:</Text><Text style={styles.value}>{result.decision || 'N/A'}</Text></View>
-          <View style={styles.row}><Text style={styles.label}>Confidence Score:</Text><Text style={styles.value}>{result.confidence_score != null ? `${(result.confidence_score * 100).toFixed(0)}%` : 'N/A'}</Text></View>
+          <View style={styles.row}><Text style={styles.label}>Confidence Score:</Text><Text style={styles.value}>{formatPercentage(result.confidence_score, 'N/A')}</Text></View>
           <View style={styles.row}><Text style={styles.label}>Degraded Status:</Text><Text style={styles.value}>{result.degraded ? 'Yes' : 'No'}</Text></View>
           <View style={styles.row}><Text style={styles.label}>Manual Review:</Text><Text style={styles.value}>{result.manual_review_recommended ? 'Recommended' : 'Not Required'}</Text></View>
+          {result.decision_summary && <View style={styles.row}><Text style={styles.label}>Reason:</Text><Text style={styles.value}>{result.decision_summary}</Text></View>}
         </View>
 
         {/* Failed Components */}
@@ -221,9 +228,9 @@ export function ClaimReportPDF({ submission, result }: ClaimReportPDFProps) {
               {lineItems.map((item: any, idx: number) => (
                 <View style={styles.tableRow} key={idx}>
                   <View style={[styles.tableCol, { width: '40%' }]}><Text style={styles.tableCell}>{item.description}</Text></View>
-                  <View style={[styles.tableCol, { width: '15%' }]}><Text style={styles.tableCell}>{item.claimed_amount ? `₹${item.claimed_amount}` : '-'}</Text></View>
+                  <View style={[styles.tableCol, { width: '15%' }]}><Text style={styles.tableCell}>{item.claimed_amount != null ? formatCurrency(item.claimed_amount) : '-'}</Text></View>
                   <View style={[styles.tableCol, { width: '15%' }]}><Text style={styles.tableCell}>{item.eligible ? 'Eligible' : 'Ineligible'}</Text></View>
-                  <View style={[styles.tableCol, { width: '15%' }]}><Text style={styles.tableCell}>{item.approved_amount ? `₹${item.approved_amount}` : '-'}</Text></View>
+                  <View style={[styles.tableCol, { width: '15%' }]}><Text style={styles.tableCell}>{item.approved_amount != null ? formatCurrency(item.approved_amount) : '-'}</Text></View>
                   <View style={[styles.tableCol, { width: '15%' }]}><Text style={styles.tableCell}>{item.reason || '-'}</Text></View>
                 </View>
               ))}
@@ -235,10 +242,10 @@ export function ClaimReportPDF({ submission, result }: ClaimReportPDFProps) {
         {financeTrace?.safe_output?.breakdown && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Financial Calculation</Text>
-            <View style={styles.row}><Text style={styles.label}>Claimed Amount:</Text><Text style={styles.value}>₹{financeTrace.safe_output.breakdown.claimed || '0'}</Text></View>
-            <View style={styles.row}><Text style={styles.label}>Network Discount:</Text><Text style={styles.value}>- ₹{financeTrace.safe_output.breakdown.network_discount || '0'}</Text></View>
-            <View style={styles.row}><Text style={styles.label}>Co-pay:</Text><Text style={styles.value}>- ₹{financeTrace.safe_output.breakdown.copay || '0'}</Text></View>
-            <View style={styles.row}><Text style={[styles.label, { color: '#0f172a' }]}>Final Approved Amount:</Text><Text style={[styles.value, { fontWeight: 'bold' }]}>₹{financeTrace.safe_output.breakdown.approved || '0'}</Text></View>
+            <View style={styles.row}><Text style={styles.label}>Claimed Amount:</Text><Text style={styles.value}>{formatCurrency(financeTrace.safe_output.breakdown.claimed || '0')}</Text></View>
+            <View style={styles.row}><Text style={styles.label}>Network Discount:</Text><Text style={styles.value}>- {formatCurrency(financeTrace.safe_output.breakdown.network_discount || '0')}</Text></View>
+            <View style={styles.row}><Text style={styles.label}>Co-pay Amount:</Text><Text style={styles.value}>- {formatCurrency(financeTrace.safe_output.breakdown.copay || '0')}</Text></View>
+            <View style={styles.row}><Text style={[styles.label, { color: '#0f172a' }]}>{isManualReview ? 'Estimated Reimbursable Amount:' : 'Final Approved Amount:'}</Text><Text style={[styles.value, { fontWeight: 'bold' }]}>{formatCurrency(financeTrace.safe_output.breakdown.approved || '0')}</Text></View>
           </View>
         )}
 

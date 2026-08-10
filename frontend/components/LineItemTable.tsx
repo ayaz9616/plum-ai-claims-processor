@@ -1,4 +1,6 @@
 import { CheckCircle2, XCircle } from "lucide-react";
+import { formatCurrency } from "../app/utils";
+import { cn } from "../app/utils";
 
 export type LineItem = {
   description: string;
@@ -16,52 +18,44 @@ export function LineItemTable({
   if (!lineItems || lineItems.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-      <div className="px-6 py-4 border-b border-slate-200 bg-slate-50">
-        <h3 className="font-semibold text-slate-900">Line Items</h3>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-slate-50/50 text-slate-500 font-medium border-b border-slate-200">
-            <tr>
-              <th className="px-6 py-3">Description</th>
-              <th className="px-6 py-3 text-right">Claimed</th>
-              <th className="px-6 py-3 text-center">Status</th>
-              <th className="px-6 py-3 text-right">Approved</th>
-              <th className="px-6 py-3">Reason</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {lineItems.map((item, idx) => (
-              <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
-                <td className="px-6 py-4 font-medium text-slate-900">{item.description}</td>
-                <td className="px-6 py-4 text-right text-slate-600">
-                  {item.claimed_amount ? `₹${item.claimed_amount}` : "-"}
-                </td>
-                <td className="px-6 py-4 text-center">
-                  {item.eligible === true ? (
-                    <span className="inline-flex items-center gap-1 text-green-700 bg-green-50 px-2 py-1 rounded-md text-xs font-medium">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Eligible
-                    </span>
-                  ) : item.eligible === false ? (
-                    <span className="inline-flex items-center gap-1 text-red-700 bg-red-50 px-2 py-1 rounded-md text-xs font-medium">
-                      <XCircle className="w-3.5 h-3.5" /> Ineligible
-                    </span>
-                  ) : (
-                    <span className="text-slate-400">-</span>
-                  )}
-                </td>
-                <td className="px-6 py-4 text-right font-medium text-slate-900">
-                  {item.approved_amount ? `₹${item.approved_amount}` : "-"}
-                </td>
-                <td className="px-6 py-4 text-slate-500">
-                  {item.reason || "-"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div>
+      <h3 className="text-[11px] font-bold tracking-widest text-plum-900/40 uppercase mb-4">Line Items</h3>
+      <div className="space-y-3">
+        {lineItems.map((item, idx) => (
+          <div key={idx} className={cn(
+            "flex items-center justify-between gap-4 p-4 rounded-xl border transition-colors",
+            item.eligible === false ? "bg-danger/5 border-danger/10" : "bg-cream-50 border-plum-900/5 hover:bg-cream-100"
+          )}>
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              {item.eligible === true ? (
+                <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
+              ) : item.eligible === false ? (
+                <XCircle className="w-5 h-5 text-danger shrink-0" />
+              ) : null}
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-plum-900 truncate">{item.description}</p>
+                {item.reason && <p className="text-xs text-text-secondary mt-0.5">{item.reason}</p>}
+              </div>
+            </div>
+            <div className="text-right shrink-0">
+              {item.eligible === false && item.claimed_amount != null ? (
+                <p className="text-sm font-medium text-danger">{formatCurrency(item.claimed_amount)}</p>
+              ) : item.approved_amount != null ? (
+                <p className="text-sm font-medium text-plum-900">{formatCurrency(item.approved_amount)}</p>
+              ) : item.claimed_amount != null ? (
+                <p className="text-sm font-medium text-plum-900">{formatCurrency(item.claimed_amount)}</p>
+              ) : null}
+              {item.eligible === false && (
+                <p className="text-xs text-danger mt-0.5">Excluded</p>
+              )}
+              {item.eligible === true && item.claimed_amount != null && item.approved_amount !== item.claimed_amount && (
+                <p className="text-xs text-text-secondary">{formatCurrency(item.claimed_amount)} claimed</p>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
+

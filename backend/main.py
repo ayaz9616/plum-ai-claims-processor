@@ -43,6 +43,17 @@ provider_set = build_provider_set()
 orchestrator = ClaimOrchestrator(policy_repo, trace_manager, provider_set)
 
 
+@app.get("/api/members")
+def list_members():
+    """Read-only roster for the claim intake selector."""
+    policy_repo.load()
+    policy = policy_repo.raw() or {}
+    return {"policy_id": policy.get("policy_id"), "members": [
+        {"member_id": member.get("member_id"), "name": member.get("name"), "relationship": member.get("relationship")}
+        for member in policy.get("members", [])
+    ]}
+
+
 @app.post("/api/documents/upload")
 def upload_document(file: UploadFile = File(...)):
     try:

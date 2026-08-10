@@ -25,6 +25,13 @@ class StructuredDocumentData(BaseModel):
     treatment: Optional[str] = None
     line_items: List[Dict[str, Any]] = Field(default_factory=list)
     total: Optional[Decimal] = None
+    subtotal: Optional[Decimal] = None
+    tax: Optional[Decimal] = None
+    discount: Optional[Decimal] = None
+    other_charges: Optional[Decimal] = None
+    grand_total: Optional[Decimal] = None
+    amount_payable: Optional[Decimal] = None
+    amount_received: Optional[Decimal] = None
     quality: str = "UNKNOWN"
     confidence: Decimal = Decimal("0.5")
 
@@ -73,6 +80,15 @@ class DocumentVerificationResult(BaseModel):
     wrong_type: List[str] = Field(default_factory=list)
 
 
+class DocumentQualityResult(BaseModel):
+    """Deterministic readability assessment, independent of type recognition."""
+    file_id: str
+    document_type: str
+    quality: str
+    reason: str
+    missing_or_unreliable_fields: List[str] = Field(default_factory=list)
+
+
 class DocumentExtraction(BaseModel):
     file_id: str
     document_type: str
@@ -102,6 +118,7 @@ class ConsistencyResult(BaseModel):
     message: str
     found_names: List[str] = Field(default_factory=list)
     mismatches: List[Dict[str, Any]] = Field(default_factory=list)
+    review_required: bool = False
 
 
 class FinancialCalculationResult(BaseModel):
@@ -127,6 +144,7 @@ class DecisionResult(BaseModel):
     processing_status: str
     reason: str
     confidence_score: Decimal
+    decision_summary: str = ""
 
 
 class TraceEvent(BaseModel):
@@ -148,10 +166,12 @@ class ClaimProcessingResult(BaseModel):
     claim_id: str
     decision: Optional[str] = None
     approved_amount: Optional[Decimal] = None
+    reimbursable_amount: Optional[Decimal] = None
     confidence_score: Optional[Decimal] = None
     processing_status: str = "RECEIVED"
     reason_code: Optional[str] = None
     reason: Optional[str] = None
+    decision_summary: str = ""
     degraded: bool = False
     # Set True when the system recommends a human reviews the claim despite producing a decision.
     # This is required by the assignment for degraded/incomplete processing.

@@ -1,12 +1,13 @@
-import { CheckCircle, Circle, AlertCircle } from "lucide-react";
+import { CheckCircle2, Circle, AlertTriangle, XCircle, ArrowRight } from "lucide-react";
 import { cn } from "../app/utils";
 
 const STAGES = [
-  "Upload",
-  "Document Verification",
-  "Policy Evaluation",
-  "Financial Calculation",
-  "Fraud Analysis",
+  "Claim Received",
+  "Documents",
+  "Verification",
+  "Policy",
+  "Calculation",
+  "Fraud",
   "Decision",
 ];
 
@@ -18,7 +19,7 @@ export function ProcessingPipeline({
   isError: boolean;
 }) {
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-4xl mx-auto py-8">
+    <div className="w-full flex items-center gap-1 sm:gap-2 md:gap-4 overflow-x-auto pb-2 scrollbar-hide text-sm">
       {STAGES.map((stage, i) => {
         const isCompleted = i < currentStageIndex;
         const isCurrent = i === currentStageIndex;
@@ -26,46 +27,38 @@ export function ProcessingPipeline({
         const isPending = i > currentStageIndex;
 
         return (
-          <div key={stage} className="flex flex-col items-center flex-1 relative group">
-            {/* Connecting line */}
-            {i !== STAGES.length - 1 && (
-              <div
-                className={cn(
-                  "hidden sm:block absolute top-4 left-[50%] right-[-50%] h-0.5",
-                  isCompleted ? "bg-blue-600" : "bg-slate-200"
-                )}
-              />
-            )}
-            
+          <div key={stage} className="flex items-center whitespace-nowrap shrink-0 group cursor-pointer transition-opacity hover:opacity-80">
             <div
               className={cn(
-                "relative z-10 flex items-center justify-center w-8 h-8 rounded-full border-2 bg-white",
-                isCompleted && "border-blue-600 text-blue-600",
-                isCurrent && !isFailed && "border-blue-600 bg-blue-50 text-blue-600",
-                isFailed && "border-red-500 bg-red-50 text-red-500",
-                isPending && "border-slate-300 text-slate-300"
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-colors",
+                isCompleted && "bg-success/10 border-success/20 text-success",
+                isCurrent && !isFailed && "bg-info/10 border-info/20 text-info",
+                isFailed && "bg-danger/10 border-danger/20 text-danger",
+                isPending && "bg-cream-100/50 border-plum-900/10 text-text-secondary"
               )}
             >
               {isCompleted ? (
-                <CheckCircle className="w-5 h-5" />
+                <CheckCircle2 className="w-4 h-4" />
               ) : isFailed ? (
-                <AlertCircle className="w-5 h-5" />
+                <XCircle className="w-4 h-4" />
               ) : isCurrent ? (
-                <div className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse" />
+                <div className="w-4 h-4 flex items-center justify-center">
+                  <div className="w-2 h-2 rounded-full bg-info animate-pulse" />
+                </div>
               ) : (
-                <Circle className="w-5 h-5" />
+                <Circle className="w-4 h-4 opacity-50" />
               )}
+              <span className={cn("font-medium", (isCompleted || isCurrent || isFailed) ? "" : "opacity-80")}>
+                {stage}
+              </span>
             </div>
             
-            <p
-              className={cn(
-                "mt-3 text-xs font-medium text-center",
-                isCompleted || isCurrent ? "text-slate-900" : "text-slate-400",
-                isFailed && "text-red-600"
-              )}
-            >
-              {stage}
-            </p>
+            {i !== STAGES.length - 1 && (
+              <ArrowRight className={cn(
+                "w-4 h-4 ml-1 sm:ml-2 md:ml-4",
+                isCompleted ? "text-success/50" : "text-plum-900/20"
+              )} />
+            )}
           </div>
         );
       })}

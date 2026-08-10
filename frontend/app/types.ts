@@ -47,8 +47,10 @@ export type ClaimProcessingResult = {
   claim_id: string;
   decision?: string;
   approved_amount?: number;
+  reimbursable_amount?: number;
   confidence_score?: number;
   processing_status: string;
+  decision_summary?: string;
   degraded: boolean;
   manual_review_recommended: boolean;
   component_failures: Array<Record<string, any>>;

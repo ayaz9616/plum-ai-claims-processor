@@ -1,5 +1,6 @@
-import { Calculator, ArrowRight } from "lucide-react";
-import { cn } from "../app/utils";
+import { ArrowDown, Minus } from "lucide-react";
+import { cn, formatCurrency } from "../app/utils";
+import type { TraceEvent } from "../app/types";
 
 interface FinancialBreakdownProps {
   claimed: string | number;
@@ -7,6 +8,11 @@ interface FinancialBreakdownProps {
   networkDiscount: string | number;
   copay: string | number;
   approved: string | number;
+  excluded?: string | number;
+  copayPercent?: string | number;
+  estimated?: boolean;
+  isDental?: boolean;
+  financeTrace?: TraceEvent;
 }
 
 export function FinancialBreakdown({
@@ -15,61 +21,85 @@ export function FinancialBreakdown({
   networkDiscount,
   copay,
   approved,
+  excluded = 0,
+  copayPercent,
+  estimated = false,
+  isDental = false,
+  financeTrace,
 }: FinancialBreakdownProps) {
-  
-  const steps = [
-    { label: "Claimed Amount", value: claimed, highlight: false },
-    ...(networkApplied
-      ? [{ label: "Network Discount", value: `-${networkDiscount}`, highlight: true, note: "20% in-network" }]
-      : []),
-    ...(Number(copay) > 0
-      ? [{ label: "Co-pay", value: `-${copay}`, highlight: true, note: "10% co-pay" }]
-      : []),
-    { label: "Final Approved", value: approved, highlight: true, isFinal: true },
-  ];
+  const claimedAmount = Number(claimed);
+  const approvedAmount = Number(approved);
+  const excludedAmount = Number(excluded);
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-      <div className="px-6 py-4 border-b bg-slate-50 flex items-center gap-3">
-        <Calculator className="w-5 h-5 text-slate-600" />
-        <div>
-          <h3 className="text-lg font-semibold text-slate-800">Financial Breakdown</h3>
-          <p className="text-sm text-slate-500">Deterministic calculation sequence</p>
-        </div>
+    <div className="bg-white rounded-2xl shadow-soft border border-plum-900/5 p-6 md:p-8 flex flex-col">
+      <h3 className="text-[11px] font-bold tracking-widest text-plum-900/40 uppercase mb-6">Waterfall</h3>
+
+      <div className="flex items-center justify-between py-4">
+        <span className="text-sm text-text-secondary">Claimed</span>
+        <span className="text-2xl font-serif text-plum-900">{formatCurrency(claimedAmount)}</span>
       </div>
 
-      <div className="p-6">
-        <div className="flex flex-col gap-4">
-          {steps.map((step, index) => (
-            <div key={step.label} className="flex items-center gap-4">
-              <div className={cn(
-                "flex-1 p-4 rounded-lg flex items-center justify-between border",
-                step.isFinal ? "bg-emerald-50 border-emerald-200" : "bg-slate-50 border-slate-200"
-              )}>
-                <div>
-                  <p className={cn("text-sm font-medium", step.isFinal ? "text-emerald-900" : "text-slate-700")}>
-                    {step.label}
-                  </p>
-                  {step.note && <p className="text-xs text-slate-500 mt-1">{step.note}</p>}
-                </div>
-                <p className={cn(
-                  "text-lg font-bold tracking-tight",
-                  step.isFinal ? "text-emerald-700" : "text-slate-900",
-                  step.value.toString().startsWith('-') && "text-rose-600"
-                )}>
-                  {step.value.toString().startsWith('-') ? '' : '₹'}{step.value.toString().startsWith('-') ? `-₹${step.value.toString().slice(1)}` : step.value}
-                </p>
-              </div>
-              
-              {index < steps.length - 1 && (
-                <div className="text-slate-300">
-                  <ArrowRight className="w-6 h-6" />
-                </div>
-              )}
+      {isDental && excludedAmount > 0 && (
+        <>
+          <div className="flex justify-center py-1">
+            <ArrowDown size={16} className="text-plum-900/20" />
+          </div>
+          <div className="flex items-center justify-between py-3 px-4 bg-danger/5 rounded-xl border border-danger/10">
+            <div className="flex items-center gap-2">
+              <Minus size={14} className="text-danger" />
+              <span className="text-sm text-danger font-medium">Excluded</span>
             </div>
-          ))}
-        </div>
+            <span className="text-lg font-medium text-danger">-{formatCurrency(excludedAmount)}</span>
+          </div>
+        </>
+      )}
+
+      {networkApplied && Number(networkDiscount) > 0 && (
+        <>
+          <div className="flex justify-center py-1">
+            <ArrowDown size={16} className="text-plum-900/20" />
+          </div>
+          <div className="flex items-center justify-between py-3 px-4 bg-success/5 rounded-xl border border-success/10">
+            <div className="flex items-center gap-2">
+              <Minus size={14} className="text-success" />
+              <span className="text-sm text-success font-medium">Network Discount</span>
+            </div>
+            <span className="text-lg font-medium text-success">-{formatCurrency(Number(networkDiscount))}</span>
+          </div>
+        </>
+      )}
+
+      {Number(copay) > 0 && (
+        <>
+          <div className="flex justify-center py-1">
+            <ArrowDown size={16} className="text-plum-900/20" />
+          </div>
+          <div className="flex items-center justify-between py-3 px-4 bg-warning/5 rounded-xl border border-warning/10">
+            <div className="flex items-center gap-2">
+              <Minus size={14} className="text-warning" />
+              <span className="text-sm text-warning font-medium">
+                Co-pay {copayPercent != null ? `(${copayPercent}%)` : ""}
+              </span>
+            </div>
+            <span className="text-lg font-medium text-warning">-{formatCurrency(Number(copay))}</span>
+          </div>
+        </>
+      )}
+
+      <div className="flex justify-center py-1">
+        <ArrowDown size={16} className="text-plum-900/20" />
       </div>
+      <div className="flex items-center justify-between py-4 px-5 bg-plum-900 rounded-2xl mt-1">
+        <span className="text-sm font-medium text-cream-100/80">
+          {estimated ? "Estimated" : "Approved"}
+        </span>
+        <span className="text-3xl font-serif text-cream-50">{formatCurrency(approvedAmount)}</span>
+      </div>
+
+      {estimated && (
+        <p className="text-xs text-text-secondary mt-3 text-center">Estimated — pending manual verification</p>
+      )}
     </div>
   );
 }

@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any, List, Optional
 from .policy import PolicyRepository
 from .adapter import normalize_claim_input
+from .identity import normalize_identity_name
 from .schemas import PolicyEvaluation, RuleResult
 
 
@@ -231,15 +232,20 @@ class PolicyEvaluator:
         checks.append(RuleResult(name="network_hospital", ok=is_network, details={"hospital": hospital_name, "is_network": is_network}))
 
         # 12. cross-document identity consistency
-        names = set()
+        raw_names: List[str] = []
+        normalized_names = set()
         for d in claim.get("documents", []):
             pn = (d.get("extracted") or {}).get("patient_name")
             if pn:
-                names.add(str(pn).strip())
-        identity_ok = True
-        identity_details = {"found_names": list(names)}
-        if len(names) > 1:
-            identity_ok = False
-        checks.append(RuleResult(name="identity_consistency", ok=identity_ok, details=identity_details))
+                raw_names.append(str(pn).strip())
+                normalized_names.add(normalize_identity_name(str(pn)))
+        identity_ok = len(normalized_names) <= 1
+        checks.append(
+            RuleResult(
+                name="identity_consistency",
+                ok=identity_ok,
+                details={"found_names": sorted(set(raw_names))},
+            )
+        )
 
         return PolicyEvaluation(policy_id=policy_id or self.policy.get("policy_id"), checks=checks)
