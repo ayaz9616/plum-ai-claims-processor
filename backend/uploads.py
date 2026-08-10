@@ -6,7 +6,7 @@ from typing import Optional
 
 from fastapi import UploadFile
 
-from .errors import PlumError
+from .app.errors import PlumError
 from .temp_documents import TempDocumentHandle, temporary_document_path
 
 SUPPORTED_UPLOAD_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg", ".webp"}

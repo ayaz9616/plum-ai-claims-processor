@@ -4,12 +4,12 @@
 # from fastapi.middleware.cors import CORSMiddleware
 # from dataclasses import asdict
 # from fastapi import File, HTTPException, UploadFile
-# from .schemas import ClaimSubmission
-# from .policy import PolicyRepository
-# from .trace import TraceManager
+# from .app.schemas import ClaimSubmission
+# from backend.app.infrastructure.repositories import PolicyRepository
+# from backend.app.trace import TraceManager
 # from .orchestrator import ClaimOrchestrator
-# from .config import config
-# from .providers import build_provider_set
+# from backend.app.config import config
+# from backend.app.infrastructure.providers import build_provider_set
 # from .uploads import DocumentUploadError, DocumentUploadService
 
 # logger = logging.getLogger(__name__)
@@ -63,7 +63,7 @@
 
 
 # from .uploads import STAGING_DIR
-# from .providers import VisionRequest
+# from backend.app.infrastructure.providers import VisionRequest
 
 # @app.post("/api/documents/{document_id}/ocr")
 # def process_document_ocr(document_id: str):
@@ -122,12 +122,12 @@ from dataclasses import asdict
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
-from .config import config
+from backend.app.config import config
 from .orchestrator import ClaimOrchestrator
-from .policy import PolicyRepository
-from .providers import VisionRequest, build_provider_set
-from .schemas import ClaimSubmission
-from .trace import TraceManager
+from backend.app.infrastructure.repositories import PolicyRepository
+from backend.app.infrastructure.providers import VisionRequest, build_provider_set
+from .app.schemas import ClaimSubmission
+from backend.app.trace import TraceManager
 from .uploads import (
     STAGING_DIR,
     DocumentUploadError,

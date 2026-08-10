@@ -1,11 +1,11 @@
 import json
 from pathlib import Path
 
-from backend.config import config
+from backend.app.config import config
 from backend.orchestrator import ClaimOrchestrator
-from backend.policy import PolicyRepository
-from backend.providers import ProviderSet, VisionResponse
-from backend.trace import TraceManager
+from backend.app.infrastructure.repositories import PolicyRepository
+from backend.app.infrastructure.providers import ProviderSet, VisionResponse
+from backend.app.trace import TraceManager
 from backend.uploads import STAGING_DIR
 
 

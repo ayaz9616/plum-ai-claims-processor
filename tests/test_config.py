@@ -1,6 +1,6 @@
 import os
 from unittest.mock import patch
-from backend.config import Config
+from backend.app.config import Config
 
 def test_gemini_ocr_api_key_loading():
     # Test that when GEMINI_OCR_API_KEY is in the environment,

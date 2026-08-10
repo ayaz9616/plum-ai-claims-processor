@@ -4,7 +4,7 @@ from unittest.mock import patch, MagicMock
 
 from fastapi.testclient import TestClient
 from backend.main import app, provider_set
-from backend.providers import VisionResponse
+from backend.app.infrastructure.providers import VisionResponse
 from backend.uploads import STAGING_DIR
 
 client = TestClient(app)

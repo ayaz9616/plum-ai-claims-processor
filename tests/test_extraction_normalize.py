@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from backend.config import config
-from backend.extraction_normalize import (
+from backend.app.config import config
+from backend.app.extraction_normalize import (
     DocumentExtractionNormalizationError,
     normalize_money,
     normalize_structured_document_payload,
@@ -14,9 +14,9 @@ from backend.extraction_normalize import (
     verify_financial_consistency,
 )
 from backend.orchestrator import ClaimOrchestrator
-from backend.policy import PolicyRepository
-from backend.providers import ProviderSet, VisionResponse
-from backend.trace import TraceManager
+from backend.app.infrastructure.repositories import PolicyRepository
+from backend.app.infrastructure.providers import ProviderSet, VisionResponse
+from backend.app.trace import TraceManager
 from backend.uploads import STAGING_DIR
 
 

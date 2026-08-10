@@ -1,5 +1,5 @@
-from backend.policy import PolicyRepository
-from backend.config import config
+from backend.app.infrastructure.repositories import PolicyRepository
+from backend.app.config import config
 
 
 def test_policy_loads():

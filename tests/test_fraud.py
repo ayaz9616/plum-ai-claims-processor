@@ -1,7 +1,7 @@
 import pytest
 from decimal import Decimal
-from backend.fraud_analyzer import FraudAnalyzer
-from backend.schemas import FraudAnalysis
+from backend.app.agents.fraud import FraudAnalyzer
+from backend.app.schemas import FraudAnalysis
 
 @pytest.fixture
 def policy_raw():

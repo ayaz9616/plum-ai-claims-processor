@@ -1,7 +1,7 @@
 import json
-from backend.policy import PolicyRepository
-from backend.policy_evaluator import PolicyEvaluator
-from backend.config import config
+from backend.app.infrastructure.repositories import PolicyRepository
+from backend.app.core.policy import PolicyEvaluator
+from backend.app.config import config
 
 
 def load_test_cases():

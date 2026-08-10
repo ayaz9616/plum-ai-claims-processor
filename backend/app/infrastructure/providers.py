@@ -5,8 +5,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Dict, Iterator, Optional
 
-from .config import config
-from .temp_documents import temporary_document_path
+from backend.app.config import config
+from backend.temp_documents import temporary_document_path
 
 
 @dataclass

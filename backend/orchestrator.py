@@ -1,23 +1,15 @@
 import uuid
 from decimal import Decimal
-from .schemas import ClaimSubmission, ClaimProcessingResult
-from .policy import PolicyRepository
-from .trace import TraceManager
-from .config import config
-from .errors import RepositoryError
-from .policy_evaluator import PolicyEvaluator
+from .app.schemas import ClaimSubmission, ClaimProcessingResult
+from backend.app.infrastructure.repositories import PolicyRepository
+from backend.app.trace import TraceManager
+from backend.app.config import config
+from .app.errors import RepositoryError
+from backend.app.core.policy import PolicyEvaluator
 from typing import Dict, Any
-from .workflow import ClaimWorkflow
-from .providers import ProviderSet
-from .storage import ClaimAuditRepository
-
-
-def _apply_financials(claim: Dict[str, Any], policy_raw: Dict[str, Any], category_policy: Dict[str, Any]) -> Dict[str, Any]:
-    from .workflow import CalculationEngine
-
-    engine = CalculationEngine()
-    result = engine.calculate(claim, policy_raw)
-    return {"approved_amount": result.approved_amount, "breakdown": result.breakdown}
+from backend.app.workflow.graph import ClaimWorkflow
+from backend.app.infrastructure.providers import ProviderSet
+from backend.app.infrastructure.storage import ClaimAuditRepository
 
 
 class ClaimOrchestrator:

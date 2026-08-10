@@ -6,7 +6,7 @@ import re
 from decimal import Decimal, InvalidOperation
 from typing import Any, Dict, List, Optional, Tuple
 
-from .schemas import StructuredDocumentData
+from backend.app.schemas import StructuredDocumentData
 
 MONEY_FIELDS = (
     "total",

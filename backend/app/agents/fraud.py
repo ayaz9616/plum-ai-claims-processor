@@ -1,6 +1,7 @@
+from backend.app.infrastructure.repositories import ClaimHistoryRepository
 from typing import Dict, Any, List
 from datetime import datetime
-from backend.schemas import FraudAnalysis
+from backend.app.schemas import FraudAnalysis
 from decimal import Decimal
 
 def _parse_date(d: Any) -> datetime:
@@ -11,26 +12,6 @@ def _parse_date(d: Any) -> datetime:
         return parse(str(d))
     except Exception:
         return datetime.now()
-
-class ClaimHistoryRepository:
-    def __init__(self):
-        self._db = {
-            "EMP008": [
-                {"claim_id": "CLM_0081", "date": "2024-10-30", "amount": 1200, "provider": "City Clinic A"},
-                {"claim_id": "CLM_0082", "date": "2024-10-30", "amount": 1800, "provider": "City Clinic B"},
-                {"claim_id": "CLM_0083", "date": "2024-10-30", "amount": 2100, "provider": "Wellness Center"}
-            ]
-        }
-
-    def get_member_claims(self, member_id: str, claim: Dict[str, Any] = None) -> List[Dict[str, Any]]:
-        # Try local seed DB first
-        if member_id and member_id in self._db:
-            return self._db[member_id]
-            
-        # Fallback to request payload
-        if claim and claim.get("claims_history"):
-            return claim.get("claims_history", [])
-        return []
 
 class FraudAnalyzer:
     def __init__(self):

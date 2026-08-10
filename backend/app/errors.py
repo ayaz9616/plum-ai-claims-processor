@@ -20,3 +20,12 @@ class PolicySchemaInvalid(PlumError):
 
 class RepositoryError(PlumError):
     code = "REPOSITORY_ERROR"
+
+class DocumentUnreadableError(PlumError):
+    code = "DOCUMENT_UNREADABLE"
+
+class DocumentMismatchError(PlumError):
+    code = "DOCUMENT_MISMATCH"
+
+class ExtractionError(PlumError):
+    code = "EXTRACTION_ERROR"

@@ -1,4 +1,14 @@
 from __future__ import annotations
+from backend.app.infrastructure.document_adapter import ProductionDocumentAdapter
+
+from backend.app.agents.document import DocumentClassifier, DocumentQualityGate, DocumentVerifier
+from backend.app.agents.extraction import DocumentExtractor
+from backend.app.agents.consistency import ConsistencyAgent, MemberDocumentConsistencyAgent
+from backend.app.core.calculation import CalculationEngine
+from backend.app.core.confidence import ConfidenceEngine
+from backend.app.core.decision import DecisionEngine
+from backend.app.core.identity import MemberResolver
+from backend.app.workflow.state import ClaimState
 
 import uuid
 from dataclasses import dataclass
@@ -11,15 +21,15 @@ from pathlib import Path
 
 from langgraph.graph import END, StateGraph
 
-from .adapter import infer_document_type, normalize_claim_input
-from .extraction_normalize import DocumentExtractionNormalizationError, parse_structured_document
-from .identity import normalize_identity_name
-from .providers import ProviderSet, VisionRequest
-from .uploads import STAGING_DIR
-from .policy import PolicyRepository
-from .policy_evaluator import PolicyEvaluator
-from .storage import ClaimAuditRepository
-from .schemas import (
+from backend.app.core.adapter import infer_document_type, normalize_claim_input
+from backend.app.extraction_normalize import DocumentExtractionNormalizationError, parse_structured_document
+from backend.app.core.identity import normalize_identity_name
+from backend.app.infrastructure.providers import ProviderSet, VisionRequest
+from backend.uploads import STAGING_DIR
+from backend.app.infrastructure.repositories import PolicyRepository
+from backend.app.core.policy import PolicyEvaluator
+from backend.app.infrastructure.storage import ClaimAuditRepository
+from backend.app.schemas import (
     ClaimProcessingResult,
     ConfidenceResult,
     ConsistencyResult,
@@ -37,34 +47,8 @@ from .schemas import (
     PolicyEvaluation,
     TraceEvent,
 )
-from .trace import TraceManager
-from .fraud_analyzer import FraudAnalyzer
-
-
-class ClaimState(TypedDict, total=False):
-    claim_id: str
-    raw_claim: Dict[str, Any]
-    normalized_claim: Dict[str, Any]
-    policy_raw: Dict[str, Any]
-    policy_evaluation_result: PolicyEvaluation
-    member_resolution_result: MemberResolutionResult
-    member_document_consistency_result: MemberDocumentConsistencyResult
-    document_classifications: List[DocumentClassification]
-    document_verification_result: DocumentVerificationResult
-    document_extractions_result: List[DocumentExtraction]
-    document_quality_results: List[DocumentQualityResult]
-    prepared_documents: List[NormalizedDocument]
-    consistency_result: ConsistencyResult
-    financials_result: FinancialCalculationResult
-    fraud_result: FraudAnalysis
-    confidence_result: ConfidenceResult
-    decision_result: DecisionResult
-    result: ClaimProcessingResult
-    degraded: bool
-    component_failures: List[Dict[str, Any]]
-    blocked_reason: str
-    manual_review_reason: str
-    policy_rejection_reason: str
+from backend.app.trace import TraceManager
+from backend.app.agents.fraud import FraudAnalyzer
 
 
 def _trace_event(
@@ -113,462 +97,28 @@ def _trace_event(
     )
 
 
-class DocumentClassifier:
-    def classify(self, documents: List[NormalizedDocument]) -> List[DocumentClassification]:
-        classifications: List[DocumentClassification] = []
-        for document in documents:
-            signals = [f"source:{document.source.get('file_name') or document.file_id}"]
-            if document.quality == "UNREADABLE":
-                signals.append("quality:unreadable")
-            classifications.append(
-                DocumentClassification(
-                    file_id=document.file_id,
-                    document_type=document.document_type,
-                    confidence=Decimal("0.99") if document.document_type != "UNKNOWN" else Decimal("0.50"),
-                    quality=document.quality,
-                    signals=signals,
-                )
-            )
-        return classifications
 
 
-class ProductionDocumentAdapter:
-    """Backend-owned adapter from staged upload to validated extraction data."""
-    def __init__(self, providers: Optional[ProviderSet]):
-        self.vision = providers.vision if providers else None
-
-    @staticmethod
-    def _mime_type(document: Dict[str, Any]) -> str:
-        supplied = document.get("source", {}).get("mime_type")
-        if supplied:
-            return str(supplied)
-        suffix = Path(str(document.get("file_id", ""))).suffix.lower()
-        return {".pdf": "application/pdf", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp"}.get(suffix, "application/octet-stream")
-
-    @staticmethod
-    def _parse_response(text: str, structured: Optional[Dict[str, Any]] = None) -> StructuredDocumentData:
-        if isinstance(structured, dict) and structured:
-            payload = dict(structured)
-        else:
-            cleaned = (text or "").strip()
-            if not cleaned:
-                raise ValueError("document extraction returned an empty response")
-            if cleaned.startswith("```"):
-                cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", cleaned, flags=re.IGNORECASE)
-            try:
-                payload = json.loads(cleaned)
-            except json.JSONDecodeError:
-                start, end = cleaned.find("{"), cleaned.rfind("}")
-                if start < 0 or end <= start:
-                    raise ValueError("document extraction did not return valid JSON")
-                try:
-                    payload = json.loads(cleaned[start:end + 1])
-                except json.JSONDecodeError as exc:
-                    raise ValueError("document extraction returned malformed JSON") from exc
-        if not isinstance(payload, dict):
-            raise ValueError("document extraction returned an unexpected response format")
-        # Gemini sometimes uses `date`; converge that provider detail at the boundary.
-        if "treatment_date" not in payload and payload.get("date"):
-            payload["treatment_date"] = payload["date"]
-        payload["document_type"] = re.sub(r"[\s-]+", "_", str(payload.get("document_type") or "UNKNOWN").upper())
-        quality = str(payload.get("quality") or "UNKNOWN").upper()
-        payload["quality"] = {"HIGH": "GOOD", "READABLE": "GOOD", "MEDIUM": "LOW", "POOR": "LOW", "UNREADABLE": "UNREADABLE"}.get(quality, quality)
-        try:
-            parsed, _financial_mismatches = parse_structured_document(payload)
-        except DocumentExtractionNormalizationError as exc:
-            raise ValueError(f"document extraction normalization failed: {exc}") from exc
-        return parsed
-
-    def materialize(self, document: Dict[str, Any]) -> NormalizedDocument:
-        # Fixture extraction is explicit and exists solely to exercise the same workflow contract.
-        if document.get("source", {}).get("fixture") is not False:
-            return NormalizedDocument(**document)
-        if not self.vision:
-            raise RuntimeError("Gemini Vision API is not configured for uploaded-document processing")
-        document_id = str(document.get("file_id") or "")
-        if not document_id or ".." in document_id:
-            raise RuntimeError("invalid staged document reference")
-        staged_path = STAGING_DIR / document_id
-        if not staged_path.exists():
-            raise RuntimeError("uploaded document was not found in staging")
-        prompt = """Extract this medical claim document. Return ONLY JSON with: document_type (PRESCRIPTION, HOSPITAL_BILL, PHARMACY_BILL, LAB_REPORT, DIAGNOSTIC_REPORT, DENTAL_REPORT, UNKNOWN), patient_name, treatment_date (YYYY-MM-DD when possible), hospital_name, diagnosis, treatment, line_items ([{description, amount}]), subtotal, tax, discount, other_charges, grand_total, amount_payable, amount_received, total, quality (GOOD, LOW, UNREADABLE), confidence (0..1). Preserve each labelled monetary value; use null/[] where unknown and do not infer arithmetic or policy decisions."""
-        response = self.vision.analyze(VisionRequest(document_path=str(staged_path), mime_type=self._mime_type(document), metadata={"prompt": prompt}))
-        parsed = self._parse_response(response.text, response.structured)
-        # A successfully consumed document no longer needs to remain staged.
-        staged_path.unlink(missing_ok=True)
-        extracted = parsed.model_dump(mode="python", exclude={"document_type", "quality", "confidence"}, exclude_none=True)
-        return NormalizedDocument(file_id=document_id, document_type=parsed.document_type.upper(), quality=parsed.quality.upper(), extracted=extracted, source={**document.get("source", {}), "fixture": False, "provider": response.metadata.get("model")})
-
-
-class DocumentVerifier:
-    def verify(
-        self,
-        claim: Dict[str, Any],
-        classifications: List[DocumentClassification],
-        policy_raw: Dict[str, Any],
-        *,
-        types_only: bool = False,
-    ) -> DocumentVerificationResult:
-        category = str(claim.get("claim_category") or "")
-        requirement_block = policy_raw.get("document_requirements", {}).get(category.upper(), {})
-        required = list(requirement_block.get("required", []))
-        if types_only:
-            provided = [classification.document_type for classification in classifications]
-            unreadable: List[str] = []
-        else:
-            provided = [classification.document_type for classification in classifications if classification.quality != "UNREADABLE"]
-            unreadable = [classification.file_id for classification in classifications if classification.quality == "UNREADABLE"]
-        missing = [required_type for required_type in required if required_type not in provided]
-        wrong_type = []
-        if missing:
-            wrong_type = [classification.document_type for classification in classifications if classification.document_type not in required]
-        ok = not missing and (types_only or not unreadable)
-        message = "documents verified"
-        if not types_only and unreadable:
-            unreadable_types = [c.document_type.replace("_", " ").lower() for c in classifications if c.file_id in unreadable]
-            message = f"please re-upload a clear {' and '.join(unreadable_types)}"
-        elif missing:
-            uploaded = ", ".join(provided) or "no usable documents"
-            message = f"you uploaded {uploaded}, but {' and '.join(missing)} is required for this {category.lower()} claim"
-        return DocumentVerificationResult(
-            ok=ok,
-            status="BLOCKED_DOCUMENT" if not ok else "VERIFIED",
-            message=message,
-            required=required,
-            provided=provided,
-            missing=missing,
-            unreadable=unreadable,
-            wrong_type=wrong_type,
-        )
-
-
-class DocumentExtractor:
-    def extract(self, documents: List[NormalizedDocument]) -> List[DocumentExtraction]:
-        extracted: List[DocumentExtraction] = []
-        for document in documents:
-            extracted.append(
-                DocumentExtraction(
-                    file_id=document.file_id,
-                    document_type=document.document_type,
-                    extracted=document.extracted,
-                    confidence=Decimal("0.95") if document.quality != "UNREADABLE" else Decimal("0.30"),
-                )
-            )
-        return extracted
-
-
-class ConsistencyAgent:
-    @staticmethod
-    def bill_arithmetic_verifiable(extractions: List[DocumentExtraction]) -> bool:
-        bills = [e for e in extractions if e.document_type.upper() in {"PHARMACY_BILL", "HOSPITAL_BILL"}]
-        if not bills:
-            return True
-        for extraction in bills:
-            payload = extraction.extracted
-            items = payload.get("line_items") or []
-            total = payload.get("amount_payable", payload.get("grand_total", payload.get("total")))
-            if not items or total is None or any(not isinstance(item, dict) or item.get("amount") is None for item in items):
-                return False
-        return True
-
-    def check(self, extractions: List[DocumentExtraction]) -> ConsistencyResult:
-        names = []
-        for extraction in extractions:
-            patient_name = extraction.extracted.get("patient_name")
-            if patient_name:
-                names.append(_normalize_name(str(patient_name)))
-        unique_names = sorted(set(names))
-        mismatches: List[Dict[str, Any]] = []
-        if len(unique_names) > 1:
-            mismatches.append({"field": "patient_name", "found_names": unique_names, "severity": "CRITICAL", "action": "BLOCK", "reason": "documents contain different patient identities"})
-        def normalized_date(value: Any) -> str:
-            raw = str(value).strip()
-            for date_format in ("%Y-%m-%d", "%d-%b-%Y", "%d %b %Y", "%d/%m/%Y"):
-                try:
-                    return datetime.strptime(raw, date_format).date().isoformat()
-                except ValueError:
-                    continue
-            return raw
-        dates = sorted({normalized_date(e.extracted.get("treatment_date") or e.extracted.get("date")) for e in extractions if e.extracted.get("treatment_date") or e.extracted.get("date")})
-        if len(dates) > 1:
-            mismatches.append({"field": "treatment_date", "found_dates": dates, "severity": "CRITICAL", "action": "BLOCK", "reason": "documents contain different treatment dates"})
-        for extraction in extractions:
-            payload = extraction.extracted
-            items = payload.get("line_items") or []
-            stated_amount = payload.get("amount_payable", payload.get("grand_total", payload.get("total")))
-            if items and stated_amount is not None:
-                try:
-                    line_sum = sum((Decimal(str(item.get("amount", 0))) for item in items), Decimal("0"))
-                    total = Decimal(str(stated_amount))
-                    if line_sum != total:
-                        mismatches.append({"field": "bill_total", "file_id": extraction.file_id, "line_item_total": str(line_sum), "amount_payable": str(payload.get("amount_payable")) if payload.get("amount_payable") is not None else None, "grand_total": str(payload.get("grand_total")) if payload.get("grand_total") is not None else None, "document_total": str(payload.get("total")) if payload.get("total") is not None else None, "severity": "REVIEW", "action": "MANUAL_REVIEW", "reason": "bill contains conflicting financial totals"})
-                except Exception:
-                    mismatches.append({"field": "bill_total", "file_id": extraction.file_id, "severity": "REVIEW", "action": "MANUAL_REVIEW", "reason": "bill arithmetic fields could not be compared"})
-        critical = [m for m in mismatches if m.get("severity") == "CRITICAL"]
-        ok = not critical
-        message = "documents consistent"
-        if mismatches:
-            message = "; ".join(m.get("reason", f"{m.get('field', 'document')} mismatch") for m in mismatches)
-        return ConsistencyResult(ok=ok, message=message, found_names=unique_names, mismatches=mismatches, review_required=bool(mismatches and not critical))
 
 def _normalize_name(name: str) -> str:
     return normalize_identity_name(name)
 
-class MemberResolver:
-    """Resolve member and policy validity using policy_terms.json data."""
-    def resolve(self, claim: Dict[str, Any], policy_raw: Dict[str, Any]) -> MemberResolutionResult:
-        member_id = claim.get("member_id")
-        policy_id = claim.get("policy_id")
-        treatment_date_str = claim.get("treatment_date")
-        errors = []
-        if not policy_raw or policy_raw.get("policy_id") != policy_id:
-            errors.append(f"Policy not found or mismatch: {policy_id}")
-            return MemberResolutionResult(
-                member_id=str(member_id), member_name="", member_found=False,
-                policy_id=str(policy_id), policy_valid=False, eligible=False, errors=errors)
-        # Date validity
-        try:
-            td = datetime.fromisoformat(treatment_date_str).date()
-            start = policy_raw.get("policy_holder", {}).get("policy_start_date") or policy_raw.get("policy_start_date")
-            end = policy_raw.get("policy_holder", {}).get("policy_end_date") or policy_raw.get("policy_end_date")
-            if start and end:
-                sd = datetime.fromisoformat(start).date()
-                ed = datetime.fromisoformat(end).date()
-                if not (sd <= td <= ed):
-                    errors.append("Treatment date outside policy period")
-        except Exception:
-            pass
-        members = policy_raw.get("members", [])
-        found_member = next((m for m in members if m.get("member_id") == member_id), None)
-        if not found_member:
-            errors.append(f"Member {member_id} not found in policy")
-            return MemberResolutionResult(
-                member_id=str(member_id), member_name="", member_found=False,
-                policy_id=str(policy_id), policy_valid=True, eligible=False, errors=errors)
-        primary_member = found_member
-        if found_member.get("relationship") != "SELF":
-            primary_id = found_member.get("primary_member_id")
-            primary_member = next((m for m in members if m.get("member_id") == primary_id), None)
-            if not primary_member or found_member.get("member_id") not in primary_member.get("dependents", []):
-                errors.append("Invalid dependent relationship")
-        try:
-            if primary_member and primary_member.get("join_date") and treatment_date_str:
-                jd = datetime.fromisoformat(primary_member.get("join_date")).date()
-                td = datetime.fromisoformat(treatment_date_str).date()
-                if jd > td:
-                    errors.append("Treatment date before join date")
-        except Exception:
-            pass
-        dependent_records = [
-            {"dependent_id": dependent.get("member_id"), "name": dependent.get("name"), "relationship": dependent.get("relationship"), "primary_member_id": dependent.get("primary_member_id")}
-            for dependent in members if dependent.get("primary_member_id") == found_member.get("member_id")
-        ] if found_member.get("relationship") == "SELF" else []
-        return MemberResolutionResult(
-            member_id=str(member_id), member_name=found_member.get("name", ""), member_found=True,
-            policy_id=str(policy_id), policy_valid=True, eligible=len(errors) == 0,
-            dependents=dependent_records,
-            errors=errors
-        )
-
-class MemberDocumentConsistencyAgent:
-    def check(self, member_res: MemberResolutionResult, extractions: List[DocumentExtraction]) -> MemberDocumentConsistencyResult:
-        if not member_res.member_found:
-            return MemberDocumentConsistencyResult(consistent=False, mismatches=[{"reason": "member not found"}])
-        allowed = {_normalize_name(member_res.member_name)} | {_normalize_name(d.get("name", "")) for d in member_res.dependents}
-        mismatches = []
-        for ext in extractions:
-            doc_name = str(ext.extracted.get("patient_name") or "")
-            if doc_name:
-                norm_doc_name = _normalize_name(doc_name)
-                if norm_doc_name not in allowed:
-                    mismatches.append({
-                        "field": "patient_name",
-                        "document": doc_name,
-                        "resolved_member": member_res.member_name,
-                        "document_patient": doc_name,
-                        "reason": "Identity mismatch between policy member and document patient"
-                    })
-        return MemberDocumentConsistencyResult(consistent=len(mismatches) == 0, mismatches=mismatches)
-
-
-class CalculationEngine:
-    def calculate(self, claim: Dict[str, Any], policy_raw: Dict[str, Any]) -> FinancialCalculationResult:
-        category = str(claim.get("claim_category") or "").lower()
-        category_policy = policy_raw.get("opd_categories", {}).get(category, {}) or {}
-        claimed_amount = Decimal(str(claim.get("claimed_amount", 0)))
-
-        if category.upper() == "DENTAL":
-            approved_amount = Decimal("0")
-            excluded = {str(item).lower() for item in category_policy.get("excluded_procedures", [])}
-            covered = set()
-            line_items = []
-            for document in claim.get("documents", []):
-                for item in (document.get("extracted", {}) or {}).get("line_items", []) or []:
-                    description = str(item.get("description") or "")
-                    amount = Decimal(str(item.get("amount", 0)))
-                    is_excluded = any(exclusion in description.lower() for exclusion in excluded)
-                    if is_excluded:
-                        line_items.append({
-                            "description": description,
-                            "claimed_amount": str(amount),
-                            "eligible": False,
-                            "approved_amount": "0",
-                            "reason": "Policy exclusion"
-                        })
-                        continue
-                    approved_amount += amount
-                    covered.add(description)
-                    line_items.append({
-                        "description": description,
-                        "claimed_amount": str(amount),
-                        "eligible": True,
-                        "approved_amount": str(amount),
-                        "reason": "Covered by policy"
-                    })
-            breakdown = {
-                "covered_line_items": sorted(covered),
-                "excluded_procedures": sorted(excluded),
-                "line_items": line_items
-            }
-            decision_hint = "PARTIAL" if approved_amount > 0 else "REJECTED"
-            return FinancialCalculationResult(approved_amount=approved_amount, decision_hint=decision_hint, breakdown=breakdown)
-
-        hospital_name = claim.get("hospital_name")
-        if not hospital_name:
-            for d in claim.get("documents", []):
-                if isinstance(d, dict) and d.get("extracted", {}).get("hospital_name"):
-                    hospital_name = d["extracted"]["hospital_name"]
-                    break
-        hospital_name = str(hospital_name or "")
-        
-        network_hospitals = {str(hospital).lower().strip() for hospital in policy_raw.get("network_hospitals", [])}
-        is_network = hospital_name.lower().strip() in network_hospitals if hospital_name else False
-        amount = claimed_amount
-        breakdown: Dict[str, Any] = {"claimed": str(claimed_amount), "network_applied": is_network}
-
-        discount_pct = Decimal(str(category_policy.get("network_discount_percent", 0)))
-        if is_network and discount_pct > 0:
-            network_discount = (amount * discount_pct) / Decimal(100)
-            amount -= network_discount
-            breakdown["network_discount"] = str(network_discount)
-        else:
-            breakdown["network_discount"] = "0"
-
-        copay_pct = Decimal(str(category_policy.get("copay_percent", 0)))
-        copay = (amount * copay_pct) / Decimal(100)
-        approved_amount = amount - copay
-        breakdown["copay"] = str(copay)
-        breakdown["approved"] = str(approved_amount)
-        return FinancialCalculationResult(approved_amount=approved_amount, decision_hint="APPROVED", breakdown=breakdown)
 
 
 
-class ConfidenceEngine:
-    def score(self, state: ClaimState) -> ConfidenceResult:
-        score = Decimal("0.90")
-        factors: List[Dict[str, Any]] = [{"factor": "base", "value": "0.90"}]
-        if state.get("degraded"):
-            score = Decimal("0.60")
-            factors.append({"factor": "degraded", "value": "-0.30"})
-        if state.get("manual_review_reason"):
-            score = min(score, Decimal("0.50"))
-            factors.append({"factor": "manual_review", "value": "-0.40"})
-        if state.get("blocked_reason"):
-            score = Decimal("0.0")
-            factors.append({"factor": "blocked", "value": "0"})
-        return ConfidenceResult(score=score, factors=factors)
 
 
-class DecisionEngine:
-    def decide(self, state: ClaimState) -> DecisionResult:
-        if state.get("blocked_reason"):
-            return DecisionResult(
-                decision=None,
-                approved_amount=None,
-                processing_status="BLOCKED_DOCUMENT",
-                reason=str(state["blocked_reason"]),
-                confidence_score=Decimal("0"),
-            )
-
-        if state.get("policy_rejection_reason"):
-            return DecisionResult(
-                decision="REJECTED",
-                approved_amount=Decimal("0"),
-                processing_status="COMPLETED",
-                reason=str(state["policy_rejection_reason"]),
-                confidence_score=state.get("confidence_result", ConfidenceResult(score=Decimal("0.90"))).score,
-            )
-
-        if state.get("manual_review_reason"):
-            return DecisionResult(
-                decision="MANUAL_REVIEW",
-                approved_amount=Decimal("0"),
-                processing_status="PENDING_MANUAL_REVIEW",
-                reason=str(state["manual_review_reason"]),
-                confidence_score=state.get("confidence_result", ConfidenceResult(score=Decimal("0.50"))).score,
-            )
-
-        financials = state.get("financials_result")
-        approved_amount = financials.approved_amount if financials else Decimal("0")
-        decision = financials.decision_hint if financials else "APPROVED"
-        return DecisionResult(
-            decision=decision,
-            approved_amount=approved_amount,
-            processing_status="COMPLETED",
-            reason="approved by deterministic policy and financial engine",
-            confidence_score=state.get("confidence_result", ConfidenceResult(score=Decimal("0.90"))).score,
-        )
 
 
-class DocumentQualityGate:
-    """Use structured extraction evidence to prevent type recognition becoming a readability pass."""
-    _BILL_TYPES = {"PHARMACY_BILL"}
 
-    @staticmethod
-    def _present(value: Any) -> bool:
-        return value is not None and str(value).strip().lower() not in {"", "none", "null", "unknown", "n/a"}
 
-    @classmethod
-    def assess(cls, documents: List[NormalizedDocument]) -> List[DocumentQualityResult]:
-        results: List[DocumentQualityResult] = []
-        for document in documents:
-            document_type = document.document_type.upper()
-            original_quality = document.quality.upper()
-            fields: List[str] = []
-            payload = document.extracted
-            if document_type in cls._BILL_TYPES:
-                if not cls._present(payload.get("patient_name")):
-                    fields.append("patient_name")
-                if not cls._present(payload.get("treatment_date") or payload.get("date")):
-                    fields.append("bill_date")
-                if not cls._present(payload.get("hospital_name") or payload.get("pharmacy_name") or payload.get("provider_name")):
-                    fields.append("pharmacy_provider_name")
-                line_items = payload.get("line_items") or []
-                reliable_line_items = bool(line_items) and all(
-                    isinstance(item, dict) and cls._present(item.get("amount"))
-                    for item in line_items
-                )
-                reliable_total = any(cls._present(payload.get(key)) for key in ("total", "grand_total", "amount_payable"))
-                if not reliable_line_items:
-                    fields.append("line_item_amounts")
-                if not reliable_total:
-                    fields.append("total_amount")
 
-                # A billing document cannot be adjudicated without both identity/date/provider
-                # evidence and a reliable way to establish the payable amount.
-                quality = "GOOD" if not fields else "UNREADABLE"
-                reason = "Critical billing fields could not be reliably read" if fields else "Critical billing fields were reliably extracted"
-            else:
-                quality = original_quality
-                reason = "No bill-specific readability gate applies"
-            if original_quality == "UNREADABLE":
-                quality = "UNREADABLE"
-                reason = "Document was reported as unreadable"
-            results.append(DocumentQualityResult(
-                file_id=document.file_id, document_type=document_type, quality=quality,
-                reason=reason, missing_or_unreliable_fields=fields,
-            ))
-        return results
+
+
+
+
+
+
 
 
 @dataclass

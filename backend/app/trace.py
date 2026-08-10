@@ -1,5 +1,5 @@
 from typing import List
-from .schemas import TraceEvent
+from backend.app.schemas import TraceEvent
 import threading
 
 

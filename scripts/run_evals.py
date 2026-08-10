@@ -10,10 +10,10 @@ os.environ["DATABASE_URL"] = ""
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from backend.policy import PolicyRepository
+from backend.app.infrastructure.repositories import PolicyRepository
 from backend.orchestrator import ClaimOrchestrator
-from backend.trace import TraceManager
-from backend.config import config
+from backend.app.trace import TraceManager
+from backend.app.config import config
 
 
 def load_cases():

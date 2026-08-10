@@ -2,10 +2,10 @@ from decimal import Decimal
 from datetime import datetime, timedelta
 import re
 from typing import Dict, Any, List, Optional
-from .policy import PolicyRepository
-from .adapter import normalize_claim_input
-from .identity import normalize_identity_name
-from .schemas import PolicyEvaluation, RuleResult
+from backend.app.infrastructure.repositories import PolicyRepository
+from backend.app.core.adapter import normalize_claim_input
+from backend.app.core.identity import normalize_identity_name
+from backend.app.schemas import PolicyEvaluation, RuleResult
 
 
 def _parse_date(d: str) -> datetime:

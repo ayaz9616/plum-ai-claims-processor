@@ -3,13 +3,13 @@ import os
 from dotenv import load_dotenv
 
 # Load .env explicitly
-env_path = Path(__file__).resolve().parent.parent / ".env"
+env_path = Path(__file__).resolve().parent.parent.parent / ".env"
 if env_path.exists():
     load_dotenv(dotenv_path=env_path)
 class Config:
     def __init__(self):
         # Base directory is repo root (one level up from this package)
-        self.base_dir = Path(__file__).resolve().parent.parent
+        self.base_dir = Path(__file__).resolve().parent.parent.parent
         self.policy_path = Path(os.environ.get("POLICY_PATH", self.base_dir / "policy_terms.json"))
         self.app_name = os.environ.get("APP_NAME", "plum-claims-ai")
         self.environment = os.environ.get("ENVIRONMENT", "development")
