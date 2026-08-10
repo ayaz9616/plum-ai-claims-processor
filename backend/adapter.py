@@ -10,7 +10,7 @@ def _as_dict(value: Any) -> Dict[str, Any]:
     return {}
 
 
-def _infer_document_type(document: Dict[str, Any]) -> str:
+def infer_document_type(document: Dict[str, Any]) -> str:
     file_name = str(document.get("file_name") or "").lower()
     mime_type = str(document.get("mime_type") or "").lower()
     if "prescription" in file_name or "prescription" in mime_type:
@@ -35,7 +35,7 @@ def is_fixture_document(document: Any) -> bool:
 def normalize_fixture_document(document: Any) -> Dict[str, Any]:
     doc = _as_dict(document)
     content = _as_dict(doc.get("content") or doc.get("extracted"))
-    document_type = str(doc.get("actual_type") or doc.get("document_type") or _infer_document_type(doc)).upper()
+    document_type = str(doc.get("actual_type") or doc.get("document_type") or infer_document_type(doc)).upper()
     quality = str(doc.get("quality") or content.get("quality") or "UNKNOWN").upper()
     patient_name = doc.get("patient_name_on_doc") or doc.get("name_on_doc") or content.get("patient_name")
     extracted = dict(content)

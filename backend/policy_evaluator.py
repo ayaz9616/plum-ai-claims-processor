@@ -1,5 +1,6 @@
 from decimal import Decimal
 from datetime import datetime, timedelta
+import re
 from typing import Dict, Any, List, Optional
 from .policy import PolicyRepository
 from .adapter import normalize_claim_input
@@ -180,7 +181,7 @@ class PolicyEvaluator:
                 diag_text += " " + str(diag)
         diag_text = diag_text.lower()
         for cond, days in specific.items():
-            if cond.lower() in diag_text:
+            if re.search(rf"\b{re.escape(cond.lower())}\b", diag_text):
                 # compute eligible date
                 jd = _parse_date(member.get("join_date")) if member and member.get("join_date") else None
                 if jd:

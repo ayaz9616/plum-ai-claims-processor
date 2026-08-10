@@ -11,7 +11,7 @@ from pathlib import Path
 
 from langgraph.graph import END, StateGraph
 
-from .adapter import normalize_claim_input
+from .adapter import infer_document_type, normalize_claim_input
 from .extraction_normalize import DocumentExtractionNormalizationError, parse_structured_document
 from .identity import normalize_identity_name
 from .providers import ProviderSet, VisionRequest
@@ -200,19 +200,30 @@ class ProductionDocumentAdapter:
 
 
 class DocumentVerifier:
-    def verify(self, claim: Dict[str, Any], classifications: List[DocumentClassification], policy_raw: Dict[str, Any]) -> DocumentVerificationResult:
+    def verify(
+        self,
+        claim: Dict[str, Any],
+        classifications: List[DocumentClassification],
+        policy_raw: Dict[str, Any],
+        *,
+        types_only: bool = False,
+    ) -> DocumentVerificationResult:
         category = str(claim.get("claim_category") or "")
         requirement_block = policy_raw.get("document_requirements", {}).get(category.upper(), {})
         required = list(requirement_block.get("required", []))
-        provided = [classification.document_type for classification in classifications if classification.quality != "UNREADABLE"]
-        unreadable = [classification.file_id for classification in classifications if classification.quality == "UNREADABLE"]
+        if types_only:
+            provided = [classification.document_type for classification in classifications]
+            unreadable: List[str] = []
+        else:
+            provided = [classification.document_type for classification in classifications if classification.quality != "UNREADABLE"]
+            unreadable = [classification.file_id for classification in classifications if classification.quality == "UNREADABLE"]
         missing = [required_type for required_type in required if required_type not in provided]
         wrong_type = []
         if missing:
             wrong_type = [classification.document_type for classification in classifications if classification.document_type not in required]
-        ok = not missing and not unreadable
+        ok = not missing and (types_only or not unreadable)
         message = "documents verified"
-        if unreadable:
+        if not types_only and unreadable:
             unreadable_types = [c.document_type.replace("_", " ").lower() for c in classifications if c.file_id in unreadable]
             message = f"please re-upload a clear {' and '.join(unreadable_types)}"
         elif missing:
@@ -596,6 +607,7 @@ class ClaimWorkflow:
         graph.add_node("member_resolution", self._member_resolution)
         graph.add_node("document_classification", self._document_classification)
         graph.add_node("document_verification", self._document_verification)
+        graph.add_node("document_quality", self._document_quality)
         graph.add_node("blocked_document", self._blocked_document)
         graph.add_node("document_extraction", self._document_extraction)
         graph.add_node("member_document_consistency", self._member_document_consistency)
@@ -616,13 +628,21 @@ class ClaimWorkflow:
         )
         graph.add_conditional_edges(
             "document_classification", self._route_after_document_classification,
-            {"blocked": "blocked_document", "continue": "document_extraction"},
+            {"blocked": "blocked_document", "continue": "document_verification"},
         )
-
-        graph.add_edge("document_extraction", "document_verification")
         graph.add_conditional_edges(
             "document_verification",
             self._route_after_verification,
+            {"blocked": "blocked_document", "continue": "document_quality"},
+        )
+        graph.add_conditional_edges(
+            "document_quality",
+            self._route_after_quality,
+            {"blocked": "blocked_document", "continue": "document_extraction"},
+        )
+        graph.add_conditional_edges(
+            "document_extraction",
+            self._route_after_extraction,
             {"blocked": "blocked_document", "continue": "member_document_consistency"},
         )
         graph.add_conditional_edges(
@@ -687,6 +707,19 @@ class ClaimWorkflow:
         amount = Decimal(str(value or 0))
         return f"₹{amount:,.0f}" if amount == amount.to_integral() else f"₹{amount:,.2f}"
 
+    @staticmethod
+    def _format_date(value: Any) -> str:
+        raw = str(value or "").strip()
+        if not raw:
+            return "the eligibility date"
+        for date_format in ("%Y-%m-%d", "%d-%b-%Y", "%d %b %Y", "%d/%m/%Y"):
+            try:
+                parsed = datetime.strptime(raw, date_format)
+                return f"{parsed.day} {parsed.strftime('%B %Y')}"
+            except ValueError:
+                continue
+        return raw
+
     def _decision_summary(self, state: ClaimState, decision: Optional[str], approved_amount: Optional[Decimal], reason: str = "") -> str:
         claim = state["normalized_claim"]
         category = str(claim.get("claim_category") or "medical").lower().replace("_", " ")
@@ -732,17 +765,44 @@ class ClaimWorkflow:
         if decision == "REJECTED":
             evaluation = state.get("policy_evaluation_result")
             failed = {check.name: check for check in (evaluation.checks if evaluation else []) if not check.ok}
-            if "pre_authorization" in failed:
+            rejection_reason = str(reason or state.get("policy_rejection_reason") or "").upper()
+
+            if rejection_reason == "PRE_AUTH_MISSING" or "pre_authorization" in failed:
                 details = failed["pre_authorization"].details or {}
                 item = (details.get("reasons") or [{}])[0]
-                return f"Your {category} claim was rejected because the {self._money(item.get('amount'))} {item.get('item', 'treatment').upper()} required pre-authorization under your policy and no valid pre-authorization was provided."
-            if "per_claim_limit" in failed:
+                threshold = item.get("threshold") or state.get("policy_raw", {}).get("opd_categories", {}).get("diagnostic", {}).get("pre_auth_threshold", 10000)
+                return (
+                    f"Your {category} claim was rejected because the {self._money(item.get('amount'))} "
+                    f"{str(item.get('item', 'treatment')).upper()} required pre-authorization under your policy and "
+                    f"no valid pre-authorization was provided. Pre-authorization is required for MRI claims above "
+                    f"{self._money(threshold)}. Please obtain valid pre-authorization and resubmit the claim with "
+                    f"the authorization details."
+                )
+            if rejection_reason == "WAITING_PERIOD" or "waiting_periods" in failed:
+                details = failed["waiting_periods"].details or {}
+                issues = details.get("issues") or []
+                issue = issues[0] if issues else {}
+                eligible_from = issue.get("eligible_from")
+                condition = str(issue.get("condition") or "this condition").replace("_", " ")
+                treatment_date = claim.get("treatment_date")
+                if eligible_from and treatment_date:
+                    return (
+                        f"Your {category} claim was rejected because {condition}-related claims are covered after "
+                        f"{self._format_date(eligible_from)} due to a policy waiting period. Your treatment date was "
+                        f"{self._format_date(treatment_date)}."
+                    )
+                return f"Your {category} claim was rejected because the treatment falls within the policy waiting period."
+            if rejection_reason == "EXCLUDED_CONDITION" or "exclusions" in failed:
+                details = failed["exclusions"].details or {}
+                found = details.get("found_exclusions") or []
+                exclusion_text = found[0] if found else "This treatment"
+                return (
+                    f"Your {category} claim was rejected because the treatment is excluded under your policy. "
+                    f"{exclusion_text} is not covered, including obesity and bariatric treatment where applicable."
+                )
+            if rejection_reason == "PER_CLAIM_EXCEEDED" or "per_claim_limit" in failed:
                 details = failed["per_claim_limit"].details or {}
                 return f"Your {category} claim was rejected because the claimed amount of {self._money(details.get('claimed_amount'))} exceeds your policy's per-claim limit of {self._money(details.get('limit'))}."
-            if "waiting_periods" in failed:
-                return f"Your {category} claim was rejected because the treatment falls within the policy waiting period."
-            if "exclusions" in failed:
-                return f"Your {category} claim was rejected because the treatment is excluded under your policy."
             return f"Your {category} claim was rejected because it did not meet the applicable policy requirement ({reason.replace('_', ' ').lower()})."
         financials = state.get("financials_result")
         breakdown = financials.breakdown if financials else {}
@@ -780,15 +840,25 @@ class ClaimWorkflow:
 
     def _document_classification(self, state: ClaimState) -> ClaimState:
         claim_id = state["claim_id"]
-        documents = []
+        documents: List[NormalizedDocument] = []
         for document in state["normalized_claim"].get("documents", []):
-            try:
-                documents.append(self.production_documents.materialize(document))
-            except Exception as exc:
-                state["blocked_reason"] = f"document extraction failed for {document.get('file_id')}: {exc}"
-                state["component_failures"].append({"component": "DocumentExtraction", "severity": "CRITICAL", "reason": str(exc)})
-                _trace_event(self.trace_manager, claim_id, "DOCUMENT_EXTRACTION", "ProductionDocumentAdapter", "ERROR", error=str(exc))
-                return state
+            source = document.get("source") or {}
+            if source.get("fixture") is False:
+                inferred_type = infer_document_type({
+                    "file_name": source.get("file_name"),
+                    "mime_type": source.get("mime_type"),
+                })
+                documents.append(
+                    NormalizedDocument(
+                        file_id=str(document.get("file_id") or ""),
+                        document_type=inferred_type if inferred_type != "UNKNOWN" else str(document.get("document_type") or "UNKNOWN").upper(),
+                        quality=str(document.get("quality") or "UNKNOWN").upper(),
+                        extracted=dict(document.get("extracted") or {}),
+                        source=source,
+                    )
+                )
+            else:
+                documents.append(NormalizedDocument(**document))
         state["prepared_documents"] = documents
         classifications = self.classifier.classify(documents)
         state["document_classifications"] = classifications
@@ -823,6 +893,25 @@ class ClaimWorkflow:
     def _document_verification(self, state: ClaimState) -> ClaimState:
         claim_id = state["claim_id"]
         claim = state["normalized_claim"]
+        classifications = state.get("document_classifications", [])
+        verification = self.verifier.verify(claim, classifications, state["policy_raw"], types_only=True)
+        state["document_verification_result"] = verification
+        _trace_event(
+            self.trace_manager,
+            claim_id,
+            "DOCUMENT_VERIFICATION",
+            "DocumentVerifier",
+            "PASSED" if verification.ok else "FAILED",
+            safe_output=verification.model_dump(mode="python"),
+            summary="All policy-required document types were present." if verification.ok else verification.message + ". Claim adjudication was blocked.",
+            reason_code=None if verification.ok else "DOCUMENT_VERIFICATION_FAILED",
+        )
+        if not verification.ok:
+            state["blocked_reason"] = verification.message
+        return state
+
+    def _document_quality(self, state: ClaimState) -> ClaimState:
+        claim_id = state["claim_id"]
         quality_results = self.quality_gate.assess(state.get("prepared_documents", []))
         state["document_quality_results"] = quality_results
         quality_by_id = {result.file_id: result for result in quality_results}
@@ -831,14 +920,29 @@ class ClaimWorkflow:
             assessment = quality_by_id.get(classification.file_id)
             if assessment:
                 classification.quality = assessment.quality
-        verification = self.verifier.verify(claim, classifications, state["policy_raw"])
-        state["document_verification_result"] = verification
         unreadable_details = [result.model_dump(mode="python") for result in quality_results if result.quality == "UNREADABLE"]
-        _trace_event(self.trace_manager, claim_id, "DOCUMENT_QUALITY", "DocumentQualityGate", "NEEDS_REUPLOAD" if unreadable_details else "OK", safe_output={"unreadable": unreadable_details})
-        _trace_event(self.trace_manager, claim_id, "DOCUMENT_VERIFICATION", "DocumentVerifier", "PASSED" if verification.ok else "FAILED", safe_output=verification.model_dump(mode="python"), summary="All policy-required document types were present and readable." if verification.ok else verification.message + ". Claim adjudication was blocked.", reason_code=None if verification.ok else "DOCUMENT_VERIFICATION_FAILED")
-        if not verification.ok:
-            state["blocked_reason"] = verification.message
+        _trace_event(
+            self.trace_manager,
+            claim_id,
+            "DOCUMENT_QUALITY",
+            "DocumentQualityGate",
+            "NEEDS_REUPLOAD" if unreadable_details else "OK",
+            safe_output={"unreadable": unreadable_details},
+        )
+        if unreadable_details:
+            unreadable_types = sorted({
+                result.document_type.replace("_", " ").lower()
+                for result in quality_results
+                if result.quality == "UNREADABLE"
+            })
+            state["blocked_reason"] = f"please re-upload a clear {' and '.join(unreadable_types)}"
         return state
+
+    def _route_after_quality(self, state: ClaimState) -> str:
+        return "blocked" if state.get("blocked_reason") else "continue"
+
+    def _route_after_extraction(self, state: ClaimState) -> str:
+        return "blocked" if state.get("blocked_reason") else "continue"
 
     def _route_after_verification(self, state: ClaimState) -> str:
         return "blocked" if state.get("blocked_reason") else "continue"
@@ -847,7 +951,7 @@ class ClaimWorkflow:
         claim_id = state["claim_id"]
         reason = str(state.get("blocked_reason") or "blocked document")
         completed = {event.step for event in self.trace_manager.get_events_for_claim(claim_id)}
-        blocker = next((stage for stage in ("MEMBER_DOCUMENT_CONSISTENCY", "CROSS_DOCUMENT_CONSISTENCY", "DOCUMENT_VERIFICATION", "MEMBER_RESOLUTION") if stage in completed), "DOCUMENT_VERIFICATION")
+        blocker = next((stage for stage in ("MEMBER_DOCUMENT_CONSISTENCY", "CROSS_DOCUMENT_CONSISTENCY", "DOCUMENT_QUALITY", "DOCUMENT_VERIFICATION", "MEMBER_RESOLUTION") if stage in completed), "DOCUMENT_VERIFICATION")
         for stage in ("POLICY_EVALUATION", "FINANCIAL_CALCULATION", "FRAUD_ANALYSIS", "CONFIDENCE"):
             if stage not in completed:
                 _trace_event(self.trace_manager, claim_id, stage, "Workflow", "SKIPPED", summary=f"{stage.replace('_', ' ').title()} was skipped because {blocker.replace('_', ' ').lower()} failed.", reason_code="UPSTREAM_STAGE_FAILED", evidence={"blocked_by": blocker})
@@ -872,7 +976,40 @@ class ClaimWorkflow:
 
     def _document_extraction(self, state: ClaimState) -> ClaimState:
         claim_id = state["claim_id"]
-        documents = state.get("prepared_documents", [])
+        documents: List[NormalizedDocument] = []
+        for document in state.get("prepared_documents", []):
+            payload = document.model_dump(mode="python") if hasattr(document, "model_dump") else dict(document)
+            source = payload.get("source") or {}
+            if source.get("fixture") is False:
+                try:
+                    documents.append(self.production_documents.materialize(payload))
+                except Exception as exc:
+                    state["blocked_reason"] = f"document extraction failed for {payload.get('file_id')}: {exc}"
+                    state["component_failures"].append({"component": "DocumentExtraction", "severity": "CRITICAL", "reason": str(exc)})
+                    _trace_event(self.trace_manager, claim_id, "DOCUMENT_EXTRACTION", "ProductionDocumentAdapter", "ERROR", error=str(exc))
+                    return state
+            else:
+                documents.append(document if isinstance(document, NormalizedDocument) else NormalizedDocument(**payload))
+
+        post_quality = self.quality_gate.assess(documents)
+        unreadable_after_extraction = [result for result in post_quality if result.quality == "UNREADABLE"]
+        if unreadable_after_extraction:
+            unreadable_types = sorted({result.document_type.replace("_", " ").lower() for result in unreadable_after_extraction})
+            state["blocked_reason"] = f"please re-upload a clear {' and '.join(unreadable_types)}"
+            state["document_quality_results"] = post_quality
+            _trace_event(
+                self.trace_manager,
+                claim_id,
+                "DOCUMENT_QUALITY",
+                "DocumentQualityGate",
+                "NEEDS_REUPLOAD",
+                safe_output={"unreadable": [result.model_dump(mode="python") for result in unreadable_after_extraction]},
+                summary="Uploaded document content could not be read reliably after extraction.",
+            )
+            _trace_event(self.trace_manager, claim_id, "DOCUMENT_EXTRACTION", "DocumentExtractor", "ERROR", error="extracted document quality was unreadable")
+            return state
+
+        state["prepared_documents"] = documents
         extractions = self.extractor.extract(documents)
         state["document_extractions_result"] = extractions
         state["normalized_claim"]["documents"] = [document.model_dump(mode="python") for document in documents]

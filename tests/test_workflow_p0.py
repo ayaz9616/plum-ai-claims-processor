@@ -78,7 +78,7 @@ def test_cross_document_date_and_bill_total_mismatches_gate_adjudication():
 class _FakeVision:
     def analyze(self, request):
         return VisionResponse(
-            text=json.dumps({"document_type": "PRESCRIPTION", "patient_name": "Priya Singh", "treatment_date": "2024-10-15", "quality": "GOOD", "confidence": "0.98"}),
+            text=json.dumps({"document_type": "HOSPITAL_BILL", "patient_name": "Priya Singh", "treatment_date": "2024-10-15", "quality": "GOOD", "confidence": "0.98"}),
             structured={}, metadata={"model": "fake-gemini"},
         )
 
@@ -90,7 +90,7 @@ def test_uploaded_document_is_extracted_by_backend_before_workflow():
     claim = {
         "member_id": "EMP002", "policy_id": "PLUM_GHI_2024", "claim_category": "DENTAL",
         "treatment_date": "2024-10-15", "claimed_amount": 1000,
-        "documents": [{"file_id": document_id, "file_name": "receipt.jpg", "mime_type": "image/jpeg"}],
+        "documents": [{"file_id": document_id, "file_name": "hospital_bill.jpg", "mime_type": "image/jpeg"}],
     }
     try:
         result = _orchestrator(ProviderSet(vision=_FakeVision())).process_claim(claim)
@@ -98,16 +98,18 @@ def test_uploaded_document_is_extracted_by_backend_before_workflow():
         staged.unlink(missing_ok=True)
     extraction = next(event for event in result.trace if event.step == "DOCUMENT_EXTRACTION")
     assert extraction.safe_output[0]["extracted"]["patient_name"] == "Priya Singh"
-    assert extraction.safe_output[0]["document_type"] == "PRESCRIPTION"
+    assert extraction.safe_output[0]["document_type"] == "HOSPITAL_BILL"
 
 
 def test_final_decision_summaries_explain_official_outcomes():
     expectations = {
         "TC004": ("APPROVED", "₹1,350", "prescription and hospital bill"),
+        "TC005": ("REJECTED", "30 november 2024", "waiting period"),
         "TC006": ("PARTIAL", "Root Canal Treatment", "Teeth Whitening"),
-        "TC007": ("REJECTED", "pre-authorization", "MRI"),
+        "TC007": ("REJECTED", "pre-authorization", "resubmit"),
         "TC009": ("MANUAL_REVIEW", "4 claims", "same day"),
         "TC011": ("APPROVED", "FraudAnalyzer", "manual review is recommended"),
+        "TC012": ("REJECTED", "excluded", "obesity"),
     }
     for case_id, phrases in expectations.items():
         result = _orchestrator().process_claim(_case(case_id))
@@ -116,6 +118,14 @@ def test_final_decision_summaries_explain_official_outcomes():
         assert "\n" not in result.decision_summary
         for phrase in phrases[1:]:
             assert phrase.lower() in result.decision_summary.lower()
+
+
+def test_required_document_verification_runs_before_extraction():
+    result = _orchestrator().process_claim(_case("TC004"))
+    steps = [event.step for event in result.trace]
+    assert "DOCUMENT_VERIFICATION" in steps
+    assert "DOCUMENT_EXTRACTION" in steps
+    assert steps.index("DOCUMENT_VERIFICATION") < steps.index("DOCUMENT_EXTRACTION")
 
 
 def test_document_blocks_have_actionable_decision_summary():
@@ -165,7 +175,7 @@ class _EmptyVision:
 class _StructuredVision:
     def analyze(self, request):
         return VisionResponse(
-            text="not json", structured={"document_type": "PRESCRIPTION", "patient_name": "Priya Singh", "quality": "GOOD"}, metadata={"model": "fake-gemini"}
+            text="not json", structured={"document_type": "HOSPITAL_BILL", "patient_name": "Priya Singh", "quality": "GOOD"}, metadata={"model": "fake-gemini"}
         )
 
 
@@ -173,7 +183,7 @@ def test_invalid_upload_response_blocks_once_without_overwriting_successful_extr
     document_id = "empty-vision.jpg"
     staged = STAGING_DIR / document_id
     staged.write_bytes(b"fake-image")
-    claim = {"member_id": "EMP002", "policy_id": "PLUM_GHI_2024", "claim_category": "DENTAL", "treatment_date": "2024-10-15", "claimed_amount": 1000, "documents": [{"file_id": document_id, "mime_type": "image/jpeg"}]}
+    claim = {"member_id": "EMP002", "policy_id": "PLUM_GHI_2024", "claim_category": "DENTAL", "treatment_date": "2024-10-15", "claimed_amount": 1000, "documents": [{"file_id": document_id, "file_name": "hospital_bill.jpg", "mime_type": "image/jpeg"}]}
     try:
         result = _orchestrator(ProviderSet(vision=_EmptyVision())).process_claim(claim)
     finally:
@@ -188,14 +198,14 @@ def test_provider_structured_output_is_validated_before_text_fallback():
     document_id = "structured-vision.jpg"
     staged = STAGING_DIR / document_id
     staged.write_bytes(b"fake-image")
-    claim = {"member_id": "EMP002", "policy_id": "PLUM_GHI_2024", "claim_category": "DENTAL", "treatment_date": "2024-10-15", "claimed_amount": 1000, "documents": [{"file_id": document_id, "mime_type": "image/jpeg"}]}
+    claim = {"member_id": "EMP002", "policy_id": "PLUM_GHI_2024", "claim_category": "DENTAL", "treatment_date": "2024-10-15", "claimed_amount": 1000, "documents": [{"file_id": document_id, "file_name": "hospital_bill.jpg", "mime_type": "image/jpeg"}]}
     try:
         result = _orchestrator(ProviderSet(vision=_StructuredVision())).process_claim(claim)
     finally:
         staged.unlink(missing_ok=True)
     extraction = next(event for event in result.trace if event.step == "DOCUMENT_EXTRACTION")
     assert extraction.status == "OK"
-    assert extraction.safe_output[0]["document_type"] == "PRESCRIPTION"
+    assert extraction.safe_output[0]["document_type"] == "HOSPITAL_BILL"
 
 
 def test_identity_consistency_normalizes_safe_ocr_format_variations():

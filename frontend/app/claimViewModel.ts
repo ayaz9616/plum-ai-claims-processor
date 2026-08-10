@@ -55,6 +55,7 @@ function formatDisplayDate(value: string | undefined): string {
 function formatCategoryLabel(category: string): string {
   if (!category) return "Not available";
   return category
+    .toLowerCase()
     .replace(/_/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
