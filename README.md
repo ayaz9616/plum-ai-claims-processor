@@ -1,13 +1,17 @@
 # 🏥 Plum Claims AI
+
 ### Intelligent Health Insurance Claims Processing & Decision Platform
 
-> **AI Engineer Assignment — Plum**
->
 > An explainable, policy-driven claims processing platform that validates medical documents, extracts structured information, evaluates insurance rules, detects risk signals, calculates eligible amounts, and produces auditable claim decisions with confidence scores.
 
-**Live Application:** [https://plum-ai-claims-processor.vercel.app/](https://plum-ai-claims-processor.vercel.app/)  
-**Repository:** [https://github.com/ayaz9616/plum-ai-claims-processor.git](https://github.com/ayaz9616/plum-ai-claims-processor.git)  
-**Demo Video:** [YOUR_DEMO_VIDEO_URL](YOUR_DEMO_VIDEO_URL)
+**Live Application:**  
+https://plum-ai-claims-processor.vercel.app/
+
+**Repository:**  
+https://github.com/ayaz9616/plum-ai-claims-processor
+
+**Demo Video:**  
+_To be added for submission._
 
 ---
 
@@ -24,7 +28,7 @@ The system accepts:
 - Claimed amount
 - Medical documents such as prescriptions, hospital bills, pharmacy bills and diagnostic reports
 
-The claim then moves through a **structured processing workflow** consisting of clearly separated stages for:
+The claim moves through a structured processing workflow consisting of:
 
 1. Claim validation
 2. Document verification
@@ -36,7 +40,7 @@ The claim then moves through a **structured processing workflow** consisting of 
 8. Decision generation
 9. Explainability and execution tracing
 
-The implementation intentionally separates **AI-assisted reasoning** from **deterministic business logic**, particularly for policy enforcement and financial calculations.
+The implementation intentionally separates **AI-assisted document understanding** from **deterministic business logic**, particularly for policy enforcement and financial calculations.
 
 The result is not just a decision, but a decision that can be inspected and reconstructed by an operations user.
 
@@ -44,31 +48,29 @@ The result is not just a decision, but a decision that can be inspected and reco
 
 # 🎯 What This Project Optimizes For
 
-The architecture was designed around the actual evaluation dimensions specified in the Plum assignment:
+The architecture is designed around five practical engineering goals:
 
-| Evaluation Area | Weight | Design Focus |
-|---|---:|---|
-| System Design | **30%** | Modular workflow, separation of responsibilities, failure handling, scalability |
-| Engineering Quality | **25%** | Validation, error handling, structured data, tests |
-| Observability | **20%** | Full execution trace and decision reasoning |
-| AI Integration | **15%** | AI for unstructured document understanding with structured outputs |
-| Document Verification | **10%** | Early detection and actionable document errors |
-
-These are the official evaluation categories from the assignment.
+| Area | Design Focus |
+|---|---|
+| System design | Modular workflow, separation of responsibilities, failure handling, scalability |
+| Engineering quality | Validation, error handling, structured data, tests |
+| Observability | Full execution trace and decision reasoning |
+| AI integration | AI for unstructured document understanding with structured outputs |
+| Document verification | Early detection and actionable document errors |
 
 The design therefore prioritizes:
 
 ```text
 Reliability
-     +
+    +
 Explainability
-     +
+    +
 Deterministic Policy Enforcement
-     +
+    +
 AI-assisted Document Understanding
-     +
+    +
 Observability
-     +
+    +
 Graceful Failure Handling
 ```
 
@@ -81,58 +83,59 @@ Rather than implementing the entire system as one large AI prompt, the backend i
 Conceptually:
 
 ```text
-                     CLAIM
-                       │
-                       ▼
-              ┌─────────────────┐
-              │ Claim Validation│
-              └────────┬────────┘
-                       │
-                       ▼
-              ┌─────────────────┐
-              │    Document     │
-              │   Verification  │
-              └────────┬────────┘
-                       │
-                Valid Documents?
-                   /          \
-                 NO            YES
-                 │              │
-                 ▼              ▼
-          Actionable Error   Extraction
-          + Early Stop          │
-                                ▼
-                       Cross-Document
-                         Validation
-                                │
-                                ▼
-                       Policy Evaluation
-                                │
-                                ▼
-                         Risk / Fraud
-                           Analysis
-                                │
-                                ▼
-                       Financial Rules
-                         & Calculation
-                                │
-                                ▼
-                          Decision
-                                │
-                                ▼
-                    Explainability / Trace
-                                │
-                                ▼
-                         Final Response
+                         CLAIM
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │ Claim Validation│
+                  └────────┬────────┘
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │    Document     │
+                  │   Verification  │
+                  └────────┬────────┘
+                           │
+                    Valid Documents?
+                       /         \
+                     NO           YES
+                     │             │
+                     ▼             ▼
+              Actionable Error  Extraction
+              + Early Stop          │
+                                    ▼
+                           Cross-Document
+                            Validation
+                                    │
+                                    ▼
+                           Policy Evaluation
+                                    │
+                                    ▼
+                             Risk / Fraud
+                              Analysis
+                                    │
+                                    ▼
+                            Financial Rules
+                             & Calculation
+                                    │
+                                    ▼
+                               Decision
+                                    │
+                                    ▼
+                          Explainability /
+                               Trace
+                                    │
+                                    ▼
+                            Final Response
 ```
 
-### Important architectural distinction
+## Important architectural distinction
 
 The current implementation is **not claiming to be a fully autonomous multi-agent system**.
 
 Instead, it uses a **modular orchestration model** in which different responsibilities are separated into processing stages/components.
 
-This gives the system many of the engineering properties required for an agentic architecture:
+This gives the system:
 
 - clear responsibility boundaries
 - structured inputs and outputs
@@ -142,7 +145,7 @@ This gives the system many of the engineering properties required for an agentic
 - deterministic/non-deterministic separation
 - an explicit orchestration layer
 
-The architecture is intentionally structured so that individual stages can later be extracted into independently executing agents or services without redesigning the complete claim workflow.
+These boundaries also provide a clean evolution path toward independently executing agents or services later, without claiming that such a topology is already implemented.
 
 ---
 
@@ -159,15 +162,15 @@ The architecture is intentionally structured so that individual stages can later
 ┌──────────────────────────────────────────────────────────────┐
 │                         API LAYER                            │
 │                                                              │
-│        Claim Submission │ Processing │ Results              │
+│       Claim Submission │ Processing │ Results               │
 └─────────────────────────────┬────────────────────────────────┘
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────┐
-│                  CLAIM WORKFLOW / ORCHESTRATOR                │
+│                  CLAIM WORKFLOW / ORCHESTRATOR               │
 │                                                              │
-│   Coordinates the individual processing stages and controls  │
-│   early exits, failures, state transitions and final output.  │
+│ Coordinates processing stages, early exits, failures, state  │
+│ transitions and final output.                                │
 └────────────┬─────────────┬─────────────┬─────────────┬───────┘
              │             │             │             │
              ▼             ▼             ▼             ▼
@@ -203,8 +206,10 @@ The architecture is intentionally structured so that individual stages can later
                     └────────┬─────────┘
                              │
                              ▼
-                         DATABASE
+                    Structured Result
 ```
+
+> **Database note:** PostgreSQL/Supabase is available as the structured persistence layer where the current implementation uses it. Original medical documents are treated as transient processing inputs rather than permanent document objects.
 
 ---
 
@@ -269,7 +274,7 @@ Action:
 Please upload the hospital bill to continue.
 ```
 
-This directly addresses the assignment's requirement that document problems be caught **before processing** and that the error message be specific and actionable.
+This keeps document problems visible **before claim adjudication** and makes errors specific and actionable.
 
 ---
 
@@ -307,7 +312,15 @@ Example normalized representation:
 }
 ```
 
-The extraction layer is designed around the messy-document conditions described in the supplied Plum document guide, including handwritten prescriptions, phone photographs, stamps, multilingual documents, partial documents, corrections and multi-page documents.
+The extraction layer is designed around difficult document conditions such as:
+
+- handwritten prescriptions
+- phone photographs
+- stamps
+- multilingual documents
+- partial documents
+- corrections
+- multi-page documents
 
 ---
 
@@ -324,16 +337,16 @@ Patient → Rajesh Kumar
 Hospital Bill
 Patient → Arjun Mehta
 
-              ↓
-
-        MISMATCH DETECTED
+        │
+        ▼
+MISMATCH DETECTED
 ```
 
 The workflow can then stop and surface:
 
 > The prescription belongs to Rajesh Kumar, while the hospital bill belongs to Arjun Mehta. Please upload documents belonging to the same patient.
 
-This is particularly important for **TC003**.
+This is particularly important for preventing claims from being adjudicated with inconsistent patient documents.
 
 ---
 
@@ -393,7 +406,7 @@ For example:
 
 The calculation order is important.
 
-The assignment explicitly tests this behavior in **TC010**.
+This ordering is covered by the financial test suite and is important for keeping settlement calculations reproducible.
 
 The LLM is therefore not trusted to perform financial arithmetic or independently modify policy thresholds.
 
@@ -420,21 +433,21 @@ For example:
 Multiple same-day claims
           │
           ▼
-Risk Signal
+      Risk Signal
           │
           ▼
-MANUAL_REVIEW
+     MANUAL_REVIEW
 ```
 
-This preserves the distinction between:
+This preserves the distinction:
 
 ```text
 Suspicious
-      ≠
+    ≠
 Automatically fraudulent
 ```
 
-TC009 specifically expects the unusual same-day pattern to result in manual review rather than automatic rejection.
+The unusual same-day pattern is routed to manual review rather than being treated as an automatic fraud verdict.
 
 ---
 
@@ -486,7 +499,7 @@ Final Decision
 
 This means an operations user can reconstruct **why** the system reached a particular decision.
 
-For example:
+Example:
 
 ```text
 CLAIM CLM-XXXX
@@ -512,7 +525,7 @@ DECISION: APPROVED
 CONFIDENCE: 0.94
 ```
 
-This directly targets the assignment's **20% Observability** criterion.
+This makes the system observable and the final decision reconstructable.
 
 ---
 
@@ -537,7 +550,7 @@ Conceptually:
               Continue Workflow
                      │
                      ▼
-             Decision / Review
+               Decision / Review
 ```
 
 For example:
@@ -553,7 +566,7 @@ Warnings:
 - Manual review recommended
 ```
 
-This is the intended behavior for TC011 rather than returning an HTTP 500 or terminating the entire claim.
+This allows the system to surface a degraded result rather than simply returning an HTTP 500 or terminating the entire claim.
 
 ---
 
@@ -561,57 +574,51 @@ This is the intended behavior for TC011 rather than returning an HTTP 500 or ter
 
 The current implementation deliberately uses a modular workflow rather than claiming that every processing stage is already an autonomous agent.
 
-This provides several useful engineering boundaries:
-
-### 1. Independent responsibility
+## 1. Independent responsibility
 
 Each stage has a focused purpose.
 
-### 2. Testability
+## 2. Testability
 
 Individual stages can be tested independently.
 
-### 3. Observability
+## 3. Observability
 
 Each stage can contribute its own trace information.
 
-### 4. Failure isolation
+## 4. Failure isolation
 
 A failure can be associated with a specific stage.
 
-### 5. Replaceability
+## 5. Replaceability
 
 An extraction implementation can eventually be replaced without rewriting policy evaluation.
 
-### 6. Future agentization
+## 6. Future agentization
 
 The current boundaries provide natural candidates for future agents.
-
-For example:
 
 ```text
 CURRENT
 
 Workflow
-  ├── Document Verification
-  ├── Extraction
-  ├── Policy Evaluation
-  ├── Fraud Analysis
-  └── Decision
-
+ ├── Document Verification
+ ├── Extraction
+ ├── Policy Evaluation
+ ├── Fraud Analysis
+ └── Decision
 
 FUTURE
 
 Orchestrator
-      │
-      ├── Document Agent
-      ├── Extraction Agent
-      ├── Policy Agent
-      ├── Fraud Agent
-      └── Decision Agent
+ ├── Document Agent
+ ├── Extraction Agent
+ ├── Policy Agent
+ ├── Fraud Agent
+ └── Decision Agent
 ```
 
-The important point is that **the second diagram is an architectural evolution path, not a claim about the current implementation**.
+The second diagram is an architectural evolution path, **not a claim about the current implementation**.
 
 ---
 
@@ -621,12 +628,15 @@ AI is used where it provides the most value:
 
 ```text
 Unstructured Medical Documents
-            ↓
+            │
+            ▼
         AI / Vision
-            ↓
+            │
+            ▼
     Structured Information
-            ↓
- Deterministic Processing
+            │
+            ▼
+   Deterministic Processing
 ```
 
 AI-assisted areas include:
@@ -651,13 +661,11 @@ Deterministic components remain responsible for:
 
 This separation makes the system less dependent on free-form model behavior.
 
-The assignment explicitly evaluates whether AI is integrated thoughtfully and whether model output is structured and validated.
-
 ---
 
 # 🧪 Synthetic Medical Document Testing
 
-To test the image/document processing workflow, I generated **synthetic medical document images** specifically for this project.
+Synthetic medical document images were generated specifically for this project.
 
 These test fixtures include examples of:
 
@@ -670,37 +678,41 @@ They are used to test:
 
 ```text
 Document Classification
-        ↓
+        │
+        ▼
 Image Understanding
-        ↓
+        │
+        ▼
 Information Extraction
-        ↓
+        │
+        ▼
 Patient Matching
-        ↓
+        │
+        ▼
 Amount Extraction
-        ↓
+        │
+        ▼
 Date Extraction
-        ↓
+        │
+        ▼
 Policy Evaluation
 ```
 
 The generated documents are **synthetic test data** and do not represent real patient records.
 
-They were created to provide image-based inputs for testing instead of relying only on structured JSON test fixtures.
-
-The supplied Plum document guide explicitly calls out difficult real-world conditions such as handwritten prescriptions, phone photos, rubber stamps, multilingual documents, partial documents, corrections and scanned multi-page documents.
+They provide image-based inputs in addition to structured test fixtures.
 
 ---
 
-# 🧪 Evaluation Against Official Test Cases
+# 🧪 Verification & Acceptance Coverage
 
-The project is evaluated against all **12 scenarios** provided in `test_cases.json`.
+The project includes a set of representative acceptance scenarios in `test_cases.json`. They cover the major claim-processing paths below.
 
 | ID | Scenario | Expected Outcome |
 |---|---|---|
-| TC001 | Wrong document uploaded | Early stop |
-| TC002 | Unreadable document | Re-upload request |
-| TC003 | Different patients | Early stop |
+| TC001 | Wrong document uploaded | Early stop / blocked |
+| TC002 | Unreadable document | Re-upload / quality failure |
+| TC003 | Different patients | Early stop / blocked |
 | TC004 | Clean consultation | `APPROVED` |
 | TC005 | Diabetes waiting period | `REJECTED` |
 | TC006 | Dental cosmetic exclusion | `PARTIAL` |
@@ -711,36 +723,53 @@ The project is evaluated against all **12 scenarios** provided in `test_cases.js
 | TC011 | Component failure | Graceful degradation |
 | TC012 | Excluded treatment | `REJECTED` |
 
-These are the official supplied scenarios.
-
 ---
 
-# 📊 Evaluation Report
+# 📊 Automated Verification Results
 
-The evaluation report does not only record:
+The repository has been verified with the automated test suite and the representative acceptance scenarios.
 
-```text
-PASS / FAIL
+## Pytest
+
+The test suite was collected with:
+
+```bash
+pytest --collect-only -q
 ```
 
-For every case, the intended evaluation format captures:
+and executed with:
 
-```text
-Test Case
-Input
-Expected Outcome
-Actual Decision
-Approved Amount
-Confidence
-Processing Trace
-Policy Checks
-Warnings
-Difference / Analysis
+```bash
+pytest -q
 ```
 
-This is important because the assignment explicitly asks for the **full decision output and trace for each test case**, including explanations for mismatches.
+Actual result:
 
-Detailed results are available in:
+```text
+60 passed, 1 warning in 2.35s
+```
+
+Therefore:
+
+```text
+60 / 60 Pytest tests = PASS
+0 failed
+0 skipped
+```
+
+The warning was a non-failing `PendingDeprecationWarning` from the multipart dependency.
+
+## Acceptance Evaluation
+
+The official acceptance scenarios were also evaluated:
+
+```text
+12 / 12 acceptance cases = PASS
+```
+
+The detailed evaluation report records expected vs actual outcomes, decisions, amounts, traces and relevant observations.
+
+See:
 
 ```text
 eval_report.md
@@ -748,9 +777,9 @@ eval_report.md
 
 ---
 
-# 📋 Test Coverage
+# 📋 Acceptance Test Coverage
 
-### Document Handling
+## Document Handling
 
 - Wrong document type
 - Missing documents
@@ -758,7 +787,7 @@ eval_report.md
 - Patient mismatch
 - Document extraction failures
 
-### Policy
+## Policy
 
 - Coverage
 - Waiting periods
@@ -768,7 +797,7 @@ eval_report.md
 - Pre-authorization
 - Network hospitals
 
-### Financial
+## Financial
 
 - Co-pay
 - Network discount
@@ -776,13 +805,13 @@ eval_report.md
 - Eligible amount
 - Approved amount
 
-### Risk
+## Risk
 
 - Same-day claim patterns
 - High-value claims
 - Manual review conditions
 
-### Reliability
+## Reliability
 
 - Component failure
 - Degraded processing
@@ -793,35 +822,34 @@ eval_report.md
 
 # 📁 Project Structure
 
+The repository is organized around the actual modular backend and test suite.
+
 ```text
 .
 ├── frontend/
 │
 ├── backend/
-│   ├── workflow/
-│   │   └── claim processing orchestration
+│   ├── app/
+│   │   ├── api/
+│   │   ├── core/
+│   │   ├── infrastructure/
+│   │   ├── workflow/
+│   │   └── ...
 │   │
-│   ├── services/
-│   │   ├── document processing
-│   │   ├── extraction
-│   │   ├── policy evaluation
-│   │   ├── fraud / risk
-│   │   └── calculation
-│   │
-│   ├── models/
-│   ├── api/
 │   └── ...
 │
 ├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── evaluation/
-│
-├── test_documents/
-│   ├── prescriptions/
-│   ├── hospital_bills/
-│   ├── pharmacy_bills/
-│   └── diagnostic_reports/
+│   ├── conftest.py
+│   ├── test_claim_state_regression.py
+│   ├── test_config.py
+│   ├── test_extraction_normalize.py
+│   ├── test_fraud.py
+│   ├── test_health.py
+│   ├── test_ocr.py
+│   ├── test_policy_evaluator.py
+│   ├── test_policy_loader.py
+│   ├── test_uploads.py
+│   └── test_workflow_p0.py
 │
 ├── policy_terms.json
 ├── test_cases.json
@@ -829,8 +857,11 @@ eval_report.md
 ├── sample_documents_guide.md
 ├── architecture.md
 ├── eval_report.md
+├── TECHNOLOGY_STACK.md
 └── README.md
 ```
+
+The test suite contains **60 individual pytest tests** across the test modules above.
 
 ---
 
@@ -873,90 +904,112 @@ This makes the processing workflow configurable and avoids coupling the applicat
 Node.js
 npm
 Python 3.x
-PostgreSQL
 Git
 ```
 
----
+A PostgreSQL-compatible database is required only for the persistence paths actually enabled by the application.
 
 ## Clone
 
 ```bash
-git clone YOUR_GITHUB_URL
-cd YOUR_PROJECT_DIRECTORY
+git clone https://github.com/ayaz9616/plum-ai-claims-processor.git
+cd plum-ai-claims-processor
 ```
+
+## Backend
+
+```bash
+cd backend
+```
+
+Create and activate a Python virtual environment:
+
+```bash
+python -m venv .venv
+```
+
+Windows PowerShell:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+Install dependencies using the repository's dependency file.
+
+Then start the FastAPI application using the configured backend entry point.
+
+## Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Then open the local frontend URL shown by Next.js.
+
+> The exact backend start command should follow the entry point currently present in the repository.
 
 ---
 
-## Environment Variables
+# 🔐 Environment Variables
 
-Create the required `.env` / `.env.local` files.
+Use environment variables for provider credentials and deployment configuration.
 
 Example:
 
 ```env
 DATABASE_URL=your_postgresql_connection_string
 
-OPENAI_API_KEY=your_api_key
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=your_gemini_model
+GEMINI_OCR_MODEL=your_gemini_ocr_model
+GEMINI_TEMPERATURE=0.0
 
-NEXT_PUBLIC_API_URL=your_backend_url
+NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-Additional variables required by the implementation should be added according to the backend/frontend configuration.
+Only variables actually read by the current application should be configured.
 
 > Never commit credentials, database passwords, API keys or `.env` files to Git.
 
 ---
 
-# ▶️ Run the Application
+# 🧪 Run Tests
 
-## Backend
-
-```bash
-cd backend
-# install dependencies
-# start backend
-```
-
-## Frontend
+Run the full pytest suite:
 
 ```bash
-cd frontend
-# install dependencies
-# start frontend
+pytest -q
 ```
 
-Then open the configured local frontend URL.
-
-> The exact commands used by the deployed repository are documented in the project configuration.
-
----
-
-# 🧪 Run Evaluation
-
-The official scenarios are available in:
+Expected verified result:
 
 ```text
-test_cases.json
+60 passed, 1 warning in 2.35s
 ```
 
-Run the project's evaluation/test command:
+To inspect the tests collected:
 
 ```bash
-npm run test:evaluation
+pytest --collect-only -q
 ```
-
-or the equivalent command configured in the repository.
-
-The resulting outputs should be compared against the expected behavior defined by the supplied test cases.
 
 ---
 
 # 🌐 Deployment
 
-## Production Application
+## Live Application
 
-**Live:** [YOUR_DEPLOYMENT_URL](YOUR_DEPLOYMENT_URL)
+https://plum-ai-claims-processor.vercel.app/
+
+## Source Code
+
+https://github.com/ayaz9616/plum-ai-claims-processor
+
+## Demo Video
+
+_To be added for submission._
 
 The deployed application allows a reviewer to:
 
@@ -974,7 +1027,7 @@ The deployed application allows a reviewer to:
 
 # 🎥 Recommended Demo Flow
 
-The demo follows the three scenarios requested in the assignment.
+The demo should cover the three important behaviors requested in the assignment.
 
 ## 1. Early Document Failure
 
@@ -984,13 +1037,17 @@ Show:
 
 ```text
 Uploaded Documents
-        ↓
+        │
+        ▼
 Document Verification
-        ↓
+        │
+        ▼
 Problem Detected
-        ↓
+        │
+        ▼
 Specific Error Message
-        ↓
+        │
+        ▼
 Processing Stops
 ```
 
@@ -1002,25 +1059,33 @@ Show:
 
 ```text
 Claim
- ↓
+  │
+  ▼
 Document Verification
- ↓
+  │
+  ▼
 Extraction
- ↓
+  │
+  ▼
 Validation
- ↓
+  │
+  ▼
 Policy
- ↓
+  │
+  ▼
 Risk
- ↓
+  │
+  ▼
 Calculation
- ↓
+  │
+  ▼
 Decision
- ↓
+  │
+  ▼
 Full Trace
 ```
 
-The important part is to keep the **full trace visible**, because observability is a major part of the evaluation.
+Keep the **full trace visible**, because observability is a major part of the evaluation.
 
 ---
 
@@ -1040,7 +1105,7 @@ A natural future improvement is to extract the existing processing stages into i
 
 The current system is intentionally structured so that the processing stages can evolve into more autonomous components.
 
-### Current
+## Current
 
 ```text
                  Claim Workflow
@@ -1048,8 +1113,8 @@ The current system is intentionally structured so that the processing stages can
         ┌──────────────┼──────────────┐
         │              │              │
         ▼              ▼              ▼
-   Documents       Policy          Risk
-   Processing      Evaluation      Analysis
+   Documents        Policy          Risk
+   Processing       Evaluation      Analysis
         │              │              │
         └──────────────┼──────────────┘
                        │
@@ -1057,22 +1122,23 @@ The current system is intentionally structured so that the processing stages can
                     Decision
 ```
 
-### Possible evolution
+## Possible Evolution
 
 ```text
                     ┌──────────────┐
                     │ Orchestrator │
                     └───────┬──────┘
                             │
-       ┌────────────────────┼────────────────────┐
-       │                    │                    │
-       ▼                    ▼                    ▼
+        ┌───────────────────┼───────────────────┐
+        │                   │                   │
+        ▼                   ▼                   ▼
 ┌─────────────┐      ┌─────────────┐      ┌─────────────┐
-│ Document    │      │ Policy      │      │ Risk/Fraud  │
+│ Document    │      │ Policy      │      │ Risk / Fraud│
 │ Agent       │      │ Agent       │      │ Agent       │
 └──────┬──────┘      └──────┬──────┘      └──────┬──────┘
        │                    │                    │
        └────────────────────┼────────────────────┘
+                            │
                             ▼
                     ┌──────────────┐
                     │ Decision     │
@@ -1080,14 +1146,14 @@ The current system is intentionally structured so that the processing stages can
                     └──────────────┘
 ```
 
-The future model would introduce:
+The future model could introduce:
 
 - explicit agent contracts
 - independent execution
 - agent-level retries
 - timeouts
 - message-based communication
-- parallel execution where possible
+- parallel execution where appropriate
 - agent-specific observability
 - independent model selection
 - stronger evaluation per agent
@@ -1098,34 +1164,36 @@ This is an **evolution path**, not a description of the current implementation.
 
 # 📈 Scaling to 10×
 
-The current workflow is suitable for assignment-scale processing.
+The current workflow is suitable for the present application workload.
 
 At significantly higher volume, the architecture could evolve toward:
 
 ```text
-                   API
-                    │
-                    ▼
-              Message Queue
-                    │
-       ┌────────────┼────────────┐
-       ▼            ▼            ▼
-   Worker Pool  Worker Pool  Worker Pool
-       │            │            │
-   Documents     Extraction    Policy
-       │            │            │
-       └────────────┼────────────┘
-                    ▼
-                 Decision
-                    │
-                    ▼
-               PostgreSQL
+                    Load Balancer
+                          │
+                          ▼
+                    API Instances
+                          │
+                          ▼
+                   Durable Job Queue
+                          │
+             ┌────────────┼────────────┐
+             │            │            │
+             ▼            ▼            ▼
+          Worker 1     Worker 2     Worker N
+             │            │            │
+             └────────────┼────────────┘
+                          │
+             ┌────────────┼────────────┐
+             │            │            │
+             ▼            ▼            ▼
+           Gemini     PostgreSQL   Object Storage
 ```
 
 Potential improvements include:
 
 - asynchronous document processing
-- worker queues
+- durable worker queues
 - horizontal scaling
 - connection pooling
 - database indexing
@@ -1136,12 +1204,15 @@ Potential improvements include:
 - rate limiting
 - background processing
 - independent scaling of expensive AI workloads
+- permanent object storage for documents where required
+
+The MVP intentionally does not introduce this infrastructure prematurely.
 
 ---
 
 # 🔐 Reliability & Safety Principles
 
-The system follows several important principles:
+The system follows several important principles.
 
 ### AI output is not automatically trusted
 
@@ -1161,7 +1232,7 @@ A failed component should appear in the trace.
 
 ### Uncertainty reduces confidence
 
-The system should not present a degraded decision as equivalent to a fully processed decision.
+A degraded decision should not be presented as equivalent to a fully processed decision.
 
 ### Early problems stop early
 
@@ -1169,18 +1240,16 @@ There is no reason to continue adjudication when required documents are missing 
 
 ---
 
-# 📚 Assignment Resources
+# 📚 Project Resources
 
-The implementation is based on the resources supplied with the assignment:
+The implementation is driven by the project's requirements, policy configuration, test fixtures and design documents:
 
 | File | Purpose |
 |---|---|
-| `assignment.md` | Requirements and evaluation criteria |
+| `assignment.md` | Product requirements and constraints |
 | `policy_terms.json` | Policy, coverage and member configuration |
 | `test_cases.json` | Official 12 evaluation scenarios |
 | `sample_documents_guide.md` | Medical document formats and test variations |
-
-The assignment explicitly states that policy logic should be read from `policy_terms.json` rather than hardcoded.
 
 ---
 
@@ -1225,37 +1294,44 @@ The current implementation therefore focuses on:
                        │
        ┌───────────────┼────────────────┐
        ▼               ▼                ▼
-  Document          Policy           Risk
-  Intelligence      Reasoning        Analysis
+   Document          Policy           Risk
+   Intelligence      Reasoning        Analysis
        │               │                │
        └───────────────┼────────────────┘
                        ▼
-                Deterministic
-                 Calculation
+                 Deterministic
+                  Calculation
                        │
                        ▼
-                  Decision
+                    Decision
                        │
                        ▼
-                Full Trace
+                   Full Trace
                        │
                        ▼
-                 Explainable
-                    Output
+                Explainable Output
 ```
 
-The architecture is currently implemented as a **modular orchestration workflow**, with clear processing boundaries that can be evolved into independently executing agents as the system scales.
+The architecture is currently implemented as a **modular orchestration workflow**, with clear processing boundaries that can evolve into independently executing agents as the system scales.
 
 ---
 
 ## 🔗 Project Links
 
-**Live Application:** [YOUR_DEPLOYMENT_URL](YOUR_DEPLOYMENT_URL)
+**Live Application:**  
+https://plum-ai-claims-processor.vercel.app/
 
-**Source Code:** [YOUR_GITHUB_URL](YOUR_GITHUB_URL)
+**Source Code:**  
+https://github.com/ayaz9616/plum-ai-claims-processor
 
-**Architecture Document:** [`architecture.md`](architecture.md)
+**Architecture Document:**  
+`architecture.md`
 
-**Evaluation Report:** [`eval_report.md`](eval_report.md)
+**Technology Stack:**  
+`TECHNOLOGY_STACK.md`
 
-**Demo Video:** [YOUR_DEMO_VIDEO_URL](YOUR_DEMO_VIDEO_URL)
+**Evaluation Report:**  
+`eval_report.md`
+
+**Demo Video:**  
+_To be added for submission._
